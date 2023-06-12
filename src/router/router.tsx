@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { Vrm } from '@/components/vrm';
-import { Mmd } from '@/components/mmd';
+import { Vrm } from '@/pages/vrm';
+import { Mmd } from '@/pages/mmd';
 
 export const router = createBrowserRouter([
   {
