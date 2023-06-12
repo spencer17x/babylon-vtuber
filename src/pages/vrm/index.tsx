@@ -4,7 +4,7 @@ import {
   ArcRotateCamera,
   DirectionalLight,
   Engine,
-  HemisphericLight,
+  HemisphericLight, Nullable,
   PointLight,
   Scene,
   SceneLoader,
@@ -12,13 +12,13 @@ import {
 } from '@babylonjs/core';
 import 'babylon-vrm-loader';
 import { Button, message } from 'antd';
-import { useMediapipe } from './useMediapipe';
+import { VRM } from '@/utils';
+import { Camera } from '@mediapipe/camera_utils';
 
 import './index.scss';
 
 enum MessageKey {
   Model = 'model',
-  Camera = 'camera',
 }
 
 export const Vrm = () => {
@@ -27,13 +27,9 @@ export const Vrm = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [scene, setScene] = useState<Scene | null>(null);
-
-  const { isCameraEnabled, cameraLoading, toggleCamera, setUpCamera } = useMediapipe({
-    scene,
-    video: videoRef.current,
-    videoCanvas: videoCanvasRef.current,
-    isCameraEnable: false,
-  });
+  const [camera, setCamera] = useState<Camera>();
+  const [cameraLoading, setCameraLoading] = useState(false);
+  const [isCameraEnabled, setIsCameraEnabled] = useState(false);
 
   // init
   useEffect(() => {
@@ -87,13 +83,6 @@ export const Vrm = () => {
     window.addEventListener('resize', () => {
       engine.resize();
     });
-
-    return () => {
-      // scene.onBeforeRenderObservable.removeCallback(handleOnBeforeRenderObservable);
-      // scene.dispose();
-      // engine.dispose();
-      // message.destroy(MessageKey.Model);
-    };
   }, []);
 
   // load model
@@ -108,11 +97,54 @@ export const Vrm = () => {
         await SceneLoader.ImportMeshAsync('', '/models/vrm/', 'Ashtra.vrm', scene, (event) => {
           console.log('model load', `${event.loaded / event.total * 100}%`);
         });
-        setUpCamera();
         message.destroy(MessageKey.Model);
+
+        const videoCanvas = videoCanvasRef.current;
+        const video = videoRef.current;
+        if (!videoCanvas) {
+          throw new Error('videoCanvas is not found');
+        }
+        if (!video) {
+          throw new Error('video is not found');
+        }
+        const vrmManager: Nullable<VRMManager> | undefined = scene?.metadata?.vrmManagers[0];
+        console.log('vrmManager', vrmManager);
+
+        if (vrmManager) {
+          const vrm = VRM.create(vrmManager);
+          const holistic = vrm.useHolistic();
+          holistic.onResults((results) => {
+            console.log('results', results);
+            vrm.draw(results, videoCanvas, video);
+            vrm.animateVRM(results, video);
+          });
+          const camera = new Camera(video, {
+            onFrame: async () => {
+              await holistic.send({ image: video });
+            }
+          });
+          setCamera(camera);
+        }
       }());
     }
-  }, [scene, setUpCamera]);
+  }, [scene]);
+
+  const toggleCamera = async () => {
+    try {
+      const isEnabled = !isCameraEnabled;
+      setCameraLoading(true);
+      if (isEnabled) {
+        await camera?.start();
+      } else {
+        await camera?.stop();
+      }
+      setIsCameraEnabled(isEnabled);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setCameraLoading(false);
+    }
+  };
 
   return <div className="vtuber">
     <canvas className="canvas" ref={canvasRef}/>
