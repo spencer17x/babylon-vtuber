@@ -12,7 +12,7 @@ import {
 } from '@babylonjs/core';
 import 'babylon-vrm-loader';
 import { Button, message } from 'antd';
-import { useVtuber } from './useVtuber';
+import { useVtuber } from '@/hooks';
 
 import './index.scss';
 
@@ -21,7 +21,7 @@ enum MessageKey {
   Camera = 'camera',
 }
 
-export const Vtuber = () => {
+export const Vrm = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);

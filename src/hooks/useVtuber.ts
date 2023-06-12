@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { Nullable, Scene } from '@babylonjs/core';
 import { VRMManager } from 'babylon-vrm-loader';
 import { Camera } from '@mediapipe/camera_utils';
-import { VRM } from '../../utils';
 import { ResultsListener } from '@mediapipe/holistic';
+
+import { VRM } from '@/utils';
 
 interface Params {
   isCameraEnable?: boolean;

@@ -1,8 +1,10 @@
 import ReactDOM from 'react-dom/client';
 import 'antd/dist/reset.css';
+import { RouterProvider } from 'react-router-dom';
+import { router } from '@/router';
+
 import './main.scss';
-import { Vtuber } from './components/vtuber';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <Vtuber/>
+  <RouterProvider router={router}/>
 );
