@@ -9,7 +9,7 @@ import {
 } from '@mediapipe/holistic';
 import { HumanoidBone, VRMManager } from 'babylon-vrm-loader';
 import { Face, Hand, Pose } from 'kalidokit';
-import { Vector3 } from '@babylonjs/core';
+import { Quaternion, Vector3 } from '@babylonjs/core';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
 type GetProperties<T> = Exclude<{
@@ -47,19 +47,31 @@ export class VRM {
     dampener?: number,
     lerpAmount?: number,
   ) {
-    const realRotation = rotation || { x: 0, y: 0, z: 0 };
-    const realDampener = dampener || 1;
-    const realLerpAmount = lerpAmount || 0.3;
+    rotation = rotation || { x: 0, y: 0, z: 0 };
+    dampener = dampener || 1;
+    lerpAmount = lerpAmount || 0.3;
     console.log('_setRotation name, rotation, dampener, lerpAmount', name, rotation, dampener, lerpAmount);
-    console.log('_setRotation name, realRotation, realDampener, realLerpAmount', name, realRotation, realDampener, realLerpAmount);
 
     const node = this._getTransformNode(name);
     if (node) {
-      node.rotation = new Vector3(
-        realRotation.x,
-        realRotation.y,
-        realRotation.z,
+      const euler = new Vector3(
+        rotation.x * dampener,
+        rotation.y * dampener,
+        rotation.z * dampener
       );
+      const quaternion = Quaternion.RotationYawPitchRoll(
+        euler.y,
+        euler.x,
+        euler.z
+      );
+      if (node.rotationQuaternion) {
+        Quaternion.SlerpToRef(
+          node.rotationQuaternion, // 当前的四元数
+          quaternion, // 目标的四元数
+          lerpAmount, // 插值的比例
+          node.rotationQuaternion // 结果将应用于的四元数
+        );
+      }
     }
   }
 
@@ -73,18 +85,23 @@ export class VRM {
     dampener = 1,
     lerpAmount = 0.3
   ) {
-    const realPosition = position || { x: 0, y: 0, z: 0 };
-    const realDampener = dampener || 1;
-    const realLerpAmount = lerpAmount || 0.3;
+    position = position || { x: 0, y: 0, z: 0 };
+    dampener = dampener || 1;
+    lerpAmount = lerpAmount || 0.3;
     console.log('_setPosition name, position, dampener, lerpAmount', name, position, dampener, lerpAmount);
-    console.log('_setPosition name, realPosition, realDampener, realLerpAmount', name, realPosition, realDampener, realLerpAmount);
 
     const node = this._getTransformNode(name);
     if (node) {
-      node.position = new Vector3(
-        realPosition.x,
-        realPosition.y,
-        realPosition.z,
+      const vector = new Vector3(
+        position.x * dampener,
+        position.y * dampener,
+        position.z * dampener
+      );
+      Vector3.LerpToRef(
+        node.position,
+        vector,
+        lerpAmount,
+        node.position
       );
     }
   }
@@ -109,7 +126,7 @@ export class VRM {
     // return this.manager.getBone(name);
   }
 
-  useHolistic(params?: IHolisticParams) {
+  createHolistic(params?: IHolisticParams) {
     const {
       filePath = `node_modules/@mediapipe/holistic`,
       options = {
@@ -141,7 +158,7 @@ export class VRM {
     console.log('animateFace face', face);
     if (face) {
       // neck
-      this._setRotation('neck', face.head);
+      this._setRotation('neck', face.head, 0.7);
 
       // Simple example without winking. Interpolate based on old blendshape, then stabilize blink with `Kalidokit` helper function.
       // for VRM, 1 is closed, 0 is open.
@@ -164,57 +181,84 @@ export class VRM {
       // hips
       this._setRotation(
         'hips',
-        pose.Hips.rotation
+        pose.Hips.rotation,
+        0.7
       );
       this._setPosition(
         'hips',
-        pose.Hips.position
+        {
+          x: pose.Hips.position.x,
+          y: pose.Hips.position.y + 1,
+          z: -pose.Hips.position.z,
+        },
+        1,
+        0.07
       );
 
       // chest、spine
       this._setRotation(
         'chest',
-        pose.Spine
+        pose.Spine,
+        0.25,
+        0.3
       );
       this._setRotation(
         'spine',
-        pose.Spine
+        pose.Spine,
+        0.45,
+        0.3
       );
 
       // arm
       this._setRotation(
         'rightUpperArm',
-        pose.RightUpperArm
+        pose.RightUpperArm,
+        1,
+        0.3
       );
       this._setRotation(
         'rightLowerArm',
-        pose.RightLowerArm
+        pose.RightLowerArm,
+        1,
+        0.3
       );
       this._setRotation(
         'leftUpperArm',
-        pose.LeftUpperArm
+        pose.LeftUpperArm,
+        1,
+        0.3
       );
       this._setRotation(
         'leftLowerArm',
-        pose.LeftLowerArm
+        pose.LeftLowerArm,
+        1,
+        0.3
       );
 
       // leg
       this._setRotation(
         'rightUpperLeg',
-        pose.RightUpperLeg
+        pose.RightUpperLeg,
+        1,
+        0.3
       );
       this._setRotation(
         'rightLowerLeg',
-        pose.RightLowerLeg
+        pose.RightLowerLeg,
+        1,
+        0.3
       );
       this._setRotation(
         'leftUpperLeg',
-        pose.LeftUpperLeg
+        pose.LeftUpperLeg,
+        1,
+        0.3
       );
       this._setRotation(
         'leftLowerLeg',
-        pose.LeftLowerLeg
+        pose.LeftLowerLeg,
+        1,
+        0.3
       );
     }
   }

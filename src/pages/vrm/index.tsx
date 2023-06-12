@@ -112,7 +112,7 @@ export const Vrm = () => {
 
         if (vrmManager) {
           const vrm = VRM.create(vrmManager);
-          const holistic = vrm.useHolistic();
+          const holistic = vrm.createHolistic();
           holistic.onResults((results) => {
             console.log('results', results);
             vrm.draw(results, videoCanvas, video);
