@@ -12,7 +12,7 @@ import {
 } from '@babylonjs/core';
 import 'babylon-vrm-loader';
 import { Button, message } from 'antd';
-import { useVtuber } from '@/hooks';
+import { useMediapipe } from './useMediapipe';
 
 import './index.scss';
 
@@ -28,7 +28,7 @@ export const Vrm = () => {
 
   const [scene, setScene] = useState<Scene | null>(null);
 
-  const { isCameraEnabled, cameraLoading, toggleCamera, setUpCamera } = useVtuber({
+  const { isCameraEnabled, cameraLoading, toggleCamera, setUpCamera } = useMediapipe({
     scene,
     video: videoRef.current,
     videoCanvas: videoCanvasRef.current,
@@ -45,12 +45,12 @@ export const Vrm = () => {
     const scene = new Scene(engine);
     setScene(scene);
 
-    const camera = new ArcRotateCamera('camera', 0, 0, 3, new Vector3(0, 1.2, 0), scene, true);
+    const camera = new ArcRotateCamera('camera', 0, 0, 3, new Vector3(0, 1, 0), scene, true);
     camera.lowerRadiusLimit = 0.1;
     camera.upperRadiusLimit = 20;
     camera.wheelDeltaPercentage = 0.01;
     camera.minZ = 0.3;
-    camera.position = new Vector3(0, 1.2, -3);
+    camera.position = new Vector3(0, 0, -5);
     camera.attachControl(canvas, true);
 
     scene.createDefaultEnvironment({
@@ -80,23 +80,19 @@ export const Vrm = () => {
         manager.update(deltaTime);
       });
     };
-    const handleRunRenderLoop = () => {
-      scene.render();
-    };
-    const handleResize = () => {
-      engine.resize();
-    };
     scene.onBeforeRenderObservable.add(handleOnBeforeRenderObservable);
-    engine.runRenderLoop(handleRunRenderLoop);
-    window.addEventListener('resize', handleResize);
+    engine.runRenderLoop(() => {
+      scene.render();
+    });
+    window.addEventListener('resize', () => {
+      engine.resize();
+    });
 
     return () => {
-      scene.onBeforeRenderObservable.removeCallback(handleOnBeforeRenderObservable);
-      engine.runRenderLoop(handleRunRenderLoop);
-      window.addEventListener('resize', handleResize);
-      scene.dispose();
-      engine.dispose();
-      message.destroy(MessageKey.Model);
+      // scene.onBeforeRenderObservable.removeCallback(handleOnBeforeRenderObservable);
+      // scene.dispose();
+      // engine.dispose();
+      // message.destroy(MessageKey.Model);
     };
   }, []);
 

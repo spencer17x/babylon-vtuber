@@ -13,7 +13,7 @@ interface Params {
   scene?: Nullable<Scene>;
 }
 
-export const useVtuber = (params: Params) => {
+export const useMediapipe = (params: Params) => {
   const { isCameraEnable, scene, videoCanvas, video } = params;
   const [camera, setCamera] = useState<Camera | null>(null);
   const [isCameraEnabled, setIsCameraEnabled] = useState(isCameraEnable ?? false);
