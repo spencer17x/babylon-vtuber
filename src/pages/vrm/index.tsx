@@ -7,7 +7,7 @@ import {
   HemisphericLight, Nullable,
   PointLight,
   Scene,
-  SceneLoader,
+  SceneLoader, Tools,
   Vector3
 } from '@babylonjs/core';
 import 'babylon-vrm-loader';
@@ -41,13 +41,14 @@ export const Vrm = () => {
     const scene = new Scene(engine);
     setScene(scene);
 
-    const camera = new ArcRotateCamera('camera', 0, 0, 3, new Vector3(0, 1, 0), scene, true);
+    const camera = new ArcRotateCamera('camera', 0, 0, 3, new Vector3(0, 1.4, 0), scene, true);
     camera.lowerRadiusLimit = 0.1;
     camera.upperRadiusLimit = 20;
     camera.wheelDeltaPercentage = 0.01;
     camera.minZ = 0.3;
     camera.position = new Vector3(0, 0, -5);
     camera.attachControl(canvas, true);
+    camera.fov = Tools.ToRadians(12);
 
     scene.createDefaultEnvironment({
       createGround: true,
@@ -116,7 +117,7 @@ export const Vrm = () => {
           holistic.onResults((results) => {
             console.log('results', results);
             vrm.draw(results, videoCanvas, video);
-            vrm.animateVRM(results, video);
+            vrm.animateFace(results, video);
           });
           const camera = new Camera(video, {
             onFrame: async () => {
