@@ -1,1 +1,1 @@
-export * from './vrm';
+export * from './VRM';
