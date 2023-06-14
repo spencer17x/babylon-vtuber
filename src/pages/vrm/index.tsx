@@ -14,6 +14,7 @@ import { Button, message } from 'antd';
 import { VRM } from '@/utils';
 
 import 'babylon-vrm-loader';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 import './index.scss';
 
@@ -30,6 +31,8 @@ export const Vrm = () => {
 	const [cameraLoading, setCameraLoading] = useState(false);
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
 	const [vrm, setVRM] = useState<VRM>();
+	const location = useLocation();
+	const [searchParams] = useSearchParams(location.search);
 
 	// init
 	useEffect(() => {
@@ -95,7 +98,7 @@ export const Vrm = () => {
 					key: MessageKey.Model,
 					duration: 0,
 				});
-				const modelUrl = new URLSearchParams(location.search).get('modelUrl') || '/models/vrm/AliciaSolid.vrm';
+				const modelUrl = searchParams.get('modelUrl') || '/models/vrm/AliciaSolid.vrm';
 				console.log('modelUrl', modelUrl);
 				await SceneLoader.ImportMeshAsync('', modelUrl, '', scene, (event) => {
 					console.log('model load', `${event.loaded / event.total * 100}%`);
@@ -127,7 +130,7 @@ export const Vrm = () => {
 				setIsCameraEnabled(vrm.isCameraEnabled ?? false);
 			}());
 		}
-	}, [scene]);
+	}, [scene, searchParams]);
 
 	const toggleCamera = async () => {
 		try {
@@ -150,7 +153,7 @@ export const Vrm = () => {
 		</div>
 
 		<div className="toolbar">
-			<Button loading={cameraLoading} onClick={toggleCamera}>
+			<Button type="primary" loading={cameraLoading} onClick={toggleCamera}>
 				{isCameraEnabled ? '关闭' : '开启'}摄像头
 			</Button>
 		</div>
