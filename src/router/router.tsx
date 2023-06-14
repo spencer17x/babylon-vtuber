@@ -1,8 +1,8 @@
-import { createHashRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Vrm } from '@/pages/vrm';
 import { Mmd } from '@/pages/mmd';
 
-export const router = createHashRouter([
+export const router = createBrowserRouter([
 	{
 		path: '/vrm',
 		element: <Vrm/>
