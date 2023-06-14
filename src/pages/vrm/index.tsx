@@ -95,7 +95,9 @@ export const Vrm = () => {
 					key: MessageKey.Model,
 					duration: 0,
 				});
-				await SceneLoader.ImportMeshAsync('', '/models/vrm/', 'Ashtra.vrm', scene, (event) => {
+				const modelUrl = new URLSearchParams(location.search).get('modelUrl') || '/models/vrm/AliciaSolid.vrm';
+				console.log('modelUrl', modelUrl);
+				await SceneLoader.ImportMeshAsync('', modelUrl, '', scene, (event) => {
 					console.log('model load', `${event.loaded / event.total * 100}%`);
 				});
 				message.destroy(MessageKey.Model);
