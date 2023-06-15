@@ -1,20 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { VRMManager } from 'babylon-vrm-loader';
-import {
-	ArcRotateCamera,
-	DirectionalLight,
-	Engine,
-	HemisphericLight,
-	PointLight,
-	Scene,
-	SceneLoader, Tools,
-	Vector3
-} from '@babylonjs/core';
+import * as BBL5 from '@bbl5.25.0/core';
 import { Button, message } from 'antd';
 import { VRMTool } from '@/utils';
-
-import 'babylon-vrm-loader';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Tools, Vector3 } from '@babylonjs/core';
+import 'babylon-vrm-loader';
 
 import './index.scss';
 
@@ -23,11 +14,12 @@ enum MessageKey {
 }
 
 export const Vrm = () => {
+	const bbl5CanvasRef = useRef<HTMLCanvasElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
 	const videoRef = useRef<HTMLVideoElement>(null);
 
-	const [scene, setScene] = useState<Scene | null>(null);
+	const [scene, setScene] = useState<BBL5.Scene | null>(null);
 	const [cameraLoading, setCameraLoading] = useState(false);
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
 	const [vrm, setVRM] = useState<VRMTool>();
@@ -36,38 +28,27 @@ export const Vrm = () => {
 
 	// init
 	useEffect(() => {
-		const canvas = canvasRef.current;
+		const canvas = bbl5CanvasRef.current;
 		if (!canvas) {
 			throw new Error('canvas is not found');
 		}
-		const engine = new Engine(canvas, true);
-		const scene = new Scene(engine);
+		const engine = new BBL5.Engine(canvas, true);
+		const scene = new BBL5.Scene(engine);
+		scene.clearColor = new BBL5.Color4(0, 0, 0, 0);
 		setScene(scene);
 
-		const camera = new ArcRotateCamera('camera', 0, 0, 3, new Vector3(0, 1.4, 0), scene, true);
+		const camera = new BBL5.ArcRotateCamera('camera', 0, 0, 3, new BBL5.Vector3(0, 1.4, 0), scene, true);
 		camera.lowerRadiusLimit = 0.1;
 		camera.upperRadiusLimit = 20;
 		camera.wheelDeltaPercentage = 0.01;
 		camera.minZ = 0.3;
-		camera.position = new Vector3(0, 1.4, -5);
+		camera.position = new BBL5.Vector3(0, 1.4, -5);
 		camera.attachControl(canvas, true);
 		camera.fov = Tools.ToRadians(12);
 
-		scene.createDefaultEnvironment({
-			createGround: true,
-			createSkybox: false,
-			enableGroundMirror: false,
-			enableGroundShadow: false,
-		});
-
 		// lights
-		const directionalLight = new DirectionalLight('DirectionalLight1', new Vector3(0, -0.5, 1.0), scene);
-		directionalLight.position = new Vector3(0, 25, -50);
-		directionalLight.setEnabled(true);
-		const hemisphericLight = new HemisphericLight('HemisphericLight1', new Vector3(-0.2, -0.8, -1), scene);
-		hemisphericLight.setEnabled(false);
-		const pointLight = new PointLight('PointLight1', new Vector3(0, 0, 1), scene);
-		pointLight.setEnabled(false);
+		const light = new BBL5.DirectionalLight('DirectionalLight1', new BBL5.Vector3(0, -0.5, 1.0), scene);
+		light.intensity = 1;
 
 		const handleOnBeforeRenderObservable = () => {
 			// SpringBone
@@ -100,7 +81,7 @@ export const Vrm = () => {
 				});
 				const modelUrl = searchParams.get('modelUrl') || '/models/vrm/AliciaSolid.vrm';
 				console.log('modelUrl', modelUrl);
-				await SceneLoader.ImportMeshAsync('', modelUrl, '', scene, (event) => {
+				await BBL5.SceneLoader.ImportMeshAsync('', modelUrl, '', scene, (event) => {
 					console.log('model load', `${event.loaded / event.total * 100}%`);
 				});
 				message.destroy(MessageKey.Model);
@@ -132,6 +113,39 @@ export const Vrm = () => {
 		}
 	}, [scene, searchParams]);
 
+	useEffect(() => {
+		(async function () {
+			const canvas = canvasRef.current;
+			if (!canvas) {
+				throw new Error('canvas is not found');
+			}
+
+			const engine = new Engine(canvas, true);
+			const scene = new Scene(engine);
+
+			const camera = new ArcRotateCamera('camera', 0, 0, 3, new Vector3(0, 1.4, 0), scene, true);
+			camera.setPosition(new Vector3(0, 1.4, -5));
+			camera.attachControl(canvas, true);
+			const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
+			light.intensity = 0.7;
+
+			await SceneLoader.ImportMeshAsync(
+				'',
+				'/models/babylon/1.babylon',
+				'',
+				scene,
+			);
+
+			engine.runRenderLoop(() => {
+				scene.render();
+			});
+
+			window.addEventListener('resize', () => {
+				engine.resize();
+			});
+		}());
+	}, []);
+
 	const toggleCamera = async () => {
 		try {
 			setCameraLoading(true);
@@ -146,6 +160,7 @@ export const Vrm = () => {
 
 	return <div className="vtuber">
 		<canvas className="canvas" ref={canvasRef}/>
+		<canvas className="bbl5-canvas" ref={bbl5CanvasRef}/>
 
 		<div className="video-container">
 			<video className="video" ref={videoRef}/>

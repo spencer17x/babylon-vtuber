@@ -1,14 +1,14 @@
-import { MediaPipe, MediaPipeConfig } from '@/utils/MediaPipe';
+import { MediaPipeTool, MediaPipeToolConfig } from '@/utils';
 import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { Face, Hand, Pose } from 'kalidokit';
 import { Bone, Mesh, Nullable, Vector3 } from '@babylonjs/core';
-import { leftHandRigList, poseRigList, rightHandRigList } from '@/utils/MMDTool/constants';
+import { leftHandRigList, poseRigList, rightHandRigList } from './constants';
 
-interface Config extends MediaPipeConfig {
+interface Config extends MediaPipeToolConfig {
 	mesh: Mesh;
 }
 
-export class MMDTool extends MediaPipe {
+export class MMDTool extends MediaPipeTool {
 	mesh: Config['mesh'];
 
 	constructor(config: Config) {

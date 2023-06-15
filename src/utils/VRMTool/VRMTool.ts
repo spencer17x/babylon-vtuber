@@ -1,7 +1,7 @@
 import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { HumanoidBone, VRMManager } from 'babylon-vrm-loader';
 import { Face, Hand, Pose } from 'kalidokit';
-import { Nullable, Quaternion, Scene, Vector3 } from '@babylonjs/core';
+import { Nullable, Quaternion, Scene, Vector3 } from '@bbl5.25.0/core';
 import { MediaPipeTool, MediaPipeToolConfig } from '@/utils';
 
 type GetProperties<T> = Exclude<{
