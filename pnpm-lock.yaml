@@ -1,13 +1,13 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@babylonjs/core': 5.25.0
-  '@babylonjs/gui': 5.25.0
-  '@babylonjs/gui-editor': 5.25.0
-  '@babylonjs/inspector': 5.25.0
-  '@babylonjs/loaders': 5.25.0
-  '@babylonjs/materials': 5.25.0
-  '@babylonjs/serializers': 5.25.0
+  '@babylonjs/core': ^6.7.0
+  '@babylonjs/gui': ^6.7.0
+  '@babylonjs/gui-editor': ^6.7.0
+  '@babylonjs/inspector': ^6.7.0
+  '@babylonjs/loaders': ^6.7.0
+  '@babylonjs/materials': ^6.7.0
+  '@babylonjs/serializers': ^6.7.0
   '@mediapipe/camera_utils': ^0.3.1675466862
   '@mediapipe/drawing_utils': ^0.3.1675466124
   '@mediapipe/holistic': ^0.5.1675471629
@@ -17,6 +17,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.59.0
   '@typescript-eslint/parser': ^5.59.0
   '@vitejs/plugin-react': ^4.0.0
+  '@wenxin123/babylonjs-mmd-loader': ^0.1.4
   antd: ^5.6.1
   babylon-vrm-loader: 2.0.0-alpha.3
   babylonjs-gltf2interface: 5.22.0
@@ -32,18 +33,19 @@ specifiers:
   vite: ^4.3.9
 
 dependencies:
-  '@babylonjs/core': 5.25.0
-  '@babylonjs/gui': 5.25.0_@babylonjs+core@5.25.0
-  '@babylonjs/gui-editor': 5.25.0_vfah5zcpfa6kcg7grb2bb74eua
-  '@babylonjs/inspector': 5.25.0_xtn54kjn4giococubgq37x5dgi
-  '@babylonjs/loaders': 5.25.0_o7eonh36w2b4cczaxviy6mmtzu
-  '@babylonjs/materials': 5.25.0_@babylonjs+core@5.25.0
-  '@babylonjs/serializers': 5.25.0_o7eonh36w2b4cczaxviy6mmtzu
+  '@babylonjs/core': 6.7.0
+  '@babylonjs/gui': 6.7.0_@babylonjs+core@6.7.0
+  '@babylonjs/gui-editor': 6.7.0_sjlsm4utoprbt7jwhepk62iqqy
+  '@babylonjs/inspector': 6.7.0_ijd7hvs5yllahlez7n6bunuduq
+  '@babylonjs/loaders': 6.7.0_lzbv4vkj7wijwcn5ouzvpqwcyy
+  '@babylonjs/materials': 6.7.0_@babylonjs+core@6.7.0
+  '@babylonjs/serializers': 6.7.0_lzbv4vkj7wijwcn5ouzvpqwcyy
   '@mediapipe/camera_utils': 0.3.1675466862
   '@mediapipe/drawing_utils': 0.3.1675466124
   '@mediapipe/holistic': 0.5.1675471629
+  '@wenxin123/babylonjs-mmd-loader': 0.1.4
   antd: 5.6.1_biqbaboplfbrettd7655fr4n2y
-  babylon-vrm-loader: 2.0.0-alpha.3_f3q23tanie4ucxh42l7o3d25m4
+  babylon-vrm-loader: 2.0.0-alpha.3_t67u4fr4okazuflqm7pt4mhsoi
   kalidokit: 1.1.5
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -357,50 +359,50 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@babylonjs/core/5.25.0:
-    resolution: {integrity: sha512-pjUCrT5OPuJ0UU3bPtzovkRK+Xxl9bd1pIPG7aulqsC2Ci/hxiDNL2SwQnX9J/lcV5x6LTDyMUJ0IXSW8W+2sw==}
+  /@babylonjs/core/6.7.0:
+    resolution: {integrity: sha512-ntrjJU/pkUiVXgBUi4CZYo1RZKHBbB4edJhSsV1VT0OrBeq03O98astKKBeboTLUJCkQTaWEuCayh5usAbjq9g==}
     dev: false
 
-  /@babylonjs/gui-editor/5.25.0_vfah5zcpfa6kcg7grb2bb74eua:
-    resolution: {integrity: sha512-OAvVuDzSOns26FbUU+TUncb/7RFJuULxC9xg8JxNjHoXKONOXcKAY7m7ATeJrvS4FOX6RGSZ9QGemJzGMu6GZg==}
+  /@babylonjs/gui-editor/6.7.0_sjlsm4utoprbt7jwhepk62iqqy:
+    resolution: {integrity: sha512-fO0GE61BOWe6YXM+rFQv6U2BmxFXxF1J6UlE1CqcnH03tHAOxPdUC9F7qhqi3gELP1vHrFPIgOsCBssk6KfwMA==}
     peerDependencies:
-      '@babylonjs/core': ^5.22.0
-      '@babylonjs/gui': ^5.22.0
+      '@babylonjs/core': ^6.0.0
+      '@babylonjs/gui': ^6.0.0
       '@types/react': '>=16.7.3'
       '@types/react-dom': '>=16.0.9'
     dependencies:
-      '@babylonjs/core': 5.25.0
-      '@babylonjs/gui': 5.25.0_@babylonjs+core@5.25.0
+      '@babylonjs/core': 6.7.0
+      '@babylonjs/gui': 6.7.0_@babylonjs+core@6.7.0
       '@types/react': 18.2.9
       '@types/react-dom': 18.2.4
     dev: false
 
-  /@babylonjs/gui/5.25.0_@babylonjs+core@5.25.0:
-    resolution: {integrity: sha512-1yd7PAmyYwyL1khBo0qzb32NUxxkN3Kw15BPsgkN6l+qlu7mQug3GFPEH8eyBHLLZgVsFwrZK8fN7LPRJqQNrg==}
+  /@babylonjs/gui/6.7.0_@babylonjs+core@6.7.0:
+    resolution: {integrity: sha512-j22fx+Mp6YvivpS4E+9UyZ0y5E/9sOl8zMRIQ9eNKIKdJ9ueQQ0G6So2vE8eYBJYrx6q9xgTZ90/cKWOF1kU+g==}
     peerDependencies:
-      '@babylonjs/core': ^5.22.0
+      '@babylonjs/core': ^6.0.0
     dependencies:
-      '@babylonjs/core': 5.25.0
+      '@babylonjs/core': 6.7.0
     dev: false
 
-  /@babylonjs/inspector/5.25.0_xtn54kjn4giococubgq37x5dgi:
-    resolution: {integrity: sha512-E5PKLVasE9wRfyAM8t/+2KfbS0UwJvnOOFNkHOQS/Sajk8xhiH/0sIqEXHw2DP24z7r4g0/PZK3zmXtEulzyFg==}
+  /@babylonjs/inspector/6.7.0_ijd7hvs5yllahlez7n6bunuduq:
+    resolution: {integrity: sha512-UM18sXK0SKPEKl5/D2G660hZLmBCK/dt8+Cy/g7zq+zk4CUoHaIEXCSuYmAadvc23/GaulZF3ZhM1vNMQFef7A==}
     peerDependencies:
-      '@babylonjs/core': ^5.22.0
-      '@babylonjs/gui': ^5.22.0
-      '@babylonjs/gui-editor': ^5.22.0
-      '@babylonjs/loaders': ^5.22.0
-      '@babylonjs/materials': ^5.22.0
-      '@babylonjs/serializers': ^5.22.0
+      '@babylonjs/core': ^6.0.0
+      '@babylonjs/gui': ^6.0.0
+      '@babylonjs/gui-editor': ^6.0.0
+      '@babylonjs/loaders': ^6.0.0
+      '@babylonjs/materials': ^6.0.0
+      '@babylonjs/serializers': ^6.0.0
       '@types/react': '>=16.7.3'
       '@types/react-dom': '>=16.0.9'
     dependencies:
-      '@babylonjs/core': 5.25.0
-      '@babylonjs/gui': 5.25.0_@babylonjs+core@5.25.0
-      '@babylonjs/gui-editor': 5.25.0_vfah5zcpfa6kcg7grb2bb74eua
-      '@babylonjs/loaders': 5.25.0_o7eonh36w2b4cczaxviy6mmtzu
-      '@babylonjs/materials': 5.25.0_@babylonjs+core@5.25.0
-      '@babylonjs/serializers': 5.25.0_o7eonh36w2b4cczaxviy6mmtzu
+      '@babylonjs/core': 6.7.0
+      '@babylonjs/gui': 6.7.0_@babylonjs+core@6.7.0
+      '@babylonjs/gui-editor': 6.7.0_sjlsm4utoprbt7jwhepk62iqqy
+      '@babylonjs/loaders': 6.7.0_lzbv4vkj7wijwcn5ouzvpqwcyy
+      '@babylonjs/materials': 6.7.0_@babylonjs+core@6.7.0
+      '@babylonjs/serializers': 6.7.0_lzbv4vkj7wijwcn5ouzvpqwcyy
       '@fortawesome/fontawesome-svg-core': 6.4.0
       '@fortawesome/free-regular-svg-icons': 6.4.0
       '@fortawesome/free-solid-svg-icons': 6.4.0
@@ -408,31 +410,31 @@ packages:
       '@types/react-dom': 18.2.4
     dev: false
 
-  /@babylonjs/loaders/5.25.0_o7eonh36w2b4cczaxviy6mmtzu:
-    resolution: {integrity: sha512-JMSjypYIRRzyBfvBfvjNsOfnU5ZxPrJKg8EvYJs3DBY1PYfkxvZdh22iJodLo5qFBcEe7CvSbmzKGVbb3dw98A==}
+  /@babylonjs/loaders/6.7.0_lzbv4vkj7wijwcn5ouzvpqwcyy:
+    resolution: {integrity: sha512-eKv7K4pBOCPqv6ay90GeYJWrVj0qLv1TYCJ+Cy1wSFqjgLT60y90yCE8/DmIuGf1ziT79QpW4FkewsmvfMyV2A==}
     peerDependencies:
-      '@babylonjs/core': ^5.22.0
-      babylonjs-gltf2interface: ^5.22.0
+      '@babylonjs/core': ^6.0.0
+      babylonjs-gltf2interface: ^6.0.0
     dependencies:
-      '@babylonjs/core': 5.25.0
+      '@babylonjs/core': 6.7.0
       babylonjs-gltf2interface: 5.22.0
     dev: false
 
-  /@babylonjs/materials/5.25.0_@babylonjs+core@5.25.0:
-    resolution: {integrity: sha512-aP+dvVgkGT3xN4LbdoICEie/MA0j0G6FNYAMd8asAIwoQcb4v6IwdOg8m894TNVwGExgUw2rWYGMtr4fpnvieA==}
+  /@babylonjs/materials/6.7.0_@babylonjs+core@6.7.0:
+    resolution: {integrity: sha512-bB8pdiSXv2AvVk9XkHR6W6tb/X0y7ATRI4VyLSx/pUCYHAs9MxX2vatSWUceEWHXeTScw8nVYL74OCZZ0YNBww==}
     peerDependencies:
-      '@babylonjs/core': ^5.22.0
+      '@babylonjs/core': ^6.0.0
     dependencies:
-      '@babylonjs/core': 5.25.0
+      '@babylonjs/core': 6.7.0
     dev: false
 
-  /@babylonjs/serializers/5.25.0_o7eonh36w2b4cczaxviy6mmtzu:
-    resolution: {integrity: sha512-eMQvWNV+D8ZHlS2DxsfSBDLIb0GzxvTsbjf4V3KVT0uxTzWbF52Fwzi9KpPGXNnUlcCt6bMMfzGJxL5luX9cUw==}
+  /@babylonjs/serializers/6.7.0_lzbv4vkj7wijwcn5ouzvpqwcyy:
+    resolution: {integrity: sha512-Jv+YdOP2huNy/5SzbIcVIexRL40FPPVfnWWnhikpwxH15x5PlntdTLa1lm5/ddPC7/Jrejsa+LRSRR5kiA6uLg==}
     peerDependencies:
-      '@babylonjs/core': ^5.22.0
-      babylonjs-gltf2interface: ^5.22.0
+      '@babylonjs/core': ^6.0.0
+      babylonjs-gltf2interface: ^6.0.0
     dependencies:
-      '@babylonjs/core': 5.25.0
+      '@babylonjs/core': 6.7.0
       babylonjs-gltf2interface: 5.22.0
     dev: false
 
@@ -1076,6 +1078,12 @@ packages:
       - supports-color
     dev: true
 
+  /@wenxin123/babylonjs-mmd-loader/0.1.4:
+    resolution: {integrity: sha512-1wPOCnfhwVHqe173H8qOlArVbflXpL1/BolpuQRvHzIQTo/u6tjUdjzJCdgx730tw2lG83C/IY1lOiNUAKcIbg==}
+    dependencies:
+      mmd-parser: 1.0.4
+    dev: false
+
   /acorn-jsx/5.3.2_acorn@8.8.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
@@ -1205,23 +1213,23 @@ packages:
     resolution: {integrity: sha512-7HhHjtERjqlNbZtqNqy2rckN/SpOOlmDliet+lP7k+eKZEjPk3DgyeU9lIXLdeLz0uBbbVp+9Qdow9wJWgwwfg==}
     dev: false
 
-  /babylon-mtoon-material/5.1.1_@babylonjs+core@5.25.0:
+  /babylon-mtoon-material/5.1.1_@babylonjs+core@6.7.0:
     resolution: {integrity: sha512-u6R3nKkeXTP9S4TP6ntbVAMxAEZ8S89jiOSj39iW5WMaXOEUcGEbEAUa6crhR4621sDxt5keHje33BNFb6K1ew==}
     peerDependencies:
       '@babylonjs/core': ^5.19.0
     dependencies:
-      '@babylonjs/core': 5.25.0
+      '@babylonjs/core': 6.7.0
     dev: false
 
-  /babylon-vrm-loader/2.0.0-alpha.3_f3q23tanie4ucxh42l7o3d25m4:
+  /babylon-vrm-loader/2.0.0-alpha.3_t67u4fr4okazuflqm7pt4mhsoi:
     resolution: {integrity: sha512-zUZiACK5oqqrOxay9BuvR+/s5DKArpDIlAsAB1yqNwVVTw0QqKvVlz87FwOsKpKsHLEppiaeLGRv4yo49VjZuQ==}
     peerDependencies:
       '@babylonjs/core': ^5.19.0
       '@babylonjs/loaders': ^5.19.0
     dependencies:
-      '@babylonjs/core': 5.25.0
-      '@babylonjs/loaders': 5.25.0_o7eonh36w2b4cczaxviy6mmtzu
-      babylon-mtoon-material: 5.1.1_@babylonjs+core@5.25.0
+      '@babylonjs/core': 6.7.0
+      '@babylonjs/loaders': 6.7.0_lzbv4vkj7wijwcn5ouzvpqwcyy
+      babylon-mtoon-material: 5.1.1_@babylonjs+core@6.7.0
     dev: false
 
   /babylonjs-gltf2interface/5.22.0:
@@ -1878,6 +1886,10 @@ packages:
     dependencies:
       brace-expansion: 1.1.11
     dev: true
+
+  /mmd-parser/1.0.4:
+    resolution: {integrity: sha512-Qi0VCU46t2IwfGv5KF0+D/t9cizcDug7qnNoy9Ggk7aucp0tssV8IwTMkBlDbm+VqAf3cdQHTCARKSsuS2MYFg==}
+    dev: false
 
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
