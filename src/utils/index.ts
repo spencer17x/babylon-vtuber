@@ -1,1 +1,2 @@
-export * from './VRM';
+export * from './CommonTool';
+export * from './VRMTool';

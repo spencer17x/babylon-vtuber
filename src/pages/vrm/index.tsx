@@ -11,7 +11,7 @@ import {
 	Vector3
 } from '@babylonjs/core';
 import { Button, message } from 'antd';
-import { VRM } from '@/utils';
+import { VRMTool } from '@/utils';
 
 import 'babylon-vrm-loader';
 import { useLocation, useSearchParams } from 'react-router-dom';
@@ -30,7 +30,7 @@ export const Vrm = () => {
 	const [scene, setScene] = useState<Scene | null>(null);
 	const [cameraLoading, setCameraLoading] = useState(false);
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
-	const [vrm, setVRM] = useState<VRM>();
+	const [vrm, setVRM] = useState<VRMTool>();
 	const location = useLocation();
 	const [searchParams] = useSearchParams(location.search);
 
@@ -49,7 +49,7 @@ export const Vrm = () => {
 		camera.upperRadiusLimit = 20;
 		camera.wheelDeltaPercentage = 0.01;
 		camera.minZ = 0.3;
-		camera.position = new Vector3(0, 0, -5);
+		camera.position = new Vector3(0, 1.4, -5);
 		camera.attachControl(canvas, true);
 		camera.fov = Tools.ToRadians(12);
 
@@ -114,7 +114,7 @@ export const Vrm = () => {
 					throw new Error('video is not found');
 				}
 
-				const vrm = new VRM({
+				const vrm = new VRMTool({
 					scene,
 					video,
 					videoCanvas,

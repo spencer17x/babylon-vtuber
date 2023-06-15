@@ -2,7 +2,7 @@ import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { HumanoidBone, VRMManager } from 'babylon-vrm-loader';
 import { Face, Hand, Pose } from 'kalidokit';
 import { Nullable, Quaternion, Scene, Vector3 } from '@babylonjs/core';
-import { MediaPipe, MediaPipeConfig } from '@/utils/MediaPipe';
+import { MediaPipeTool, MediaPipeToolConfig } from '@/utils';
 
 type GetProperties<T> = Exclude<{
 	[K in keyof T]: T[K] extends (...args: any[]) => any ? never : K
@@ -10,7 +10,7 @@ type GetProperties<T> = Exclude<{
 
 type HumanBoneName = GetProperties<HumanoidBone>;
 
-interface Config extends MediaPipeConfig {
+interface Config extends MediaPipeToolConfig {
 	scene: Scene;
 }
 
@@ -18,7 +18,7 @@ interface Config extends MediaPipeConfig {
  * VRM
  * inspired by https://github.com/yeemachine/kalidokit
  */
-export class VRM extends MediaPipe {
+export class VRMTool extends MediaPipeTool {
 	scene: Config['scene'];
 
 	manager?: Nullable<VRMManager>;

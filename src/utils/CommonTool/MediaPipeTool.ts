@@ -9,23 +9,23 @@ import {
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { Camera, CameraOptions } from '@mediapipe/camera_utils';
 
-export interface MediaPipeConfig {
+export interface MediaPipeToolConfig {
 	video: HTMLVideoElement;
 	videoCanvas: HTMLCanvasElement;
 	isCameraEnabled?: boolean;
 	cameraOptions?: Partial<CameraOptions>;
 }
 
-export class MediaPipe {
-	video: MediaPipeConfig['video'];
-	videoCanvas: MediaPipeConfig['videoCanvas'];
-	isCameraEnabled: MediaPipeConfig['isCameraEnabled'];
-	cameraOptions: MediaPipeConfig['cameraOptions'];
+export class MediaPipeTool {
+	video: MediaPipeToolConfig['video'];
+	videoCanvas: MediaPipeToolConfig['videoCanvas'];
+	isCameraEnabled: MediaPipeToolConfig['isCameraEnabled'];
+	cameraOptions: MediaPipeToolConfig['cameraOptions'];
 
 	holistic: Holistic | null = null;
 	camera: Camera | null = null;
 
-	constructor(config: MediaPipeConfig) {
+	constructor(config: MediaPipeToolConfig) {
 		const { video, videoCanvas, cameraOptions, isCameraEnabled } = config;
 		this.video = video;
 		this.videoCanvas = videoCanvas;
@@ -123,7 +123,7 @@ export class MediaPipe {
 		});
 	}
 
-	createCamera(options?: MediaPipeConfig['cameraOptions']) {
+	createCamera(options?: MediaPipeToolConfig['cameraOptions']) {
 		const { onFrame, ...restOptions } = options || {};
 		this.camera = new Camera(this.video, {
 			onFrame: async () => {
