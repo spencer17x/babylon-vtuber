@@ -3,7 +3,6 @@ import { VRMManager } from 'babylon-vrm-loader';
 import * as BBL5 from '@bbl5.25.0/core';
 import { Button, message } from 'antd';
 import { VRMTool } from '@/utils';
-import { useLocation, useSearchParams } from 'react-router-dom';
 import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Tools, Vector3 } from '@babylonjs/core';
 import 'babylon-vrm-loader';
 
@@ -23,8 +22,6 @@ export const Vrm = () => {
 	const [cameraLoading, setCameraLoading] = useState(false);
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
 	const [vrm, setVRM] = useState<VRMTool>();
-	const location = useLocation();
-	const [searchParams] = useSearchParams(location.search);
 
 	// init
 	useEffect(() => {
@@ -79,7 +76,7 @@ export const Vrm = () => {
 					key: MessageKey.Model,
 					duration: 0,
 				});
-				const modelUrl = searchParams.get('modelUrl') || '/models/vrm/AliciaSolid.vrm';
+				const modelUrl = '/models/vrm/AliciaSolid.vrm';
 				console.log('modelUrl', modelUrl);
 				await BBL5.SceneLoader.ImportMeshAsync('', modelUrl, '', scene, (event) => {
 					console.log('model load', `${event.loaded / event.total * 100}%`);
@@ -111,7 +108,7 @@ export const Vrm = () => {
 				setIsCameraEnabled(vrm.isCameraEnabled ?? false);
 			}());
 		}
-	}, [scene, searchParams]);
+	}, [scene]);
 
 	useEffect(() => {
 		(async function () {
