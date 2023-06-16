@@ -12,6 +12,8 @@ enum MessageKey {
 	Model = 'model',
 }
 
+const baseUrl = 'https://a-cdn.qbox.net/test'
+
 export const Vrm = () => {
 	const bbl5CanvasRef = useRef<HTMLCanvasElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -76,7 +78,7 @@ export const Vrm = () => {
 					key: MessageKey.Model,
 					duration: 0,
 				});
-				const modelUrl = '/models/vrm/AliciaSolid.vrm';
+				const modelUrl = baseUrl + '/models/vrm/AliciaSolid.vrm';
 				console.log('modelUrl', modelUrl);
 				await BBL5.SceneLoader.ImportMeshAsync('', modelUrl, '', scene, (event) => {
 					console.log('model load', `${event.loaded / event.total * 100}%`);
@@ -128,7 +130,7 @@ export const Vrm = () => {
 
 			await SceneLoader.ImportMeshAsync(
 				'',
-				'/models/babylon/1.babylon',
+				baseUrl + '/models/babylon/1.babylon',
 				'',
 				scene,
 			);
