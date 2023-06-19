@@ -7,7 +7,7 @@ import { mediaPipeAssetsUrl } from '@/config';
 
 import './index.scss';
 
-export const VtuberMMD = () => {
+export const VtuberMMDPage = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
 	const videoRef = useRef<HTMLVideoElement>(null);
@@ -96,7 +96,7 @@ export const VtuberMMD = () => {
 		}
 	};
 
-	return <div className="vtuber-mmd">
+	return <div className="vtuber-mmd-page">
 		<canvas className="canvas" ref={canvasRef}/>
 
 		<div className="video-container">

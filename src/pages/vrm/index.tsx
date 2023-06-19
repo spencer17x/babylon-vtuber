@@ -1,123 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { VRMManager } from 'babylon-vrm-loader';
-import * as BBL5 from '@bbl5.25.0/core';
 import { Button, message } from 'antd';
 import { VRMTool } from '@/utils';
-import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Tools, Vector3 } from '@babylonjs/core';
-import 'babylon-vrm-loader';
-import { assetsUrl, mediaPipeAssetsUrl } from '@/config';
+import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Vector3 } from '@babylonjs/core';
+import { assetsUrl } from '@/config';
+import { VtuberVRM } from '@/components';
 
 import './index.scss';
 
-enum MessageKey {
-	Model = 'model',
-}
-
-export const VtuberVRM = () => {
-	const bbl5CanvasRef = useRef<HTMLCanvasElement>(null);
+export const VtuberVRMPage = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
-	const videoRef = useRef<HTMLVideoElement>(null);
 
-	const [scene, setScene] = useState<BBL5.Scene | null>(null);
 	const [cameraLoading, setCameraLoading] = useState(false);
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
-	const [vrm, setVRM] = useState<VRMTool>();
-
-	// bbl5, init
-	useEffect(() => {
-		const canvas = bbl5CanvasRef.current;
-		if (!canvas) {
-			throw new Error('canvas is not found');
-		}
-		const engine = new BBL5.Engine(canvas, true);
-		const scene = new BBL5.Scene(engine);
-		scene.clearColor = new BBL5.Color4(0, 0, 0, 0);
-		setScene(scene);
-
-		const camera = new BBL5.ArcRotateCamera('camera', 0, 0, 3, new BBL5.Vector3(0, 1.4, 0), scene, true);
-		camera.lowerRadiusLimit = 0.1;
-		camera.upperRadiusLimit = 20;
-		camera.wheelDeltaPercentage = 0.01;
-		camera.minZ = 0.3;
-		camera.position = new BBL5.Vector3(0, 1.4, -5);
-		camera.attachControl(canvas, true);
-		camera.fov = Tools.ToRadians(12);
-
-		// lights
-		const light = new BBL5.DirectionalLight('DirectionalLight1', new BBL5.Vector3(0, -0.5, 1.0), scene);
-		light.intensity = 1;
-
-		scene.onBeforeRenderObservable.add(() => {
-			// SpringBone
-			if (!scene.metadata || !scene.metadata.vrmManagers) {
-				return;
-			}
-			const managers = scene.metadata.vrmManagers as VRMManager[];
-			const deltaTime = scene.getEngine().getDeltaTime();
-			managers.forEach((manager) => {
-				manager.update(deltaTime);
-			});
-		});
-		engine.runRenderLoop(() => {
-			scene.render();
-		});
-		window.addEventListener('resize', () => {
-			engine.resize();
-		});
-	}, []);
-
-	// bbl5, load model
-	useEffect(() => {
-		(async function () {
-			if (!scene) return;
-
-			message.loading({
-				content: 'model loading',
-				key: MessageKey.Model,
-				duration: 0,
-			});
-			const modelUrl = assetsUrl + '/models/vrm/AliciaSolid.vrm';
-			console.log('modelUrl', modelUrl);
-			await BBL5.SceneLoader.ImportMeshAsync('', modelUrl, '', scene, (event) => {
-				console.log('model load', `${event.loaded / event.total * 100}%`);
-			});
-			message.destroy(MessageKey.Model);
-
-			const videoCanvas = videoCanvasRef.current;
-			const video = videoRef.current;
-			if (!videoCanvas) {
-				throw new Error('videoCanvas is not found');
-			}
-			if (!video) {
-				throw new Error('video is not found');
-			}
-
-			const vrm = new VRMTool({
-				scene,
-				video,
-				videoCanvas,
-			});
-			const holistic = vrm.createHolistic({
-				filePath: mediaPipeAssetsUrl
-			});
-			holistic.onResults((results) => {
-				console.log('results', results);
-				vrm.draw(results);
-				vrm.animate(results);
-			});
-			vrm.createCamera({
-				onFrame: async () => {
-					await holistic.send({ image: vrm.video });
-				}
-			});
-			setVRM(vrm);
-			setIsCameraEnabled(vrm.isCameraEnabled ?? false);
-		}());
-		return () => {
-			message.destroy(MessageKey.Model);
-		};
-	}, [scene]);
+	const [vrmTool, setVRMTool] = useState<VRMTool>();
 
 	// bbl6
 	useEffect(() => {
@@ -154,10 +49,14 @@ export const VtuberVRM = () => {
 	}, []);
 
 	const toggleCamera = async () => {
+		if (!vrmTool) {
+			console.error('vrmTool is not found');
+			return;
+		}
 		try {
 			setCameraLoading(true);
-			await vrm?.toggleCamera();
-			setIsCameraEnabled(vrm?.isCameraEnabled ?? false);
+			await vrmTool.toggleCamera();
+			setIsCameraEnabled(vrmTool.isCameraEnabled ?? false);
 		} catch (e) {
 			console.error(e);
 		} finally {
@@ -165,14 +64,19 @@ export const VtuberVRM = () => {
 		}
 	};
 
-	return <div className="vtuber-vrm">
+	return <div className="vtuber-vrm-page">
 		<canvas className="canvas" ref={canvasRef}/>
-		<canvas className="bbl5-canvas" ref={bbl5CanvasRef}/>
 
-		<div className="video-container">
-			<video className="video" ref={videoRef}/>
-			<canvas className="video-canvas" ref={videoCanvasRef}/>
-		</div>
+		<VtuberVRM
+			modeUrl={assetsUrl + '/models/vrm/AliciaSolid.vrm'}
+			onVRMToolLoaded={setVRMTool}
+			onLoadStart={() => message.loading({
+				content: 'vrm-vtuber loading...',
+				key: 'vrm-vtuber',
+				duration: 0,
+			})}
+			onLoadEnd={() => message.destroy('vrm-vtuber')}
+		/>
 
 		<div className="toolbar">
 			<Button type="primary" loading={cameraLoading} onClick={toggleCamera}>

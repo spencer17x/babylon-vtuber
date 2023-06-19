@@ -136,4 +136,13 @@ export class MediaPipeTool {
 			lineWidth: 2,
 		});
 	}
+
+	destroy() {
+		if (this.holistic) {
+			this.holistic.close();
+		}
+		if (this.camera) {
+			this.camera.stop();
+		}
+	}
 }
