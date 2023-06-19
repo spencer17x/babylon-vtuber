@@ -2,58 +2,43 @@ import {
 	FACEMESH_TESSELATION,
 	HAND_CONNECTIONS,
 	Holistic,
-	Options,
+	Options as HolisticOptions,
 	POSE_CONNECTIONS,
 	Results, ResultsListener
 } from '@mediapipe/holistic';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { Camera, CameraOptions } from '@mediapipe/camera_utils';
 
+const npmCDNUrl = 'https://cdn.jsdelivr.net/npm/@mediapipe';
+
 export interface MediaPipeToolConfig {
 	video: HTMLVideoElement;
 	videoCanvas: HTMLCanvasElement;
 	isCameraEnabled?: boolean;
-	cameraOptions?: Partial<CameraOptions>;
 }
 
 export class MediaPipeTool {
 	video: MediaPipeToolConfig['video'];
 	videoCanvas: MediaPipeToolConfig['videoCanvas'];
 	isCameraEnabled: MediaPipeToolConfig['isCameraEnabled'];
-	cameraOptions: MediaPipeToolConfig['cameraOptions'];
 
 	holistic: Holistic | null = null;
 	camera: Camera | null = null;
 
 	constructor(config: MediaPipeToolConfig) {
-		const { video, videoCanvas, cameraOptions, isCameraEnabled } = config;
+		const { video, videoCanvas, isCameraEnabled } = config;
 		this.video = video;
 		this.videoCanvas = videoCanvas;
-		this.cameraOptions = cameraOptions;
 		this.isCameraEnabled = isCameraEnabled ?? false;
-	}
-
-	getHolistic() {
-		if (!this.holistic) {
-			throw new Error('Holistic not created');
-		}
-		return this.holistic;
-	}
-
-	getCamera() {
-		if (!this.camera) {
-			throw new Error(`Camera not created`);
-		}
-		return this.camera;
 	}
 
 	createHolistic(params?: {
 		filePath?: string;
-		options?: Options,
+		options?: HolisticOptions,
 		resultsListener?: ResultsListener
 	}) {
 		const {
-			filePath = `node_modules/@mediapipe/holistic`,
+			filePath = npmCDNUrl,
 			options = {
 				modelComplexity: 1,
 				smoothLandmarks: true,
@@ -65,7 +50,7 @@ export class MediaPipeTool {
 		} = params || {};
 		this.holistic = new Holistic({
 			locateFile: (file) => {
-				return `${filePath}/${file}`;
+				return `${filePath}/holistic/${file}`;
 			}
 		});
 		this.holistic.setOptions(options);
@@ -73,6 +58,35 @@ export class MediaPipeTool {
 			this.holistic.onResults(resultsListener);
 		}
 		return this.holistic;
+	}
+
+	getHolistic() {
+		if (!this.holistic) {
+			throw new Error('Holistic is not created');
+		}
+		return this.holistic;
+	}
+
+	createCamera(options: CameraOptions) {
+		this.camera = new Camera(this.video, options);
+		return this.camera;
+	}
+
+	getCamera() {
+		if (!this.camera) {
+			throw new Error('Camera is not created');
+		}
+		return this.camera;
+	}
+
+	async toggleCamera() {
+		const isEnabled = !this.isCameraEnabled;
+		if (isEnabled) {
+			await this.getCamera().start();
+		} else {
+			await this.getCamera().stop();
+		}
+		this.isCameraEnabled = isEnabled;
 	}
 
 	draw(results: Results) {
@@ -121,29 +135,5 @@ export class MediaPipeTool {
 			color: '#ff0364',
 			lineWidth: 2,
 		});
-	}
-
-	createCamera(options?: MediaPipeToolConfig['cameraOptions']) {
-		const { onFrame, ...restOptions } = options || {};
-		this.camera = new Camera(this.video, {
-			onFrame: async () => {
-				if (!onFrame) {
-					await this.getHolistic().send({ image: this.video });
-				}
-				await onFrame?.();
-			},
-			...restOptions
-		});
-		return this.camera;
-	}
-
-	async toggleCamera() {
-		const isEnabled = !this.isCameraEnabled;
-		if (isEnabled) {
-			await this.getCamera().start();
-		} else {
-			await this.getCamera().stop();
-		}
-		this.isCameraEnabled = isEnabled;
 	}
 }

@@ -12,6 +12,7 @@ specifiers:
   '@bbl5.25.0/loaders': npm:@babylonjs/loaders@5.25.0
   '@mediapipe/camera_utils': ^0.3.1675466862
   '@mediapipe/drawing_utils': ^0.3.1675466124
+  '@mediapipe/face_mesh': ^0.4.1633559619
   '@mediapipe/holistic': ^0.5.1675471629
   '@types/node': ^20.3.0
   '@types/react': ^18.0.37
@@ -21,6 +22,7 @@ specifiers:
   '@vitejs/plugin-react': ^4.0.0
   '@wenxin123/babylonjs-mmd-loader': ^0.1.4
   antd: ^5.6.1
+  babylon-mtoon-material: ^5.1.1
   babylon-vrm-loader: 2.0.0-alpha.3
   babylonjs-gltf2interface: 5.22.0
   eslint: ^8.38.0
@@ -41,9 +43,11 @@ dependencies:
   '@bbl5.25.0/loaders': /@babylonjs/loaders/5.25.0_mhpwy32sgzxnxnjz4sjcsqwwta
   '@mediapipe/camera_utils': 0.3.1675466862
   '@mediapipe/drawing_utils': 0.3.1675466124
+  '@mediapipe/face_mesh': 0.4.1633559619
   '@mediapipe/holistic': 0.5.1675471629
   '@wenxin123/babylonjs-mmd-loader': 0.1.4
   antd: 5.6.1_biqbaboplfbrettd7655fr4n2y
+  babylon-mtoon-material: 5.1.1_@babylonjs+core@6.8.0
   babylon-vrm-loader: 2.0.0-alpha.3_rxfogr4gizmx6ed7va2h5bytxa_47xmo7mxrmkgowpnrnhup7tx2u
   kalidokit: 1.1.5
   react: 18.2.0
@@ -694,6 +698,10 @@ packages:
 
   /@mediapipe/drawing_utils/0.3.1675466124:
     resolution: {integrity: sha512-/IWIB/iYRMtiUKe3k7yGqvwseWHCOqzVpRDfMgZ6gv9z7EEimg6iZbRluoPbcNKHbYSxN5yOvYTzUYb8KVf22Q==}
+    dev: false
+
+  /@mediapipe/face_mesh/0.4.1633559619:
+    resolution: {integrity: sha512-Vc8cdjxS5+O2gnjWH9KncYpUCVXT0h714KlWAsyqJvJbIgUJBqpppbIx8yWcAzBDxm/5cYSuBI5p5ySIPxzcEg==}
     dev: false
 
   /@mediapipe/holistic/0.5.1675471629:

@@ -1,7 +1,8 @@
 import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { HumanoidBone, VRMManager } from 'babylon-vrm-loader';
 import { Face, Hand, Pose } from 'kalidokit';
-import { Nullable, Quaternion, Scene, Vector3 } from '@bbl5.25.0/core';
+import { Nullable, Quaternion, Vector3 } from '@babylonjs/core';
+import * as BBL5 from '@bbl5.25.0/core';
 import { MediaPipeTool, MediaPipeToolConfig } from '@/utils';
 
 type GetProperties<T> = Exclude<{
@@ -11,7 +12,7 @@ type GetProperties<T> = Exclude<{
 type HumanBoneName = GetProperties<HumanoidBone>;
 
 interface Config extends MediaPipeToolConfig {
-	scene: Scene;
+	scene: BBL5.Scene;
 }
 
 /**
@@ -46,26 +47,27 @@ export class VRMTool extends MediaPipeTool {
 		console.log('_setRotation name, rotation, dampener, lerpAmount', name, rotation, dampener, lerpAmount);
 
 		const node = this._getTransformNode(name);
-		if (node) {
-			const euler = new Vector3(
-				rotation.x * dampener,
-				rotation.y * dampener,
-				rotation.z * dampener
-			);
-			const quaternion = Quaternion.RotationYawPitchRoll(
-				euler.y,
-				euler.x,
-				euler.z
-			);
-			if (node.rotationQuaternion) {
-				Quaternion.SlerpToRef(
-					node.rotationQuaternion, // 当前的四元数
-					quaternion, // 目标的四元数
-					lerpAmount, // 插值的比例
-					node.rotationQuaternion // 结果将应用于的四元数
-				);
-			}
-		}
+		if (!node) return;
+
+		const nodeQuaternion = node.rotationQuaternion;
+		if (!nodeQuaternion) return;
+
+		const euler = new Vector3(
+			rotation.x * dampener,
+			rotation.y * dampener,
+			rotation.z * dampener
+		);
+		const quaternion = Quaternion.RotationYawPitchRoll(
+			euler.y,
+			euler.x,
+			euler.z
+		);
+		Quaternion.SlerpToRef(
+			nodeQuaternion, // 当前的四元数
+			quaternion, // 目标的四元数
+			lerpAmount, // 插值的比例
+			nodeQuaternion // 结果将应用于的四元数
+		);
 	}
 
 	private _setPosition(
@@ -84,19 +86,20 @@ export class VRMTool extends MediaPipeTool {
 		console.log('_setPosition name, position, dampener, lerpAmount', name, position, dampener, lerpAmount);
 
 		const node = this._getTransformNode(name);
-		if (node) {
-			const vector = new Vector3(
-				position.x * dampener,
-				position.y * dampener,
-				position.z * dampener
-			);
-			Vector3.LerpToRef(
-				node.position,
-				vector,
-				lerpAmount,
-				node.position
-			);
-		}
+		if (!node) return;
+
+		const vector = new Vector3(
+			position.x * dampener,
+			position.y * dampener,
+			position.z * dampener
+		);
+		const nodePosition = node.position;
+		Vector3.LerpToRef(
+			nodePosition,
+			vector,
+			lerpAmount,
+			nodePosition
+		);
 	}
 
 	private _getPose(results: Results) {
@@ -134,111 +137,111 @@ export class VRMTool extends MediaPipeTool {
 			video: this.video,
 		});
 		console.log('animateFace face', face);
-		if (face) {
-			// neck
-			this._setRotation('neck', face.head, 0.7);
+		if (!face) return;
 
-			// Simple example without winking. Interpolate based on old blendshape, then stabilize blink with `Kalidokit` helper function.
-			// for VRM, 1 is closed, 0 is open.
-			this.getManager().morphing('Blink_L', 1 - face.eye.l);
-			this.getManager().morphing('Blink_R', 1 - face.eye.r);
+		// neck
+		this._setRotation('neck', face.head, 0.7);
 
-			// mouth
-			const mouth = face.mouth.shape;
-			this.getManager().morphing('A', mouth.A);
-			this.getManager().morphing('E', mouth.E);
-			this.getManager().morphing('I', mouth.I);
-			this.getManager().morphing('O', mouth.O);
-			this.getManager().morphing('U', mouth.U);
-		}
+		// Simple example without winking. Interpolate based on old blendshape, then stabilize blink with `Kalidokit` helper function.
+		// for VRM, 1 is closed, 0 is open.
+		this.getManager().morphing('Blink_L', 1 - face.eye.l);
+		this.getManager().morphing('Blink_R', 1 - face.eye.r);
+
+		// mouth
+		const mouth = face.mouth.shape;
+		this.getManager().morphing('A', mouth.A);
+		this.getManager().morphing('E', mouth.E);
+		this.getManager().morphing('I', mouth.I);
+		this.getManager().morphing('O', mouth.O);
+		this.getManager().morphing('U', mouth.U);
 	}
 
 	animatePose(results: Results) {
 		const pose = this._getPose(results);
-		if (pose) {
-			// hips
-			this._setRotation(
-				'hips',
-				pose.Hips.rotation,
-				0.7
-			);
-			this._setPosition(
-				'hips',
-				{
-					x: pose.Hips.position.x,
-					y: pose.Hips.position.y + 1,
-					z: -pose.Hips.position.z,
-				},
-				1,
-				0.07
-			);
+		if (!pose) return;
 
-			// chest、spine
-			this._setRotation(
-				'chest',
-				pose.Spine,
-				0.25,
-				0.3
-			);
-			this._setRotation(
-				'spine',
-				pose.Spine,
-				0.45,
-				0.3
-			);
+		// hips
+		this._setRotation(
+			'hips',
+			pose.Hips.rotation,
+			0.7
+		);
+		this._setPosition(
+			'hips',
+			{
+				x: pose.Hips.position.x,
+				y: pose.Hips.position.y + 1,
+				z: -pose.Hips.position.z,
+			},
+			1,
+			0.07
+		);
 
-			// arm
-			this._setRotation(
-				'rightUpperArm',
-				pose.RightUpperArm,
-				1,
-				0.3
-			);
-			this._setRotation(
-				'rightLowerArm',
-				pose.RightLowerArm,
-				1,
-				0.3
-			);
-			this._setRotation(
-				'leftUpperArm',
-				pose.LeftUpperArm,
-				1,
-				0.3
-			);
-			this._setRotation(
-				'leftLowerArm',
-				pose.LeftLowerArm,
-				1,
-				0.3
-			);
+		// chest、spine
+		this._setRotation(
+			'chest',
+			pose.Spine,
+			0.25,
+			0.3
+		);
+		this._setRotation(
+			'spine',
+			pose.Spine,
+			0.45,
+			0.3
+		);
 
-			// leg
-			this._setRotation(
-				'rightUpperLeg',
-				pose.RightUpperLeg,
-				1,
-				0.3
-			);
-			this._setRotation(
-				'rightLowerLeg',
-				pose.RightLowerLeg,
-				1,
-				0.3
-			);
-			this._setRotation(
-				'leftUpperLeg',
-				pose.LeftUpperLeg,
-				1,
-				0.3
-			);
-			this._setRotation(
-				'leftLowerLeg',
-				pose.LeftLowerLeg,
-				1,
-				0.3
-			);
-		}
+		// arm
+		this._setRotation(
+			'rightUpperArm',
+			pose.RightUpperArm,
+			1,
+			0.3
+		);
+		this._setRotation(
+			'rightLowerArm',
+			pose.RightLowerArm,
+			1,
+			0.3
+		);
+		this._setRotation(
+			'leftUpperArm',
+			pose.LeftUpperArm,
+			1,
+			0.3
+		);
+		this._setRotation(
+			'leftLowerArm',
+			pose.LeftLowerArm,
+			1,
+			0.3
+		);
+
+		// leg
+		this._setRotation(
+			'rightUpperLeg',
+			pose.RightUpperLeg,
+			1,
+			0.3
+		);
+		this._setRotation(
+			'rightLowerLeg',
+			pose.RightLowerLeg,
+			1,
+			0.3
+		);
+		this._setRotation(
+			'leftUpperLeg',
+			pose.LeftUpperLeg,
+			1,
+			0.3
+		);
+		this._setRotation(
+			'leftLowerLeg',
+			pose.LeftLowerLeg,
+			1,
+			0.3
+		);
 	}
 
 	animateHand(results: Results) {

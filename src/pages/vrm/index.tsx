@@ -5,6 +5,7 @@ import { Button, message } from 'antd';
 import { VRMTool } from '@/utils';
 import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Tools, Vector3 } from '@babylonjs/core';
 import 'babylon-vrm-loader';
+import { assetsUrl, mediaPipeAssetsUrl } from '@/config';
 
 import './index.scss';
 
@@ -12,9 +13,7 @@ enum MessageKey {
 	Model = 'model',
 }
 
-const baseUrl = 'https://a-cdn.qbox.net/test'
-
-export const Vrm = () => {
+export const VtuberVRM = () => {
 	const bbl5CanvasRef = useRef<HTMLCanvasElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -25,7 +24,7 @@ export const Vrm = () => {
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
 	const [vrm, setVRM] = useState<VRMTool>();
 
-	// init
+	// bbl5, init
 	useEffect(() => {
 		const canvas = bbl5CanvasRef.current;
 		if (!canvas) {
@@ -49,7 +48,7 @@ export const Vrm = () => {
 		const light = new BBL5.DirectionalLight('DirectionalLight1', new BBL5.Vector3(0, -0.5, 1.0), scene);
 		light.intensity = 1;
 
-		const handleOnBeforeRenderObservable = () => {
+		scene.onBeforeRenderObservable.add(() => {
 			// SpringBone
 			if (!scene.metadata || !scene.metadata.vrmManagers) {
 				return;
@@ -59,8 +58,7 @@ export const Vrm = () => {
 			managers.forEach((manager) => {
 				manager.update(deltaTime);
 			});
-		};
-		scene.onBeforeRenderObservable.add(handleOnBeforeRenderObservable);
+		});
 		engine.runRenderLoop(() => {
 			scene.render();
 		});
@@ -69,49 +67,59 @@ export const Vrm = () => {
 		});
 	}, []);
 
-	// load model
+	// bbl5, load model
 	useEffect(() => {
-		if (scene) {
-			(async function () {
-				message.loading({
-					content: 'model loading',
-					key: MessageKey.Model,
-					duration: 0,
-				});
-				const modelUrl = baseUrl + '/models/vrm/AliciaSolid.vrm';
-				console.log('modelUrl', modelUrl);
-				await BBL5.SceneLoader.ImportMeshAsync('', modelUrl, '', scene, (event) => {
-					console.log('model load', `${event.loaded / event.total * 100}%`);
-				});
-				message.destroy(MessageKey.Model);
+		(async function () {
+			if (!scene) return;
 
-				const videoCanvas = videoCanvasRef.current;
-				const video = videoRef.current;
-				if (!videoCanvas) {
-					throw new Error('videoCanvas is not found');
-				}
-				if (!video) {
-					throw new Error('video is not found');
-				}
+			message.loading({
+				content: 'model loading',
+				key: MessageKey.Model,
+				duration: 0,
+			});
+			const modelUrl = assetsUrl + '/models/vrm/AliciaSolid.vrm';
+			console.log('modelUrl', modelUrl);
+			await BBL5.SceneLoader.ImportMeshAsync('', modelUrl, '', scene, (event) => {
+				console.log('model load', `${event.loaded / event.total * 100}%`);
+			});
+			message.destroy(MessageKey.Model);
 
-				const vrm = new VRMTool({
-					scene,
-					video,
-					videoCanvas,
-				});
-				const holistic = vrm.createHolistic();
-				holistic.onResults((results) => {
-					console.log('results', results);
-					vrm.draw(results);
-					vrm.animate(results);
-				});
-				vrm.createCamera();
-				setVRM(vrm);
-				setIsCameraEnabled(vrm.isCameraEnabled ?? false);
-			}());
-		}
+			const videoCanvas = videoCanvasRef.current;
+			const video = videoRef.current;
+			if (!videoCanvas) {
+				throw new Error('videoCanvas is not found');
+			}
+			if (!video) {
+				throw new Error('video is not found');
+			}
+
+			const vrm = new VRMTool({
+				scene,
+				video,
+				videoCanvas,
+			});
+			const holistic = vrm.createHolistic({
+				filePath: mediaPipeAssetsUrl
+			});
+			holistic.onResults((results) => {
+				console.log('results', results);
+				vrm.draw(results);
+				vrm.animate(results);
+			});
+			vrm.createCamera({
+				onFrame: async () => {
+					await holistic.send({ image: vrm.video });
+				}
+			});
+			setVRM(vrm);
+			setIsCameraEnabled(vrm.isCameraEnabled ?? false);
+		}());
+		return () => {
+			message.destroy(MessageKey.Model);
+		};
 	}, [scene]);
 
+	// bbl6
 	useEffect(() => {
 		(async function () {
 			const canvas = canvasRef.current;
@@ -130,7 +138,7 @@ export const Vrm = () => {
 
 			await SceneLoader.ImportMeshAsync(
 				'',
-				baseUrl + '/models/babylon/1.babylon',
+				assetsUrl + '/models/babylon/1.babylon',
 				'',
 				scene,
 			);
@@ -157,7 +165,7 @@ export const Vrm = () => {
 		}
 	};
 
-	return <div className="vtuber">
+	return <div className="vtuber-vrm">
 		<canvas className="canvas" ref={canvasRef}/>
 		<canvas className="bbl5-canvas" ref={bbl5CanvasRef}/>
 

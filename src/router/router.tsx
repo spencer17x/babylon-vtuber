@@ -1,15 +1,15 @@
 import { createHashRouter, Navigate } from 'react-router-dom';
-import { Vrm } from '@/pages/vrm';
-import { Mmd } from '@/pages/mmd';
+import { VtuberVRM } from '@/pages/vrm';
+import { VtuberMMD } from '@/pages/mmd';
 
 export const router = createHashRouter([
 	{
 		path: '/vrm',
-		element: <Vrm/>
+		element: <VtuberVRM/>
 	},
 	{
 		path: '/mmd',
-		element: <Mmd/>
+		element: <VtuberMMD/>
 	},
 	{
 		path: '*',

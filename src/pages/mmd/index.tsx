@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArcRotateCamera, Engine, HemisphericLight, Scene, Tools, Vector3 } from '@babylonjs/core';
-
-import './index.scss';
 import { ImportMMDMeshAsync } from '@wenxin123/babylonjs-mmd-loader';
 import { Button } from 'antd';
-import { MMDTool } from '@/utils/MMDTool';
+import { MMDTool } from '@/utils';
+import { mediaPipeAssetsUrl } from '@/config';
 
-export const Mmd = () => {
+import './index.scss';
+
+export const VtuberMMD = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
 	const videoRef = useRef<HTMLVideoElement>(null);
@@ -65,13 +66,19 @@ export const Mmd = () => {
 				videoCanvas,
 				mesh
 			});
-			const holistic = mddTool.createHolistic();
+			const holistic = mddTool.createHolistic({
+				filePath: mediaPipeAssetsUrl
+			});
 			holistic.onResults(results => {
 				console.log('results', results);
 				mddTool.draw(results);
 				mddTool.animate(results);
 			});
-			mddTool.createCamera();
+			mddTool.createCamera({
+				onFrame: async () => {
+					await holistic.send({ image: mddTool.video });
+				}
+			});
 			setMmdTool(mddTool);
 			setIsCameraEnabled(mddTool.isCameraEnabled ?? false);
 		}());
@@ -89,7 +96,7 @@ export const Mmd = () => {
 		}
 	};
 
-	return <div className="mmd">
+	return <div className="vtuber-mmd">
 		<canvas className="canvas" ref={canvasRef}/>
 
 		<div className="video-container">

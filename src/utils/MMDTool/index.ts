@@ -1,8 +1,7 @@
 import { MediaPipeTool, MediaPipeToolConfig } from '@/utils';
 import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { Face, Hand, Pose } from 'kalidokit';
-import { Bone, Mesh, Nullable, Vector3 } from '@babylonjs/core';
-import { leftHandRigList, poseRigList, rightHandRigList } from './constants';
+import { Mesh, Vector3 } from '@babylonjs/core';
 
 interface Config extends MediaPipeToolConfig {
 	mesh: Mesh;
@@ -46,7 +45,7 @@ export class MMDTool extends MediaPipeTool {
 	}
 
 	private _setRotation(
-		bone: Nullable<Bone>,
+		name: string,
 		rotation?: {
 			x: number,
 			y: number,
@@ -58,7 +57,8 @@ export class MMDTool extends MediaPipeTool {
 		rotation = rotation || { x: 0, y: 0, z: 0 };
 		dampener = dampener || 1;
 		lerpAmount = lerpAmount || 0.3;
-		console.log('_setRotation name, rotation, dampener, lerpAmount', name, rotation, dampener, lerpAmount);
+		const bone = this._getBone(name);
+		console.log('_setRotation name, rotation, dampener, lerpAmount, bone', name, rotation, dampener, lerpAmount, bone);
 
 		if (!bone) return;
 		const vector = new Vector3(
@@ -77,7 +77,7 @@ export class MMDTool extends MediaPipeTool {
 	}
 
 	private _setPosition(
-		bone: Nullable<Bone>,
+		name: string,
 		position?: {
 			x: number,
 			y: number,
@@ -89,7 +89,8 @@ export class MMDTool extends MediaPipeTool {
 		position = position || { x: 0, y: 0, z: 0 };
 		dampener = dampener || 1;
 		lerpAmount = lerpAmount || 0.3;
-		console.log('_setRotation name, position, dampener, lerpAmount', name, position, dampener, lerpAmount);
+		const bone = this._getBone(name);
+		console.log('_setRotation name, position, dampener, lerpAmount, bone', name, position, dampener, lerpAmount, bone);
 
 		if (!bone) return;
 		const vector = new Vector3(
@@ -107,66 +108,70 @@ export class MMDTool extends MediaPipeTool {
 		);
 	}
 
+	/**
+	 * TODO
+	 * @param results
+	 */
 	animateFace(results: Results) {
 		const faceLandmarks = results.faceLandmarks;
 		console.log('animateFace faceLandmarks', faceLandmarks);
+
 		const face = Face.solve(faceLandmarks, {
 			runtime: 'mediapipe',
 			video: this.video,
 		});
 		console.log('animateFace face', face);
+
 		if (!face) return;
-		this._setRotation(this._getBone('頭'), {
-			x: face.head.x,
-			y: -1 * face.head.y,
-			z: face.head.z,
-		}, 0.7);
+
+		this._setRotation(
+			'頭', {
+				x: face.head.x,
+				y: -1 * face.head.y,
+				z: face.head.z,
+			},
+			0.7
+		);
 	}
 
+	/**
+	 * TODO
+	 * @param results
+	 */
 	animatePose(results: Results) {
 		const pose = this._getPose(results);
-		if (pose) {
-			this._setRotation(
-				this._getBone('センター'),
-				pose.Hips.rotation,
-			);
-			this._setPosition(
-				this._getBone('センター'),
-				pose.Hips.position,
-			);
-			for (const rigItem of poseRigList) {
-				this._setRotation(
-					this._getBone(rigItem.boneName),
-					pose[rigItem.rigName],
-				);
-			}
-		}
+		if (!pose) return;
+
+		this._setRotation(
+			'センター',
+			pose.Hips.rotation,
+		);
+		this._setPosition(
+			'センター',
+			pose.Hips.position,
+		);
 	}
 
 	animateLeftHand(results: Results) {
 		const leftHandLandmarks = results.leftHandLandmarks;
 		console.log('animateFace leftHandLandmarks', leftHandLandmarks);
+
 		const leftHand = Hand.solve(leftHandLandmarks, 'Left') || {};
-		for (const rigItem of leftHandRigList) {
-			this._setRotation(
-				this._getBone(rigItem.boneName),
-				leftHand[rigItem.rigName],
-			);
-		}
+		console.log('animateFace leftHand', leftHand);
 	}
 
 	animateRightHand(results: Results) {
 		const rightHandLandmarks = results.rightHandLandmarks;
 		console.log('animateFace rightHandLandmarks', rightHandLandmarks);
+
 		const rightHand = Hand.solve(rightHandLandmarks, 'Right') || {};
-		for (const rigItem of rightHandRigList) {
-			this._setRotation(
-				this._getBone(rigItem.boneName),
-				rightHand[rigItem.rigName],
-			);
-		}
+		console.log('animateFace rightHand', rightHand);
 	}
 
+	/**
+	 * TODO
+	 * @param results
+	 */
 	animateHand(results: Results) {
 		this.animateLeftHand(results);
 		this.animateRightHand(results);
@@ -177,10 +182,9 @@ export class MMDTool extends MediaPipeTool {
 		this.animateFace(results);
 
 		// Animate Pose
-		// this.animatePose(results);
+		this.animatePose(results);
 
 		// Animate Hand
-		// this.animateHand(results);
+		this.animateHand(results);
 	}
-
 }
