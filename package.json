@@ -16,7 +16,6 @@
     "@bbl5.25.0/loaders": "npm:@babylonjs/loaders@5.25.0",
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/drawing_utils": "^0.3.1675466124",
-    "@mediapipe/face_mesh": "^0.4.1633559619",
     "@mediapipe/holistic": "^0.5.1675471629",
     "@wenxin123/babylonjs-mmd-loader": "^0.1.4",
     "antd": "^5.6.1",

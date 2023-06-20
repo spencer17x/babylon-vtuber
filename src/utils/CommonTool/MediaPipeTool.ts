@@ -7,7 +7,7 @@ import {
 	Results, ResultsListener
 } from '@mediapipe/holistic';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
-import { Camera, CameraOptions } from '@mediapipe/camera_utils';
+import * as CameraUtils from '@mediapipe/camera_utils';
 
 const npmCDNUrl = 'https://cdn.jsdelivr.net/npm/@mediapipe';
 
@@ -23,7 +23,7 @@ export class MediaPipeTool {
 	isCameraEnabled: MediaPipeToolConfig['isCameraEnabled'];
 
 	holistic: Holistic | null = null;
-	camera: Camera | null = null;
+	camera: CameraUtils.Camera | null = null;
 
 	constructor(config: MediaPipeToolConfig) {
 		const { video, videoCanvas, isCameraEnabled } = config;
@@ -67,8 +67,8 @@ export class MediaPipeTool {
 		return this.holistic;
 	}
 
-	createCamera(options: CameraOptions) {
-		this.camera = new Camera(this.video, options);
+	createCamera(options: CameraUtils.CameraOptions) {
+		this.camera = new CameraUtils.Camera(this.video, options);
 		return this.camera;
 	}
 
