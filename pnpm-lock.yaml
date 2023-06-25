@@ -14,7 +14,6 @@ specifiers:
   '@vitejs/plugin-react': ^4.0.0
   '@wenxin123/babylonjs-mmd-loader': ^0.1.4
   antd: ^5.6.1
-  babylon-vrm-loader: 2.0.0-alpha.3
   classnames: ^2.3.2
   eslint: ^8.38.0
   eslint-plugin-react-hooks: ^4.6.0
@@ -38,7 +37,6 @@ dependencies:
   '@mediapipe/holistic': 0.5.1675471629
   '@wenxin123/babylonjs-mmd-loader': 0.1.4
   antd: 5.6.2_biqbaboplfbrettd7655fr4n2y
-  babylon-vrm-loader: 2.0.0-alpha.3_47xmo7mxrmkgowpnrnhup7tx2u
   classnames: 2.3.2
   kalidokit: 1.1.5
   react: 18.2.0
@@ -1133,25 +1131,6 @@ packages:
 
   /async-validator/4.2.5:
     resolution: {integrity: sha512-7HhHjtERjqlNbZtqNqy2rckN/SpOOlmDliet+lP7k+eKZEjPk3DgyeU9lIXLdeLz0uBbbVp+9Qdow9wJWgwwfg==}
-    dev: false
-
-  /babylon-mtoon-material/5.1.1_@babylonjs+core@6.8.0:
-    resolution: {integrity: sha512-u6R3nKkeXTP9S4TP6ntbVAMxAEZ8S89jiOSj39iW5WMaXOEUcGEbEAUa6crhR4621sDxt5keHje33BNFb6K1ew==}
-    peerDependencies:
-      '@babylonjs/core': ^5.19.0
-    dependencies:
-      '@babylonjs/core': 6.8.0
-    dev: false
-
-  /babylon-vrm-loader/2.0.0-alpha.3_47xmo7mxrmkgowpnrnhup7tx2u:
-    resolution: {integrity: sha512-zUZiACK5oqqrOxay9BuvR+/s5DKArpDIlAsAB1yqNwVVTw0QqKvVlz87FwOsKpKsHLEppiaeLGRv4yo49VjZuQ==}
-    peerDependencies:
-      '@babylonjs/core': ^5.19.0
-      '@babylonjs/loaders': ^5.19.0
-    dependencies:
-      '@babylonjs/core': 6.8.0
-      '@babylonjs/loaders': 6.8.0_@babylonjs+core@6.8.0
-      babylon-mtoon-material: 5.1.1_@babylonjs+core@6.8.0
     dev: false
 
   /balanced-match/1.0.2:
