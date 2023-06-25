@@ -1,5 +1,5 @@
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
-import { GLTFFileLoader } from '@/libs/glTF/glTFFileLoader';
+import { GLTFFileLoader } from '@/libs/glTF/v5.25.0/glTFFileLoader';
 
 /**
  * VRM/VCI ファイルを読み込めるようにする
