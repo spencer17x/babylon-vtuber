@@ -40,11 +40,11 @@ export const VtuberVRMPage = () => {
 			camera.setPosition(new Vector3(0, 1.4, -5));
 			camera.attachControl(canvas, true);
 			const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
-			light.intensity = 0.7;
+			light.intensity = 1;
 
 			await SceneLoader.ImportMeshAsync(
 				'',
-				assetsUrl + '/models/vrm/Ashtra.vrm',
+				assetsUrl + '/models/vrm/AliciaSolid.vrm',
 				'',
 				scene,
 			);

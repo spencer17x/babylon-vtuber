@@ -14,9 +14,7 @@ specifiers:
   '@vitejs/plugin-react': ^4.0.0
   '@wenxin123/babylonjs-mmd-loader': ^0.1.4
   antd: ^5.6.1
-  babylon-mtoon-material: ^5.1.1
   babylon-vrm-loader: 2.0.0-alpha.3
-  babylonjs-gltf2interface: 5.22.0
   classnames: ^2.3.2
   eslint: ^8.38.0
   eslint-plugin-react-hooks: ^4.6.0
@@ -34,13 +32,12 @@ specifiers:
 
 dependencies:
   '@babylonjs/core': 6.8.0
-  '@babylonjs/loaders': 6.8.0_mhpwy32sgzxnxnjz4sjcsqwwta
+  '@babylonjs/loaders': 6.8.0_@babylonjs+core@6.8.0
   '@mediapipe/camera_utils': 0.3.1675466862
   '@mediapipe/drawing_utils': 0.3.1675466124
   '@mediapipe/holistic': 0.5.1675471629
   '@wenxin123/babylonjs-mmd-loader': 0.1.4
   antd: 5.6.1_biqbaboplfbrettd7655fr4n2y
-  babylon-mtoon-material: 5.1.1_@babylonjs+core@6.8.0
   babylon-vrm-loader: 2.0.0-alpha.3_47xmo7mxrmkgowpnrnhup7tx2u
   classnames: 2.3.2
   kalidokit: 1.1.5
@@ -55,7 +52,6 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.59.9_3cembfv4vokiyn6g4ljynjc5d4
   '@typescript-eslint/parser': 5.59.9_tizxnkcvjrb4cldxgwq5h3lj5u
   '@vitejs/plugin-react': 4.0.0_vite@4.3.9
-  babylonjs-gltf2interface: 5.22.0
   eslint: 8.42.0
   eslint-plugin-react-hooks: 4.6.0_eslint@8.42.0
   eslint-plugin-react-refresh: 0.3.5_eslint@8.42.0
@@ -363,14 +359,13 @@ packages:
     resolution: {integrity: sha512-wTWj9TsnVGqfXt+tXKi7+SIWi4MzBMwIq+jcylRR1qzHTHFfMuKrRRLZJ5jQtpAhcDPI2TOuJ3/NOccPyawlgQ==}
     dev: false
 
-  /@babylonjs/loaders/6.8.0_mhpwy32sgzxnxnjz4sjcsqwwta:
+  /@babylonjs/loaders/6.8.0_@babylonjs+core@6.8.0:
     resolution: {integrity: sha512-Ze3dsjwQ6ORYTkbacdlZVeN1PvC0KYcN2hzDNAqiQ0eeQkk96QDusgLkVHMM1UW55hS5PQefTua7iylOxWetDw==}
     peerDependencies:
       '@babylonjs/core': ^6.0.0
       babylonjs-gltf2interface: ^6.0.0
     dependencies:
       '@babylonjs/core': 6.8.0
-      babylonjs-gltf2interface: 5.22.0
     dev: false
 
   /@ctrl/tinycolor/3.6.0:
@@ -1155,12 +1150,9 @@ packages:
       '@babylonjs/loaders': ^5.19.0
     dependencies:
       '@babylonjs/core': 6.8.0
-      '@babylonjs/loaders': 6.8.0_mhpwy32sgzxnxnjz4sjcsqwwta
+      '@babylonjs/loaders': 6.8.0_@babylonjs+core@6.8.0
       babylon-mtoon-material: 5.1.1_@babylonjs+core@6.8.0
     dev: false
-
-  /babylonjs-gltf2interface/5.22.0:
-    resolution: {integrity: sha512-i9J7agTHivCekLElAOcWLnzscJrE3AswYJ4b75q8fYHhN1MOL3tuGouIbg1E+zK4urWap/cZnJoYM9blNUOxXA==}
 
   /balanced-match/1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
