@@ -3,6 +3,7 @@ import { Button } from 'antd';
 import { VRMTool } from '@/utils';
 import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Vector3 } from '@babylonjs/core';
 import { assetsUrl } from '@/config';
+import '@/libs/babylon-vrm-loader';
 
 import './index.scss';
 
@@ -17,7 +18,6 @@ export const VtuberVRMPage = () => {
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
 	const [vrmTool, setVRMTool] = useState<VRMTool>();
 
-	// bbl6
 	useEffect(() => {
 		(async function () {
 			const canvas = canvasRef.current;
