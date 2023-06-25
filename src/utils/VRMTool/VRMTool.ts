@@ -1,8 +1,7 @@
 import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { HumanoidBone, VRMManager } from 'babylon-vrm-loader';
 import { Face, Hand, Pose } from 'kalidokit';
-import { Nullable, Quaternion, Vector3 } from '@babylonjs/core';
-import * as BBL5 from '@bbl5.25.0/core';
+import { Nullable, Quaternion, Scene, Vector3 } from '@babylonjs/core';
 import { MediaPipeTool, MediaPipeToolConfig } from '@/utils';
 
 type GetProperties<T> = Exclude<{
@@ -12,7 +11,7 @@ type GetProperties<T> = Exclude<{
 type HumanBoneName = GetProperties<HumanoidBone>;
 
 interface Config extends MediaPipeToolConfig {
-	scene: BBL5.Scene;
+	scene: Scene;
 }
 
 /**

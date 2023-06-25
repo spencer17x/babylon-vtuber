@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, message } from 'antd';
+import { Button } from 'antd';
 import { VRMTool } from '@/utils';
 import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Vector3 } from '@babylonjs/core';
 import { assetsUrl } from '@/config';
-import { VtuberVRM } from '@/components';
 
 import './index.scss';
 
+const prefixCls = 'vtuber-vrm-page';
+
 export const VtuberVRMPage = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
+	const videoRef = useRef<HTMLVideoElement>(null);
 
 	const [cameraLoading, setCameraLoading] = useState(false);
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
@@ -18,8 +21,16 @@ export const VtuberVRMPage = () => {
 	useEffect(() => {
 		(async function () {
 			const canvas = canvasRef.current;
+			const video = videoRef.current;
+			const videoCanvas = videoCanvasRef.current;
 			if (!canvas) {
 				throw new Error('canvas is not found');
+			}
+			if (!video) {
+				throw new Error('video is not found');
+			}
+			if (!videoCanvas) {
+				throw new Error('videoCanvas is not found');
 			}
 
 			const engine = new Engine(canvas, true);
@@ -33,10 +44,31 @@ export const VtuberVRMPage = () => {
 
 			await SceneLoader.ImportMeshAsync(
 				'',
-				assetsUrl + '/models/babylon/1.babylon',
+				assetsUrl + '/models/vrm/Ashtra.vrm',
 				'',
 				scene,
 			);
+
+			console.log('scene', scene);
+
+			const vrmTool = new VRMTool({
+				scene,
+				video,
+				videoCanvas,
+			});
+			setVRMTool(vrmTool);
+
+			const holistic = vrmTool.createHolistic();
+			holistic.onResults((results) => {
+				console.log('results', results);
+				vrmTool.draw(results);
+				vrmTool.animate(results);
+			});
+			vrmTool.createCamera({
+				onFrame: async () => {
+					await holistic.send({ image: vrmTool.video });
+				},
+			});
 
 			engine.runRenderLoop(() => {
 				scene.render();
@@ -64,21 +96,15 @@ export const VtuberVRMPage = () => {
 		}
 	};
 
-	return <div className="vtuber-vrm-page">
-		<canvas className="canvas" ref={canvasRef}/>
+	return <div className={prefixCls}>
+		<canvas className={`${prefixCls}-canvas`} ref={canvasRef}/>
 
-		<VtuberVRM
-			modeUrl={assetsUrl + '/models/vrm/AliciaSolid.vrm'}
-			onVRMToolLoaded={setVRMTool}
-			onLoadStart={() => message.loading({
-				content: 'vrm-vtuber loading...',
-				key: 'vrm-vtuber',
-				duration: 0,
-			})}
-			onLoadEnd={() => message.destroy('vrm-vtuber')}
-		/>
+		<div className={`${prefixCls}-video-container`}>
+			<video className={`${prefixCls}-video-container-video`} ref={videoRef}/>
+			<canvas className={`${prefixCls}-video-container-video-canvas`} ref={videoCanvasRef}/>
+		</div>
 
-		<div className="toolbar">
+		<div className={`${prefixCls}-toolbar`}>
 			<Button type="primary" loading={cameraLoading} onClick={toggleCamera}>
 				{isCameraEnabled ? '关闭' : '开启'}摄像头
 			</Button>

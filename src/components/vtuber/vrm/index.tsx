@@ -10,7 +10,7 @@ import {
 	Scene,
 	Vector3,
 	SceneLoader
-} from '@bbl5.25.0/core';
+} from '@babylonjs/core';
 import { VRMTool } from '@/utils';
 import 'babylon-vrm-loader';
 

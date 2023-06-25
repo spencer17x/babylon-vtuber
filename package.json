@@ -12,8 +12,6 @@
   "dependencies": {
     "@babylonjs/core": "^6.8.0",
     "@babylonjs/loaders": "^6.8.0",
-    "@bbl5.25.0/core": "npm:@babylonjs/core@5.25.0",
-    "@bbl5.25.0/loaders": "npm:@babylonjs/loaders@5.25.0",
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/drawing_utils": "^0.3.1675466124",
     "@mediapipe/holistic": "^0.5.1675471629",
@@ -42,10 +40,5 @@
     "typescript": "^5.0.2",
     "vite": "^4.3.9",
     "vite-plugin-mediapipe": "^0.0.7"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "babylon-vrm-loader@2.0.0-alpha.3": "patches/babylon-vrm-loader@2.0.0-alpha.3.patch"
-    }
   }
 }

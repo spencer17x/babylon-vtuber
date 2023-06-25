@@ -1,15 +1,8 @@
 lockfileVersion: 5.4
 
-patchedDependencies:
-  babylon-vrm-loader@2.0.0-alpha.3:
-    hash: rxfogr4gizmx6ed7va2h5bytxa
-    path: patches/babylon-vrm-loader@2.0.0-alpha.3.patch
-
 specifiers:
   '@babylonjs/core': ^6.8.0
   '@babylonjs/loaders': ^6.8.0
-  '@bbl5.25.0/core': npm:@babylonjs/core@5.25.0
-  '@bbl5.25.0/loaders': npm:@babylonjs/loaders@5.25.0
   '@mediapipe/camera_utils': ^0.3.1675466862
   '@mediapipe/drawing_utils': ^0.3.1675466124
   '@mediapipe/holistic': ^0.5.1675471629
@@ -40,15 +33,13 @@ specifiers:
 dependencies:
   '@babylonjs/core': 6.8.0
   '@babylonjs/loaders': 6.8.0_mhpwy32sgzxnxnjz4sjcsqwwta
-  '@bbl5.25.0/core': /@babylonjs/core/5.25.0
-  '@bbl5.25.0/loaders': /@babylonjs/loaders/5.25.0_mhpwy32sgzxnxnjz4sjcsqwwta
   '@mediapipe/camera_utils': 0.3.1675466862
   '@mediapipe/drawing_utils': 0.3.1675466124
   '@mediapipe/holistic': 0.5.1675471629
   '@wenxin123/babylonjs-mmd-loader': 0.1.4
   antd: 5.6.1_biqbaboplfbrettd7655fr4n2y
   babylon-mtoon-material: 5.1.1_@babylonjs+core@6.8.0
-  babylon-vrm-loader: 2.0.0-alpha.3_rxfogr4gizmx6ed7va2h5bytxa_47xmo7mxrmkgowpnrnhup7tx2u
+  babylon-vrm-loader: 2.0.0-alpha.3_47xmo7mxrmkgowpnrnhup7tx2u
   classnames: 2.3.2
   kalidokit: 1.1.5
   react: 18.2.0
@@ -364,22 +355,8 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@babylonjs/core/5.25.0:
-    resolution: {integrity: sha512-pjUCrT5OPuJ0UU3bPtzovkRK+Xxl9bd1pIPG7aulqsC2Ci/hxiDNL2SwQnX9J/lcV5x6LTDyMUJ0IXSW8W+2sw==}
-    dev: false
-
   /@babylonjs/core/6.8.0:
     resolution: {integrity: sha512-wTWj9TsnVGqfXt+tXKi7+SIWi4MzBMwIq+jcylRR1qzHTHFfMuKrRRLZJ5jQtpAhcDPI2TOuJ3/NOccPyawlgQ==}
-    dev: false
-
-  /@babylonjs/loaders/5.25.0_mhpwy32sgzxnxnjz4sjcsqwwta:
-    resolution: {integrity: sha512-JMSjypYIRRzyBfvBfvjNsOfnU5ZxPrJKg8EvYJs3DBY1PYfkxvZdh22iJodLo5qFBcEe7CvSbmzKGVbb3dw98A==}
-    peerDependencies:
-      '@babylonjs/core': ^5.22.0
-      babylonjs-gltf2interface: ^5.22.0
-    dependencies:
-      '@babylonjs/core': 6.8.0
-      babylonjs-gltf2interface: 5.22.0
     dev: false
 
   /@babylonjs/loaders/6.8.0_mhpwy32sgzxnxnjz4sjcsqwwta:
@@ -1149,7 +1126,7 @@ packages:
       '@babylonjs/core': 6.8.0
     dev: false
 
-  /babylon-vrm-loader/2.0.0-alpha.3_rxfogr4gizmx6ed7va2h5bytxa_47xmo7mxrmkgowpnrnhup7tx2u:
+  /babylon-vrm-loader/2.0.0-alpha.3_47xmo7mxrmkgowpnrnhup7tx2u:
     resolution: {integrity: sha512-zUZiACK5oqqrOxay9BuvR+/s5DKArpDIlAsAB1yqNwVVTw0QqKvVlz87FwOsKpKsHLEppiaeLGRv4yo49VjZuQ==}
     peerDependencies:
       '@babylonjs/core': ^5.19.0
@@ -1159,7 +1136,6 @@ packages:
       '@babylonjs/loaders': 6.8.0_mhpwy32sgzxnxnjz4sjcsqwwta
       babylon-mtoon-material: 5.1.1_@babylonjs+core@6.8.0
     dev: false
-    patched: true
 
   /babylonjs-gltf2interface/5.22.0:
     resolution: {integrity: sha512-i9J7agTHivCekLElAOcWLnzscJrE3AswYJ4b75q8fYHhN1MOL3tuGouIbg1E+zK4urWap/cZnJoYM9blNUOxXA==}
