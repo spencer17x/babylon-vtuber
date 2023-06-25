@@ -3,6 +3,8 @@ import { Button } from 'antd';
 import { VRMTool } from '@/utils';
 import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Vector3 } from '@babylonjs/core';
 import { assetsUrl } from '@/config';
+import '@babylonjs/inspector';
+
 import '@/libs/babylon-vrm-loader';
 
 import './index.scss';
@@ -35,6 +37,7 @@ export const VtuberVRMPage = () => {
 
 			const engine = new Engine(canvas, true);
 			const scene = new Scene(engine);
+			scene.debugLayer.show();
 
 			const camera = new ArcRotateCamera('camera', 0, 0, 3, new Vector3(0, 1.4, 0), scene, true);
 			camera.setPosition(new Vector3(0, 1.4, -5));

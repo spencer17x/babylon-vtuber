@@ -13,7 +13,12 @@
   },
   "dependencies": {
     "@babylonjs/core": "6.8.0",
+    "@babylonjs/gui": "6.8.0",
+    "@babylonjs/gui-editor": "6.8.0",
+    "@babylonjs/inspector": "6.8.0",
     "@babylonjs/loaders": "6.8.0",
+    "@babylonjs/materials": "6.8.0",
+    "@babylonjs/serializers": "6.8.0",
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/drawing_utils": "^0.3.1675466124",
     "@mediapipe/holistic": "^0.5.1675471629",

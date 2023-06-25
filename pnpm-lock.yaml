@@ -2,7 +2,12 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babylonjs/core': 6.8.0
+  '@babylonjs/gui': 6.8.0
+  '@babylonjs/gui-editor': 6.8.0
+  '@babylonjs/inspector': 6.8.0
   '@babylonjs/loaders': 6.8.0
+  '@babylonjs/materials': 6.8.0
+  '@babylonjs/serializers': 6.8.0
   '@mediapipe/camera_utils': ^0.3.1675466862
   '@mediapipe/drawing_utils': ^0.3.1675466124
   '@mediapipe/holistic': ^0.5.1675471629
@@ -31,7 +36,12 @@ specifiers:
 
 dependencies:
   '@babylonjs/core': 6.8.0
+  '@babylonjs/gui': 6.8.0_@babylonjs+core@6.8.0
+  '@babylonjs/gui-editor': 6.8.0_rk3ukveargtmfmjnndhxvg5b2y
+  '@babylonjs/inspector': 6.8.0_twj2zgqov57fdeed7m5kivh3cy
   '@babylonjs/loaders': 6.8.0_@babylonjs+core@6.8.0
+  '@babylonjs/materials': 6.8.0_@babylonjs+core@6.8.0
+  '@babylonjs/serializers': 6.8.0_@babylonjs+core@6.8.0
   '@mediapipe/camera_utils': 0.3.1675466862
   '@mediapipe/drawing_utils': 0.3.1675466124
   '@mediapipe/holistic': 0.5.1675471629
@@ -357,8 +367,72 @@ packages:
     resolution: {integrity: sha512-wTWj9TsnVGqfXt+tXKi7+SIWi4MzBMwIq+jcylRR1qzHTHFfMuKrRRLZJ5jQtpAhcDPI2TOuJ3/NOccPyawlgQ==}
     dev: false
 
+  /@babylonjs/gui-editor/6.8.0_rk3ukveargtmfmjnndhxvg5b2y:
+    resolution: {integrity: sha512-XSTYEfCdf04Th1xrTuIO/lHBSmfiG4s4fIDzpi0+OERO19bKQffzhFGh95NVzdL0XhvnQT88Fb6bkvsuAxFI/Q==}
+    peerDependencies:
+      '@babylonjs/core': ^6.0.0
+      '@babylonjs/gui': ^6.0.0
+      '@types/react': '>=16.7.3'
+      '@types/react-dom': '>=16.0.9'
+    dependencies:
+      '@babylonjs/core': 6.8.0
+      '@babylonjs/gui': 6.8.0_@babylonjs+core@6.8.0
+      '@types/react': 18.2.14
+      '@types/react-dom': 18.2.6
+    dev: false
+
+  /@babylonjs/gui/6.8.0_@babylonjs+core@6.8.0:
+    resolution: {integrity: sha512-zp1Kidc0RIZ0z8yiC4bdzYtNtqzbQQzOroYeHClJOQHSxl1ksRGWaCOOph89NgRatP5dJIZFw4jlqbPU6Avj8w==}
+    peerDependencies:
+      '@babylonjs/core': ^6.0.0
+    dependencies:
+      '@babylonjs/core': 6.8.0
+    dev: false
+
+  /@babylonjs/inspector/6.8.0_twj2zgqov57fdeed7m5kivh3cy:
+    resolution: {integrity: sha512-tu3nb0l7xSYXkTaKAnP7zBL34qR9J0op+NzOn4Y1C9RcY91yH3YfLTdoo4pFA0K5NaS99W0nAIjCcrS2BPBmMQ==}
+    peerDependencies:
+      '@babylonjs/core': ^6.0.0
+      '@babylonjs/gui': ^6.0.0
+      '@babylonjs/gui-editor': ^6.0.0
+      '@babylonjs/loaders': ^6.0.0
+      '@babylonjs/materials': ^6.0.0
+      '@babylonjs/serializers': ^6.0.0
+      '@types/react': '>=16.7.3'
+      '@types/react-dom': '>=16.0.9'
+    dependencies:
+      '@babylonjs/core': 6.8.0
+      '@babylonjs/gui': 6.8.0_@babylonjs+core@6.8.0
+      '@babylonjs/gui-editor': 6.8.0_rk3ukveargtmfmjnndhxvg5b2y
+      '@babylonjs/loaders': 6.8.0_@babylonjs+core@6.8.0
+      '@babylonjs/materials': 6.8.0_@babylonjs+core@6.8.0
+      '@babylonjs/serializers': 6.8.0_@babylonjs+core@6.8.0
+      '@fortawesome/fontawesome-svg-core': 6.4.0
+      '@fortawesome/free-regular-svg-icons': 6.4.0
+      '@fortawesome/free-solid-svg-icons': 6.4.0
+      '@types/react': 18.2.14
+      '@types/react-dom': 18.2.6
+    dev: false
+
   /@babylonjs/loaders/6.8.0_@babylonjs+core@6.8.0:
     resolution: {integrity: sha512-Ze3dsjwQ6ORYTkbacdlZVeN1PvC0KYcN2hzDNAqiQ0eeQkk96QDusgLkVHMM1UW55hS5PQefTua7iylOxWetDw==}
+    peerDependencies:
+      '@babylonjs/core': ^6.0.0
+      babylonjs-gltf2interface: ^6.0.0
+    dependencies:
+      '@babylonjs/core': 6.8.0
+    dev: false
+
+  /@babylonjs/materials/6.8.0_@babylonjs+core@6.8.0:
+    resolution: {integrity: sha512-wx5DbKDRhkUYi20Y89qji9c+E8xLL87bpjJ6T93k1jBEDT0puUQEIGvIb+RgMcq1dAnwML/qjNCGGRDxPA/Cfg==}
+    peerDependencies:
+      '@babylonjs/core': ^6.0.0
+    dependencies:
+      '@babylonjs/core': 6.8.0
+    dev: false
+
+  /@babylonjs/serializers/6.8.0_@babylonjs+core@6.8.0:
+    resolution: {integrity: sha512-/deOpTX3Lnll3PM9Um7l+e33mVPe65BgAOlgskrcH6XmT5BaltedYwQktTyblrZs8nQEs90elPpdOb0bsoY4HA==}
     peerDependencies:
       '@babylonjs/core': ^6.0.0
       babylonjs-gltf2interface: ^6.0.0
@@ -614,6 +688,36 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
+  /@fortawesome/fontawesome-common-types/6.4.0:
+    resolution: {integrity: sha512-HNii132xfomg5QVZw0HwXXpN22s7VBHQBv9CeOu9tfJnhsWQNd2lmTNi8CSrnw5B+5YOmzu1UoPAyxaXsJ6RgQ==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dev: false
+
+  /@fortawesome/fontawesome-svg-core/6.4.0:
+    resolution: {integrity: sha512-Bertv8xOiVELz5raB2FlXDPKt+m94MQ3JgDfsVbrqNpLU9+UE2E18GKjLKw+d3XbeYPqg1pzyQKGsrzbw+pPaw==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dependencies:
+      '@fortawesome/fontawesome-common-types': 6.4.0
+    dev: false
+
+  /@fortawesome/free-regular-svg-icons/6.4.0:
+    resolution: {integrity: sha512-ZfycI7D0KWPZtf7wtMFnQxs8qjBXArRzczABuMQqecA/nXohquJ5J/RCR77PmY5qGWkxAZDxpnUFVXKwtY/jPw==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dependencies:
+      '@fortawesome/fontawesome-common-types': 6.4.0
+    dev: false
+
+  /@fortawesome/free-solid-svg-icons/6.4.0:
+    resolution: {integrity: sha512-kutPeRGWm8V5dltFP1zGjQOEAzaLZj4StdQhWVZnfGFCvAPVvHh8qk5bRrU4KXnRRRNni5tKQI9PBAdI6MP8nQ==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dependencies:
+      '@fortawesome/fontawesome-common-types': 6.4.0
+    dev: false
+
   /@humanwhocodes/config-array/0.11.10:
     resolution: {integrity: sha512-KVVjQmNUepDVGXNuoRRdmmEjruj0KfiGSbS8LVc12LMsWDQzRXJ0qdhN8L8uUigKpfEHRhlaQFY0ib1tnUbNeQ==}
     engines: {node: '>=10.10.0'}
@@ -829,13 +933,11 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
-    dev: true
 
   /@types/react-dom/18.2.6:
     resolution: {integrity: sha512-2et4PDvg6PVCyS7fuTc4gPoksV58bW0RwSxWKcPRcHZf0PRUGq03TKcD/rUHe3azfV6/5/biUBJw+HhCQjaP0A==}
     dependencies:
       '@types/react': 18.2.14
-    dev: true
 
   /@types/react/18.2.14:
     resolution: {integrity: sha512-A0zjq+QN/O0Kpe30hA1GidzyFjatVvrpIvWLxD+xv67Vt91TWWgco9IvrJBkeyHm1trGaFS/FSGqPlhyeZRm0g==}
@@ -843,11 +945,9 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.3
       csstype: 3.1.2
-    dev: true
 
   /@types/scheduler/0.16.3:
     resolution: {integrity: sha512-5cJ8CB4yAx7BH1oMvdU0Jh9lrEXyPkar6F9G/ERswkCuvP4KQZfZkSjcMbAICCpQTN4OuZn8tz0HiKv9TGZgrQ==}
-    dev: true
 
   /@types/semver/7.5.0:
     resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
