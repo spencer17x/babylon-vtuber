@@ -12,8 +12,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@babylonjs/core": "^6.8.0",
-    "@babylonjs/loaders": "^6.8.0",
+    "@babylonjs/core": "6.8.0",
+    "@babylonjs/loaders": "6.8.0",
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/drawing_utils": "^0.3.1675466124",
     "@mediapipe/holistic": "^0.5.1675471629",
