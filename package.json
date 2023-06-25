@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:libs": "eslint src/libs --ext ts,tsx",
     "preview": "vite preview"
   },
   "dependencies": {
