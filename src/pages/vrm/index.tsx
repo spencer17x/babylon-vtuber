@@ -5,7 +5,7 @@ import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Vector3 
 import { assetsUrl, mediaPipeAssetsUrl } from '@/config';
 import '@babylonjs/inspector';
 
-import '@/libs/babylon-vrm-loader/vrm-file-loader';
+import '@/libs/babylon-vrm-loader';
 
 import './index.scss';
 

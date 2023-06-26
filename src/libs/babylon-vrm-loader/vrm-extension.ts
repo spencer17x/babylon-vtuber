@@ -1,6 +1,6 @@
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
-import type { IGLTFLoaderExtension, IMeshPrimitive } from '../glTF/v6.8.0/2.0';
-import { GLTFLoader } from '../glTF/v6.8.0/2.0';
+import type { IGLTFLoaderExtension, IMeshPrimitive } from '@babylonjs/loaders/glTF/2.0';
+import { GLTFLoader } from '@babylonjs/loaders/glTF/2.0';
 import { VRMManager } from './vrm-manager';
 
 /**

@@ -278,7 +278,7 @@ export class VRMManager {
     /**
      * node 番号から該当する TransformNode を探す
      * 数が多くなるのでキャッシュに参照を持つ構造にする
-     * gltf の node 番号は `metadata.gltf.pointers` に記録されている
+     * gltf の node 番号は `_internalMetadata.gltf.pointers` に記録されている
      * @param nodeIndex
      */
     public findTransformNode(nodeIndex: number): Nullable<TransformNode> {
@@ -287,7 +287,7 @@ export class VRMManager {
 
     /**
      * mesh 番号からメッシュを探す
-     * gltf の mesh 番号は `metadata.gltf.pointers` に記録されている
+     * gltf の mesh 番号は `_internalMetadata.gltf.pointers` に記録されている
      * @deprecated Use findMeshes instead. This method has broken.
      */
     public findMesh(meshIndex: number): Nullable<Mesh> {
@@ -296,7 +296,7 @@ export class VRMManager {
 
     /**
      * mesh 番号からメッシュを探す
-     * gltf の mesh 番号は `metadata.gltf.pointers` に記録されている
+     * gltf の mesh 番号は `_internalMetadata.gltf.pointers` に記録されている
      */
     public findMeshes(meshIndex: number): Nullable<Mesh[]> {
         return this.meshCache[meshIndex] || null;
@@ -383,10 +383,10 @@ export class VRMManager {
         for (let index = this.transformNodesFrom; index < this.scene.transformNodes.length; index++) {
             const node = this.scene.transformNodes[index];
             // ポインタが登録されていないものは省略
-            if (!node || !node.metadata || !node.metadata.gltf || !node.metadata.gltf.pointers || node.metadata.gltf.pointers.length === 0) {
+            if (!node || !node._internalMetadata || !node._internalMetadata.gltf || !node._internalMetadata.gltf.pointers || node._internalMetadata.gltf.pointers.length === 0) {
                 continue;
             }
-            for (const pointer of node.metadata.gltf.pointers) {
+            for (const pointer of node._internalMetadata.gltf.pointers) {
                 if (pointer.startsWith('/nodes/')) {
                     const nodeIndex = parseInt((pointer as string).substr(7), 10);
                     cache[nodeIndex] = node;
@@ -409,10 +409,10 @@ export class VRMManager {
                 continue;
             }
             // ポインタが登録されていないものは省略
-            if (!mesh || !mesh.metadata || !mesh.metadata.gltf || !mesh.metadata.gltf.pointers || mesh.metadata.gltf.pointers.length === 0) {
+            if (!mesh || !mesh._internalMetadata || !mesh._internalMetadata.gltf || !mesh._internalMetadata.gltf.pointers || mesh._internalMetadata.gltf.pointers.length === 0) {
                 continue;
             }
-            for (const pointer of mesh.metadata.gltf.pointers) {
+            for (const pointer of mesh._internalMetadata.gltf.pointers) {
                 const match = (pointer as string).match(/^\/meshes\/(\d+).+$/);
                 if (match) {
                     const nodeIndex = parseInt(match[1], 10);
