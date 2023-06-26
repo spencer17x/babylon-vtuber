@@ -1,5 +1,12 @@
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
-import { GLTFFileLoader } from '@/libs/glTF/v5.25.0/glTFFileLoader';
+
+// import { GLTFFileLoader } from '@/libs/glTF/v6.8.0/glTFFileLoader';
+// import './vrm-extension';
+// import './vcast-vci-material-unity';
+
+import { GLTFFileLoader } from '@/libs/glTF/v6.8.0/glTFFileLoader';
+import '@/libs/glTF/v6.8.0/2.0/Extensions';
+import './vrm-extension';
 
 /**
  * VRM/VCI ファイルを読み込めるようにする

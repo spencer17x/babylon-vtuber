@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from 'antd';
 import { VRMTool } from '@/utils';
 import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Vector3 } from '@babylonjs/core';
-import { assetsUrl } from '@/config';
+import { assetsUrl, mediaPipeAssetsUrl } from '@/config';
 import '@babylonjs/inspector';
 
-import '@/libs/babylon-vrm-loader';
+import '@/libs/babylon-vrm-loader/vrm-file-loader';
 
 import './index.scss';
 
@@ -37,7 +37,9 @@ export const VtuberVRMPage = () => {
 
 			const engine = new Engine(canvas, true);
 			const scene = new Scene(engine);
-			scene.debugLayer.show();
+			scene.debugLayer.show({
+				embedMode: true,
+			});
 
 			const camera = new ArcRotateCamera('camera', 0, 0, 3, new Vector3(0, 1.4, 0), scene, true);
 			camera.setPosition(new Vector3(0, 1.4, -5));
@@ -61,7 +63,9 @@ export const VtuberVRMPage = () => {
 			});
 			setVRMTool(vrmTool);
 
-			const holistic = vrmTool.createHolistic();
+			const holistic = vrmTool.createHolistic({
+				filePath: mediaPipeAssetsUrl
+			});
 			holistic.onResults((results) => {
 				console.log('results', results);
 				vrmTool.draw(results);

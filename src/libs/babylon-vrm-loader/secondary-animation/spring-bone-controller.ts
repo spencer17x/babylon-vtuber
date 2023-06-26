@@ -55,16 +55,20 @@ export class SpringBoneController {
         }
         const colliderGroups: ColliderGroup[] = [];
         this.ext.colliderGroups.forEach((colliderGroup) => {
-            const bone = getBone(colliderGroup.node) as TransformNode;
-            const g = new ColliderGroup(bone);
-            colliderGroup.colliders.forEach((collider) => {
-                g.addCollider(
-                    // VRM 右手系Y_UP, -Z_Front から Babylon.js 左手系Y_UP, +Z_Front にする
-                    new Vector3(-collider.offset.x, collider.offset.y, -collider.offset.z),
-                    collider.radius
-                );
-            });
-            colliderGroups.push(g);
+            const bone = getBone(colliderGroup.node);
+            if (bone) {
+                const g = new ColliderGroup(bone);
+                colliderGroup.colliders.forEach((collider) => {
+                    g.addCollider(
+                      // VRM 右手系Y_UP, -Z_Front から Babylon.js 左手系Y_UP, +Z_Front にする
+                      new Vector3(-collider.offset.x, collider.offset.y, -collider.offset.z),
+                      collider.radius
+                    );
+                });
+                colliderGroups.push(g);
+            } else {
+                console.error(`SpringBoneController: bone not found: ${colliderGroup.node}`);
+            }
         });
         return colliderGroups;
     }
