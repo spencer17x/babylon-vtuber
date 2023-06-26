@@ -46,7 +46,7 @@ import BumpFragment from './shaders/bump-fragment.frag';
 import LightFragment from './shaders/light-fragment.frag';
 import VertexShader from './shaders/mtoon.vert';
 import FragmentShader from './shaders/mtoon.frag';
-import { ThinMaterialHelper } from './lib/thinMaterialHelper';
+import { ThinMaterialHelper } from './helpers/thinMaterialHelper';
 
 /**
  * Debug shading mode
