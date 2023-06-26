@@ -12,7 +12,8 @@ import {
 	SceneLoader
 } from '@babylonjs/core';
 import { VRMTool } from '@/utils';
-import 'babylon-vrm-loader';
+
+import '@/libs/babylon-vrm-loader/vrm-file-loader';
 
 const prefixCls = 'vtuber-vrm';
 
