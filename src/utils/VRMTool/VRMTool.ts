@@ -159,12 +159,6 @@ export class VRMTool extends MediaPipeTool {
 		const pose = this._getPose(results);
 		if (!pose) return;
 
-		// hips
-		this._setRotation(
-			'hips',
-			pose.Hips.rotation,
-			0.7
-		);
 		this._setPosition(
 			'hips',
 			{
@@ -251,7 +245,11 @@ export class VRMTool extends MediaPipeTool {
 		const leftHand = Hand.solve(leftHandLandmarks, 'Left');
 		if (leftHand) {
 			if (pose) {
-				this._setRotation('leftHand', pose.LeftHand);
+				this._setRotation('leftHand', {
+					x: leftHand.LeftWrist.x,
+					y: leftHand.LeftWrist.y,
+					z: pose.LeftHand.z
+				});
 			}
 			this._setRotation('leftRingProximal', leftHand.LeftRingProximal);
 			this._setRotation('leftRingIntermediate', leftHand.LeftRingIntermediate);
@@ -275,7 +273,11 @@ export class VRMTool extends MediaPipeTool {
 		const rightHand = Hand.solve(rightHandLandmarks, 'Right');
 		if (rightHand) {
 			if (pose) {
-				this._setRotation('rightHand', pose.RightHand);
+				this._setRotation('rightHand', {
+					x: rightHand.RightWrist.x,
+					y: rightHand.RightWrist.y,
+					z: pose.RightHand.z,
+				});
 			}
 			this._setRotation('rightRingProximal', rightHand.RightIndexProximal);
 			this._setRotation('rightRingIntermediate', rightHand.RightRingIntermediate);
