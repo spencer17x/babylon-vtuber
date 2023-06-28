@@ -15,7 +15,7 @@ export interface VRMToolConfig {
 	/**
 	 * face: face only, holistic: face + hand + pose
 	 */
-	animate?: 'face' | 'holistic';
+	animateType?: 'face' | 'holistic';
 	enableDraw?: boolean;
 }
 
@@ -30,6 +30,7 @@ export interface LaunchCallback {
 export class VRMTool extends MediapipeTool {
 	private readonly manager?: Nullable<VRMManager>;
 	private readonly extraConfig: VRMToolConfig;
+	private animateType: VRMToolConfig['animateType'];
 
 	static launch(config: VRMToolConfig, mediapipeToolConfig: MediapipeToolConfig, callback?: LaunchCallback) {
 		const client = new VRMTool(config, mediapipeToolConfig);
@@ -37,7 +38,7 @@ export class VRMTool extends MediapipeTool {
 			if (config.enableDraw) {
 				client.draw(results);
 			}
-			if (config.animate) {
+			if (config.animateType) {
 				client.animate(results);
 			}
 			callback?.onResults?.(results);
@@ -51,6 +52,7 @@ export class VRMTool extends MediapipeTool {
 		this.extraConfig = config;
 
 		this.manager = this.extraConfig.scene?.metadata?.vrmManagers[0];
+		this.animateType = config.animateType;
 	}
 
 	private _setRotation(
@@ -324,12 +326,16 @@ export class VRMTool extends MediapipeTool {
 		// Animate Face
 		this.animateFace(results);
 
-		if (this.extraConfig.animate === 'holistic') {
+		if (this.animateType === 'holistic') {
 			// Animate Pose
 			this.animatePose(results);
 
 			// Animate Hand
 			this.animateHand(results);
 		}
+	}
+
+	setAnimateType(type: VRMToolConfig['animateType']) {
+		this.animateType = type;
 	}
 }

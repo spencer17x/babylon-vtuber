@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, message } from 'antd';
-import { VRMTool } from '@/utils';
+import { Button, message, Switch } from 'antd';
+import { VRMTool, VRMToolConfig } from '@/utils';
 import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Vector3 } from '@babylonjs/core';
 import { assetsUrl, mediaPipeAssetsUrl } from '@/config';
 import '@babylonjs/inspector';
@@ -41,6 +41,7 @@ export const VtuberVRMPage = () => {
 	const [cameraLoading, setCameraLoading] = useState(false);
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
 	const [vrmTool, setVRMTool] = useState<VRMTool>();
+	const [animateType, setAnimateType] = useState<VRMToolConfig['animateType']>('holistic');
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -78,7 +79,7 @@ export const VtuberVRMPage = () => {
 			const client = VRMTool.launch({
 				scene,
 				enableDraw: true,
-				animate: 'holistic'
+				animateType: 'holistic'
 			}, {
 				video,
 				videoCanvas,
@@ -110,6 +111,12 @@ export const VtuberVRMPage = () => {
 		});
 	}, []);
 
+	useEffect(() => {
+		if (vrmTool) {
+			vrmTool.setAnimateType(animateType);
+		}
+	}, [animateType, vrmTool]);
+
 	const toggleCamera = async () => {
 		if (!vrmTool) {
 			console.error('vrmTool is not found');
@@ -136,9 +143,20 @@ export const VtuberVRMPage = () => {
 		</div>
 
 		<div className={`${prefixCls}-toolbar`}>
-			<Button type="primary" loading={cameraLoading} onClick={toggleCamera}>
+			<Button type="primary" size="small" loading={cameraLoading} onClick={toggleCamera}>
 				{isCameraEnabled ? '关闭' : '开启'}摄像头
 			</Button>
+
+			<Switch
+				checkedChildren="采集全身"
+				unCheckedChildren="采集脸部"
+				checked={animateType === 'holistic'}
+				onChange={(checked) => {
+					console.log('checked', checked);
+					const type = checked ? 'holistic' : 'face';
+					setAnimateType(type);
+				}}
+			/>
 		</div>
 	</div>;
 };
