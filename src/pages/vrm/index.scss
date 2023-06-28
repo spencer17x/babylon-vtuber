@@ -22,8 +22,6 @@
     width: 300px;
     height: 200px;
     position: fixed;
-    left: 10px;
-    top: 10px;
     transform: rotateY(180deg);
 
     &-video, &-video-canvas {
@@ -33,9 +31,9 @@
       left: 0;
       top: 0;
     }
-  }
 
-  .video {
-    object-fit: cover;
+    &-video {
+      object-fit: cover;
+    }
   }
 }

@@ -1,13 +1,13 @@
-import { MediaPipeTool, MediaPipeToolConfig } from '@/utils';
+import { MediapipeTool, MediapipeToolConfig } from '@/utils';
 import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { Face, Hand, Pose } from 'kalidokit';
 import { Mesh, Vector3 } from '@babylonjs/core';
 
-interface Config extends MediaPipeToolConfig {
+interface Config extends MediapipeToolConfig {
 	mesh: Mesh;
 }
 
-export class MMDTool extends MediaPipeTool {
+export class MMDTool extends MediapipeTool {
 	mesh: Config['mesh'];
 
 	constructor(config: Config) {
@@ -38,7 +38,7 @@ export class MMDTool extends MediaPipeTool {
 		console.log('_getPose pose3DLandmarks', pose3DLandmarks);
 		const pose = Pose.solve(pose3DLandmarks, pose2DLandmarks, {
 			runtime: 'mediapipe',
-			video: this.video,
+			video: this.getVideo(),
 		});
 		console.log('_getPose pose', pose);
 		return pose;
@@ -118,7 +118,7 @@ export class MMDTool extends MediaPipeTool {
 
 		const face = Face.solve(faceLandmarks, {
 			runtime: 'mediapipe',
-			video: this.video,
+			video: this.getVideo(),
 		});
 		console.log('animateFace face', face);
 

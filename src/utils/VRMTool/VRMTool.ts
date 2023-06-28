@@ -2,7 +2,7 @@ import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { HumanoidBone, VRMManager } from '@/libs/babylon-vrm-loader';
 import { Face, Hand, Pose } from 'kalidokit';
 import { Nullable, Quaternion, Scene, Vector3 } from '@babylonjs/core';
-import { MediaPipeTool, MediaPipeToolConfig } from '@/utils';
+import { MediapipeTool, MediapipeToolConfig } from '@/utils';
 
 type GetProperties<T> = Exclude<{
 	[K in keyof T]: T[K] extends (...args: any[]) => any ? never : K
@@ -10,24 +10,47 @@ type GetProperties<T> = Exclude<{
 
 type HumanBoneName = GetProperties<HumanoidBone>;
 
-interface Config extends MediaPipeToolConfig {
+export interface VRMToolConfig {
 	scene: Scene;
+	/**
+	 * face: face only, holistic: face + hand + pose
+	 */
+	animate?: 'face' | 'holistic';
+	enableDraw?: boolean;
+}
+
+export interface LaunchCallback {
+	onResults?: (results: Results) => void;
 }
 
 /**
  * VRM
  * inspired by https://github.com/yeemachine/kalidokit
  */
-export class VRMTool extends MediaPipeTool {
-	scene: Config['scene'];
+export class VRMTool extends MediapipeTool {
+	private readonly manager?: Nullable<VRMManager>;
+	private readonly extraConfig: VRMToolConfig;
 
-	manager?: Nullable<VRMManager>;
+	static launch(config: VRMToolConfig, mediapipeToolConfig: MediapipeToolConfig, callback?: LaunchCallback) {
+		const client = new VRMTool(config, mediapipeToolConfig);
+		client.getHolistic().onResults((results) => {
+			if (config.enableDraw) {
+				client.draw(results);
+			}
+			if (config.animate) {
+				client.animate(results);
+			}
+			callback?.onResults?.(results);
+		});
+		return client;
+	}
 
-	constructor(config: Config) {
-		const { scene, ...mediaPipeConfig } = config;
-		super(mediaPipeConfig);
-		this.scene = scene;
-		this.manager = scene?.metadata?.vrmManagers[0];
+	constructor(config: VRMToolConfig, mediapipeToolConfig: MediapipeToolConfig) {
+		super(mediapipeToolConfig);
+
+		this.extraConfig = config;
+
+		this.manager = this.extraConfig.scene?.metadata?.vrmManagers[0];
 	}
 
 	private _setRotation(
@@ -110,15 +133,15 @@ export class VRMTool extends MediaPipeTool {
 		console.log('_getPose pose3DLandmarks', pose3DLandmarks);
 		const pose = Pose.solve(pose3DLandmarks, pose2DLandmarks, {
 			runtime: 'mediapipe',
-			video: this.video,
+			video: this.getVideo(),
 		});
 		console.log('_getPose pose', pose);
 		return pose;
 	}
 
 	private _getTransformNode(name: HumanBoneName) {
-		return this.getManager().humanoidBone[name];
 		// return this.getManager().getBone(name);
+		return this.getManager().humanoidBone[name];
 	}
 
 	getManager() {
@@ -133,7 +156,7 @@ export class VRMTool extends MediaPipeTool {
 		console.log('animateFace faceLandmarks', faceLandmarks);
 		const face = Face.solve(faceLandmarks, {
 			runtime: 'mediapipe',
-			video: this.video,
+			video: this.getVideo(),
 		});
 		console.log('animateFace face', face);
 		if (!face) return;
@@ -301,10 +324,12 @@ export class VRMTool extends MediaPipeTool {
 		// Animate Face
 		this.animateFace(results);
 
-		// Animate Pose
-		this.animatePose(results);
+		if (this.extraConfig.animate === 'holistic') {
+			// Animate Pose
+			this.animatePose(results);
 
-		// Animate Hand
-		this.animateHand(results);
+			// Animate Hand
+			this.animateHand(results);
+		}
 	}
 }

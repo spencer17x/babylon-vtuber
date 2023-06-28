@@ -2,62 +2,50 @@ import {
 	FACEMESH_TESSELATION,
 	HAND_CONNECTIONS,
 	Holistic,
-	Options as HolisticOptions,
+	HolisticConfig,
 	POSE_CONNECTIONS,
-	Results, ResultsListener
+	Results
 } from '@mediapipe/holistic';
+import { Camera, CameraOptions } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
-import * as CameraUtils from '@mediapipe/camera_utils';
 
-const npmCDNUrl = 'https://cdn.jsdelivr.net/npm/@mediapipe';
-
-export interface MediaPipeToolConfig {
-	video: HTMLVideoElement;
-	videoCanvas: HTMLCanvasElement;
+export interface MediapipeToolConfig {
+	video?: HTMLVideoElement;
+	videoCanvas?: HTMLCanvasElement;
 	isCameraEnabled?: boolean;
+
+	cameraOptions?: Partial<CameraOptions>;
+	holisticConfig?: Partial<HolisticConfig>;
 }
 
-export class MediaPipeTool {
-	video: MediaPipeToolConfig['video'];
-	videoCanvas: MediaPipeToolConfig['videoCanvas'];
-	isCameraEnabled: MediaPipeToolConfig['isCameraEnabled'];
+export class MediapipeTool {
+	private readonly config: MediapipeToolConfig;
 
-	holistic: Holistic | null = null;
-	camera: CameraUtils.Camera | null = null;
+	private holistic?: Holistic | null = null;
+	private camera?: Camera | null = null;
 
-	constructor(config: MediaPipeToolConfig) {
-		const { video, videoCanvas, isCameraEnabled } = config;
-		this.video = video;
-		this.videoCanvas = videoCanvas;
-		this.isCameraEnabled = isCameraEnabled ?? false;
+	public isCameraEnabled = false;
+
+	constructor(config: MediapipeToolConfig) {
+		this.config = config;
+		this.isCameraEnabled = config.isCameraEnabled || false;
+
+		this.initHolistic();
+		this.initCamera();
 	}
 
-	createHolistic(params?: {
-		filePath?: string;
-		options?: HolisticOptions,
-		resultsListener?: ResultsListener
-	}) {
-		const {
-			filePath = npmCDNUrl,
-			options = {
-				modelComplexity: 1,
-				smoothLandmarks: true,
-				minDetectionConfidence: 0.7,
-				minTrackingConfidence: 0.7,
-				refineFaceLandmarks: true,
-			},
-			resultsListener
-		} = params || {};
-		this.holistic = new Holistic({
-			locateFile: (file) => {
-				return `${filePath}/holistic/${file}`;
-			}
-		});
-		this.holistic.setOptions(options);
-		if (resultsListener) {
-			this.holistic.onResults(resultsListener);
+	getVideo() {
+		if (!this.config.video) {
+			throw new Error('Video is not created');
 		}
-		return this.holistic;
+		return this.config.video;
+	}
+
+	getVideoCanvas() {
+		if (!this.config.videoCanvas) {
+			throw new Error('Video canvas is not created');
+		}
+		return this.config.videoCanvas;
 	}
 
 	getHolistic() {
@@ -67,11 +55,6 @@ export class MediaPipeTool {
 		return this.holistic;
 	}
 
-	createCamera(options: CameraUtils.CameraOptions) {
-		this.camera = new CameraUtils.Camera(this.video, options);
-		return this.camera;
-	}
-
 	getCamera() {
 		if (!this.camera) {
 			throw new Error('Camera is not created');
@@ -79,25 +62,50 @@ export class MediaPipeTool {
 		return this.camera;
 	}
 
+	initHolistic() {
+		this.holistic = new Holistic({
+			locateFile: (file) => {
+				return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`;
+			},
+			...this.config.holisticConfig
+		});
+		this.holistic.setOptions({
+			modelComplexity: 1,
+			smoothLandmarks: true,
+			minDetectionConfidence: 0.7,
+			minTrackingConfidence: 0.7,
+			refineFaceLandmarks: true,
+		});
+	}
+
+	initCamera() {
+		this.camera = new Camera(this.getVideo(), {
+			onFrame: async () => {
+				await this.getHolistic().send({ image: this.getVideo() });
+			},
+			...this.config.cameraOptions
+		});
+	}
+
 	async toggleCamera() {
-		const isEnabled = !this.isCameraEnabled;
-		if (isEnabled) {
+		const isCameraEnabled = !this.isCameraEnabled;
+		if (isCameraEnabled) {
 			await this.getCamera().start();
 		} else {
 			await this.getCamera().stop();
 		}
-		this.isCameraEnabled = isEnabled;
+		this.isCameraEnabled = isCameraEnabled;
 	}
 
 	draw(results: Results) {
-		this.videoCanvas.width = this.video.videoWidth;
-		this.videoCanvas.height = this.video.videoHeight;
-		const canvasCtx = this.videoCanvas.getContext('2d');
+		this.getVideoCanvas().width = this.getVideo().videoWidth;
+		this.getVideoCanvas().height = this.getVideo().videoHeight;
+		const canvasCtx = this.getVideoCanvas().getContext('2d');
 		if (!canvasCtx) {
 			throw new Error('Could not get canvas context');
 		}
 		canvasCtx.save();
-		canvasCtx.clearRect(0, 0, this.videoCanvas.width, this.videoCanvas.height);
+		canvasCtx.clearRect(0, 0, this.getVideoCanvas().width, this.getVideoCanvas().height);
 
 		// Use `Mediapipe` drawing functions
 		drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
@@ -137,12 +145,8 @@ export class MediaPipeTool {
 		});
 	}
 
-	destroy() {
-		if (this.holistic) {
-			this.holistic.close();
-		}
-		if (this.camera) {
-			this.camera.stop();
-		}
+	dispose() {
+		this.holistic?.close();
+		this.camera?.stop();
 	}
 }

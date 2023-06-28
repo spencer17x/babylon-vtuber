@@ -3,7 +3,6 @@ import { ArcRotateCamera, Engine, HemisphericLight, Scene, Tools, Vector3 } from
 import { ImportMMDMeshAsync } from '@wenxin123/babylonjs-mmd-loader';
 import { Button } from 'antd';
 import { MMDTool } from '@/utils';
-import { mediaPipeAssetsUrl } from '@/config';
 
 import './index.scss';
 
@@ -65,19 +64,6 @@ export const VtuberMMDPage = () => {
 				video,
 				videoCanvas,
 				mesh
-			});
-			const holistic = mddTool.createHolistic({
-				filePath: mediaPipeAssetsUrl
-			});
-			holistic.onResults(results => {
-				console.log('results', results);
-				mddTool.draw(results);
-				mddTool.animate(results);
-			});
-			mddTool.createCamera({
-				onFrame: async () => {
-					await holistic.send({ image: mddTool.video });
-				}
 			});
 			setMmdTool(mddTool);
 			setIsCameraEnabled(mddTool.isCameraEnabled ?? false);
