@@ -17,4 +17,4 @@ or
 
 https://spencer17x.github.io/babylon-vtuber/#/vrm?modelUrl=xxxxx
 
-**note:** You can load your own model by adding the url parameter model url
+**note:** You can load your own model by adding the url parameter modelUrl
