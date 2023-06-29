@@ -3,6 +3,7 @@ import { ArcRotateCamera, Engine, HemisphericLight, Scene, Tools, Vector3 } from
 import { ImportMMDMeshAsync } from '@wenxin123/babylonjs-mmd-loader';
 import { Button } from 'antd';
 import { MMDTool } from '@/utils';
+import { mediaPipeAssetsUrl } from '@/config';
 
 import './index.scss';
 
@@ -53,17 +54,24 @@ export const VtuberMMDPage = () => {
 			if (!video) {
 				throw new Error('video is not found');
 			}
-
 			const mesh = await ImportMMDMeshAsync(
 				'/models/pmd/1',
 				'miku_v2.pmd',
 				scene
 			);
 			console.log('mesh', mesh);
-			const mddTool = new MMDTool({
+			const mddTool = MMDTool.launch({
+				mesh,
+				enableDraw: true,
+				animateType: 'face'
+			}, {
 				video,
 				videoCanvas,
-				mesh
+				holisticConfig: {
+					locateFile: (file) => {
+						return `${mediaPipeAssetsUrl}/${file}`;
+					}
+				}
 			});
 			setMmdTool(mddTool);
 			setIsCameraEnabled(mddTool.isCameraEnabled ?? false);

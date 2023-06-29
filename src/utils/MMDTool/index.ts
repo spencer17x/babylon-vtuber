@@ -1,19 +1,40 @@
-import { MediapipeTool, MediapipeToolConfig } from '@/utils';
+import { LaunchCallback, MediapipeTool, MediapipeToolConfig, VRMToolConfig } from '@/utils';
 import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { Face, Hand, Pose } from 'kalidokit';
 import { Mesh, Vector3 } from '@babylonjs/core';
 
-interface Config extends MediapipeToolConfig {
+export interface MMDToolConfig {
 	mesh: Mesh;
+	/**
+	 * face: face only, holistic: face + hand + pose
+	 */
+	animateType?: 'face' | 'holistic';
+	enableDraw?: boolean;
 }
 
 export class MMDTool extends MediapipeTool {
-	mesh: Config['mesh'];
+	private mesh: MMDToolConfig['mesh'];
+	private animateType: MMDToolConfig['animateType'];
 
-	constructor(config: Config) {
-		const { mesh, ...mediaPipeConfig } = config;
-		super(mediaPipeConfig);
-		this.mesh = mesh;
+	static launch(config: MMDToolConfig, mediapipeToolConfig: MediapipeToolConfig, callback?: LaunchCallback) {
+		const client = new MMDTool(config, mediapipeToolConfig);
+		client.getHolistic().onResults((results) => {
+			if (config.enableDraw) {
+				client.draw(results);
+			}
+			if (config.animateType) {
+				client.animate(results);
+			}
+			callback?.onResults?.(results);
+		});
+		return client;
+	}
+
+	constructor(config: MMDToolConfig, mediapipeToolConfig: MediapipeToolConfig) {
+		super(mediapipeToolConfig);
+
+		this.animateType = config.animateType;
+		this.mesh = config.mesh;
 	}
 
 	private _getBone(name: string) {
@@ -181,10 +202,16 @@ export class MMDTool extends MediapipeTool {
 		// Animate Face
 		this.animateFace(results);
 
-		// Animate Pose
-		this.animatePose(results);
+		if (this.animateType === 'holistic') {
+			// Animate Pose
+			this.animatePose(results);
 
-		// Animate Hand
-		this.animateHand(results);
+			// Animate Hand
+			this.animateHand(results);
+		}
+	}
+
+	setAnimateType(type: VRMToolConfig['animateType']) {
+		this.animateType = type;
 	}
 }
