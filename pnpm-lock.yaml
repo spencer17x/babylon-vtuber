@@ -27,6 +27,7 @@ specifiers:
   eslint-plugin-react-refresh: ^0.3.4
   kalidokit: ^1.1.5
   react: ^18.2.0
+  react-babylonjs: ^3.1.17
   react-dom: ^18.2.0
   react-router-dom: ^6.12.1
   sass: ^1.63.2
@@ -53,6 +54,7 @@ dependencies:
   classnames: 2.3.2
   kalidokit: 1.1.5
   react: 18.2.0
+  react-babylonjs: 3.1.17_357s7oyicaxbulfyejepj6xy4q
   react-dom: 18.2.0_react@18.2.0
   react-router-dom: 6.14.0_biqbaboplfbrettd7655fr4n2y
 
@@ -2561,6 +2563,25 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
+  /react-babylonjs/3.1.17_357s7oyicaxbulfyejepj6xy4q:
+    resolution: {integrity: sha512-z4RngbrUOp0MZfYPtgVMjvy/mZQml3q8izKRK7UWe4h5gmccuHIg7q/OyL45DsHbUv6f7fjw6MgfCPl591bBVA==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      '@babylonjs/core': 5.x || 6.x
+      '@babylonjs/gui': 5.x || 6.x
+      react: '>=18'
+      react-dom: '>=18'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+    dependencies:
+      '@babylonjs/core': 6.8.0
+      '@babylonjs/gui': 6.8.0_@babylonjs+core@6.8.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-reconciler: 0.27.0_react@18.2.0
+    dev: false
+
   /react-dom/18.2.0_react@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -2573,6 +2594,17 @@ packages:
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+    dev: false
+
+  /react-reconciler/0.27.0_react@18.2.0:
+    resolution: {integrity: sha512-HmMDKciQjYmBRGuuhIaKA1ba/7a+UsM5FzOZsMO2JYHt9Jh8reCb7j1eDC95NOyUlKM9KRyvdx0flBuDvYSBoA==}
+    engines: {node: '>=0.10.0'}
+    peerDependencies:
+      react: ^18.0.0
+    dependencies:
+      loose-envify: 1.4.0
+      react: 18.2.0
+      scheduler: 0.21.0
     dev: false
 
   /react-refresh/0.14.0:
@@ -2665,6 +2697,12 @@ packages:
       immutable: 4.3.0
       source-map-js: 1.0.2
     dev: true
+
+  /scheduler/0.21.0:
+    resolution: {integrity: sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==}
+    dependencies:
+      loose-envify: 1.4.0
+    dev: false
 
   /scheduler/0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}

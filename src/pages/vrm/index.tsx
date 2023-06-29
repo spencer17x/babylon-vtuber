@@ -3,9 +3,9 @@ import { Button, message, Switch } from 'antd';
 import { VRMTool, VRMToolConfig } from '@/utils';
 import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Tools, Vector3 } from '@babylonjs/core';
 import { assetsUrl, mediaPipeAssetsUrl } from '@/config';
-import '@babylonjs/inspector';
+import { useSearchParams } from 'react-router-dom';
 
-import '@/libs/babylon-vrm-loader';
+import '@babylonjs/inspector';
 
 import './index.scss';
 
@@ -34,6 +34,9 @@ const hideLoading = (type: Loading) => {
 };
 
 export const VtuberVRMPage = () => {
+	const [searchParams] = useSearchParams();
+	const modelUrl = searchParams.get('modelUrl');
+
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
 	const videoRef = useRef<HTMLVideoElement>(null);
@@ -76,7 +79,7 @@ export const VtuberVRMPage = () => {
 			showLoading(Loading.Model);
 			await SceneLoader.ImportMeshAsync(
 				'',
-				assetsUrl + '/models/vrm/Ashtra.vrm',
+				modelUrl ?? assetsUrl + '/models/vrm/Ashtra.vrm',
 				'',
 				scene,
 			);
@@ -114,7 +117,7 @@ export const VtuberVRMPage = () => {
 		window.addEventListener('resize', () => {
 			engine.resize();
 		});
-	}, []);
+	}, [modelUrl]);
 
 	useEffect(() => {
 		if (vrmTool) {
