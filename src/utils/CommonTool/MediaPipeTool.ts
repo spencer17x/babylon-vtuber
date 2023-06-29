@@ -28,7 +28,7 @@ export class MediapipeTool {
 
 	constructor(config: MediapipeToolConfig) {
 		this.config = config;
-		this.isCameraEnabled = config.isCameraEnabled || false;
+		this.isCameraEnabled = config.isCameraEnabled ?? false;
 
 		this.initHolistic();
 		this.initCamera();

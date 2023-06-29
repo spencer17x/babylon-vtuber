@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, message, Switch } from 'antd';
 import { VRMTool, VRMToolConfig } from '@/utils';
-import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Vector3 } from '@babylonjs/core';
+import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Tools, Vector3 } from '@babylonjs/core';
 import { assetsUrl, mediaPipeAssetsUrl } from '@/config';
 import '@babylonjs/inspector';
 
-import 'babylonjs-vrm-loader';
+import '@/libs/babylon-vrm-loader';
 
 import './index.scss';
 
@@ -58,11 +58,17 @@ export const VtuberVRMPage = () => {
 		}
 
 		const engine = new Engine(canvas, true);
+		engine.setHardwareScalingLevel(0.5);
 		const scene = new Scene(engine);
 
-		const camera = new ArcRotateCamera('camera', 0, 0, 3, new Vector3(0, 1.4, 0), scene, true);
+		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 300, Vector3.Zero(), scene, true);
+		camera.setTarget(new Vector3(0, 1.4, 0));
 		camera.setPosition(new Vector3(0, 1.4, -5));
 		camera.attachControl(canvas, true);
+		camera.lowerRadiusLimit = 1.5;
+		camera.wheelPrecision = 30;
+		camera.fov = Tools.ToRadians(15);
+
 		const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
 		light.intensity = 1;
 
@@ -70,10 +76,11 @@ export const VtuberVRMPage = () => {
 			showLoading(Loading.Model);
 			await SceneLoader.ImportMeshAsync(
 				'',
-				assetsUrl + '/models/vrm/AliciaSolid.vrm',
+				assetsUrl + '/models/vrm/Ashtra.vrm',
 				'',
 				scene,
 			);
+			console.log('scene', scene, scene.metadata);
 			hideLoading(Loading.Model);
 
 			const client = VRMTool.launch({
@@ -99,8 +106,6 @@ export const VtuberVRMPage = () => {
 				embedMode: true,
 			});
 		}());
-
-		console.log('scene', scene);
 
 		engine.runRenderLoop(() => {
 			scene.render();
@@ -148,8 +153,8 @@ export const VtuberVRMPage = () => {
 			</Button>
 
 			<Switch
-				checkedChildren="采集全身"
-				unCheckedChildren="采集脸部"
+				checkedChildren="采集全身开"
+				unCheckedChildren="采集全身关"
 				checked={animateType === 'holistic'}
 				onChange={(checked) => {
 					console.log('checked', checked);
