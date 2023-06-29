@@ -23,13 +23,17 @@ export const VtuberMMDPage = () => {
 			throw new Error('canvas is null');
 		}
 		const engine = new Engine(canvas, true);
+		engine.setHardwareScalingLevel(0.5);
 		const scene = new Scene(engine);
 		setScene(scene);
 
-		const camera = new ArcRotateCamera('camera', 0, 0, 0, new Vector3(0, 17, 0), scene);
+		const camera = new ArcRotateCamera('camera', 0, 0, 0, Vector3.Zero(), scene);
+		camera.setTarget(new Vector3(0, 17, 0));
 		camera.setPosition(new Vector3(0, 17, -40));
 		camera.attachControl(canvas, true);
-		camera.fov = Tools.ToRadians(12);
+		camera.lowerRadiusLimit = 1.5;
+		camera.wheelPrecision = 30;
+		camera.fov = Tools.ToRadians(15);
 
 		const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
 		light.intensity = 1.5;
