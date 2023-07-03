@@ -20,8 +20,6 @@ import '@babylonjs/inspector';
 
 import './index.scss';
 
-const prefixCls = 'vtuber-vrm-page';
-
 enum Loading {
 	MediaPipe = 'mediapipe',
 	Model = 'model'
@@ -43,6 +41,8 @@ const showLoading = (type: Loading) => {
 const hideLoading = (type: Loading) => {
 	return message.destroy(type);
 };
+
+const prefixCls = 'vtuber-vrm-page';
 
 export const VtuberVRMPage = () => {
 	const [searchParams] = useSearchParams();
@@ -143,7 +143,7 @@ export const VtuberVRMPage = () => {
 			hideLoading(Loading.Model);
 		};
 
-		const loadVrmTool = () => {
+		const loadVRMTool = () => {
 			const video = videoRef.current;
 			const videoCanvas = videoCanvasRef.current;
 			if (!video || !videoCanvas) {
@@ -154,7 +154,6 @@ export const VtuberVRMPage = () => {
 			const client = VRMTool.launch({
 				scene,
 				enableDraw: true,
-				animateType: 'holistic'
 			}, {
 				video,
 				videoCanvas,
@@ -172,7 +171,7 @@ export const VtuberVRMPage = () => {
 		};
 
 		loadModel().then(() => {
-			loadVrmTool();
+			loadVRMTool();
 		});
 		return () => {
 			meshes.forEach(mesh => {
