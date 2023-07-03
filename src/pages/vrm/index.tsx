@@ -12,7 +12,7 @@ import {
 	Vector3
 } from '@babylonjs/core';
 import { mediaPipeUrl } from '@/config';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ModelDrawer } from '@/components';
 import { models } from '@/components/ModelDrawer/data.ts';
 
@@ -46,6 +46,7 @@ const hideLoading = (type: Loading) => {
 
 export const VtuberVRMPage = () => {
 	const [searchParams] = useSearchParams();
+	const navigate = useNavigate();
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -56,20 +57,24 @@ export const VtuberVRMPage = () => {
 	const [vrmTool, setVRMTool] = useState<VRMTool>();
 	const [animateType, setAnimateType] = useState<VRMToolConfig['animateType']>('holistic');
 	const [modelDrawerOpen, setModelDrawerOpen] = useState(false);
-	const [modelUrl, setModelUrl] = useState<string>('');
-	const sceneRef = useRef<Nullable<Scene>>(null);
+	const [scene, setScene] = useState<Nullable<Scene>>(null);
+	const [modelUrl, setModelUrl] = useState('');
 
 	/**
-	 * 初始化默认模型
+	 * 初始化模型
 	 */
 	useEffect(() => {
-		const customModelUrl = searchParams.get('modelUrl');
-		if (customModelUrl) {
-			setModelUrl(customModelUrl);
-		} else {
-			const model = models[0];
-			setModelUrl(model.path + model.name);
+		const modelUrl = searchParams.get('modelUrl');
+		if (!modelUrl) {
+			navigate(`/vrm?modelUrl=${models[0].path + models[0].name}`);
 		}
+	}, [navigate, searchParams]);
+
+	/**
+	 * 更新模型
+	 */
+	useEffect(() => {
+		setModelUrl(searchParams.get('modelUrl') || '');
 	}, [searchParams]);
 
 	/**
@@ -85,7 +90,7 @@ export const VtuberVRMPage = () => {
 		scene.debugLayer.show({
 			embedMode: true,
 		}).then(() => {});
-		sceneRef.current = scene;
+		setScene(scene);
 
 		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 300, Vector3.Zero(), scene, true);
 		camera.setTarget(new Vector3(0, 1.4, 0));
@@ -105,20 +110,24 @@ export const VtuberVRMPage = () => {
 		window.addEventListener('resize', () => {
 			engine.resize();
 		});
+
+		return () => {
+			console.log('dispose');
+			scene.dispose();
+			engine.dispose();
+		};
 	}, []);
 
 	/**
 	 * 加载模型
 	 */
 	useEffect(() => {
-		const scene = sceneRef.current;
 		if (!scene) {
 			return;
 		}
 		if (!modelUrl) {
 			return;
 		}
-		scene.metadata = null;
 		console.log('start load model');
 		let meshes = scene.meshes;
 
@@ -166,9 +175,12 @@ export const VtuberVRMPage = () => {
 			loadVrmTool();
 		});
 		return () => {
-			meshes.forEach(mesh => mesh.dispose());
+			meshes.forEach(mesh => {
+				mesh.dispose();
+			});
+			scene.metadata = null;
 		};
-	}, [modelUrl]);
+	}, [modelUrl, scene]);
 
 	/**
 	 * 切换动画类型
@@ -229,7 +241,7 @@ export const VtuberVRMPage = () => {
 			open={modelDrawerOpen}
 			value={modelUrl}
 			onChange={(value) => {
-				setModelUrl(value);
+				navigate(`/vrm?modelUrl=${value}`);
 			}}
 			onClose={() => setModelDrawerOpen(!modelDrawerOpen)}
 		/>

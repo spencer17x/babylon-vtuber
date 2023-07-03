@@ -1,4 +1,4 @@
-import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
+import { SceneLoader } from '@babylonjs/core';
 import { GLTFFileLoader } from '@babylonjs/loaders/glTF/glTFFileLoader';
 
 /**

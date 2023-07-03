@@ -67,7 +67,7 @@ export class VRM implements IGLTFLoaderExtension {
         this.loader.babylonScene.onDisposeObservable.add(() => {
             // Scene dispose 時に Manager も破棄する
             manager.dispose();
-            this.loader.babylonScene.metadata.vrmManagers = [];
+            // this.loader.babylonScene.metadata.vrmManagers = [];
         });
     }
 
