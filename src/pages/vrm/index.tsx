@@ -14,7 +14,7 @@ import {
 import { mediaPipeUrl } from '@/config';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ModelDrawer } from '@/components';
-import { models } from '@/components/ModelDrawer/data.ts';
+import { models } from './data';
 
 import '@babylonjs/inspector';
 
@@ -66,7 +66,7 @@ export const VtuberVRMPage = () => {
 	useEffect(() => {
 		const modelUrl = searchParams.get('modelUrl');
 		if (!modelUrl) {
-			navigate(`/vrm?modelUrl=${models[0].path + models[0].name}`);
+			navigate(`/vrm?modelUrl=${models[0]}`);
 		}
 	}, [navigate, searchParams]);
 
@@ -217,11 +217,11 @@ export const VtuberVRMPage = () => {
 		</div>
 
 		<div className={`${prefixCls}-toolbar`}>
-			<Button type="primary" size="small" onClick={() => setModelDrawerOpen(!modelDrawerOpen)}>
+			<Button type="primary" onClick={() => setModelDrawerOpen(!modelDrawerOpen)}>
 				{modelDrawerOpen ? '关闭' : '打开'}模型库
 			</Button>
 
-			<Button type="primary" size="small" loading={cameraLoading} onClick={toggleCamera}>
+			<Button type="primary" loading={cameraLoading} onClick={toggleCamera}>
 				{isCameraEnabled ? '关闭' : '开启'}摄像头
 			</Button>
 
@@ -238,6 +238,7 @@ export const VtuberVRMPage = () => {
 		</div>
 
 		<ModelDrawer
+			models={models}
 			open={modelDrawerOpen}
 			value={modelUrl}
 			onChange={(value) => {

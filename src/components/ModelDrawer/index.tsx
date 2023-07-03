@@ -1,18 +1,22 @@
 import './index.scss';
 
-import { Drawer, DrawerProps, Radio } from 'antd';
+import { Drawer, DrawerProps, Radio, Space } from 'antd';
 import { FC } from 'react';
-import { models } from './data';
 
 export interface ModelDrawerProps extends DrawerProps {
 	value: string;
+	models: string[];
 	onChange: (value: string) => void;
 }
 
 const prefixCls = 'model-drawer';
 
 export const ModelDrawer: FC<ModelDrawerProps> = (props) => {
-	const { value, onChange, ...drawerProps } = props;
+	const {
+		value, models,
+		onChange,
+		...drawerProps
+	} = props;
 
 	return <Drawer
 		className={prefixCls}
@@ -22,15 +26,15 @@ export const ModelDrawer: FC<ModelDrawerProps> = (props) => {
 		{...drawerProps}
 	>
 		<Radio.Group onChange={event => onChange(event.target.value)} value={value}>
-			{
-				models.map(model => {
-					return <div className={`${prefixCls}-model-preview`} key={model.name}>
-						<Radio value={model.path + model.name}>
-							{model.name}
-						</Radio>
-					</div>;
-				})
-			}
+			<Space direction="vertical">
+				{
+					models.map(model => {
+						return <Radio className={`${prefixCls}-model`} key={model} value={model}>
+							{model}
+						</Radio>;
+					})
+				}
+			</Space>
 		</Radio.Group>
 	</Drawer>;
 };
