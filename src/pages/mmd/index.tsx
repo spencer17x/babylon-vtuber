@@ -3,7 +3,7 @@ import { ArcRotateCamera, Engine, HemisphericLight, Scene, Tools, Vector3 } from
 import { ImportMMDMeshAsync } from '@wenxin123/babylonjs-mmd-loader';
 import { Button } from 'antd';
 import { MMDTool } from '@/utils';
-import { mediaPipeAssetsUrl } from '@/config';
+import { mediaPipeUrl } from '@/config';
 
 import './index.scss';
 
@@ -73,7 +73,7 @@ export const VtuberMMDPage = () => {
 				videoCanvas,
 				holisticConfig: {
 					locateFile: (file) => {
-						return `${mediaPipeAssetsUrl}/${file}`;
+						return `${mediaPipeUrl}/${file}`;
 					}
 				}
 			});

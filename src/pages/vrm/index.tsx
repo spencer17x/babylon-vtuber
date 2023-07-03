@@ -1,9 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, message, Switch } from 'antd';
 import { VRMTool, VRMToolConfig } from '@/utils';
-import { ArcRotateCamera, Engine, HemisphericLight, Scene, SceneLoader, Tools, Vector3 } from '@babylonjs/core';
-import { assetsUrl, mediaPipeAssetsUrl } from '@/config';
+import {
+	ArcRotateCamera,
+	Engine,
+	HemisphericLight,
+	Nullable,
+	Scene,
+	SceneLoader,
+	Tools,
+	Vector3
+} from '@babylonjs/core';
+import { mediaPipeUrl } from '@/config';
 import { useSearchParams } from 'react-router-dom';
+import { ModelDrawer } from '@/components';
+import { models } from '@/components/ModelDrawer/data.ts';
 
 import '@babylonjs/inspector';
 
@@ -35,7 +46,6 @@ const hideLoading = (type: Loading) => {
 
 export const VtuberVRMPage = () => {
 	const [searchParams] = useSearchParams();
-	const modelUrl = searchParams.get('modelUrl');
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -45,47 +55,91 @@ export const VtuberVRMPage = () => {
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
 	const [vrmTool, setVRMTool] = useState<VRMTool>();
 	const [animateType, setAnimateType] = useState<VRMToolConfig['animateType']>('holistic');
+	const [modelDrawerOpen, setModelDrawerOpen] = useState(false);
+	const [modelUrl, setModelUrl] = useState<string>('');
+	const [engine, setEngine] = useState<Nullable<Engine>>(null);
 
+	/**
+	 * 初始化默认模型
+	 */
+	useEffect(() => {
+		const customModelUrl = searchParams.get('modelUrl');
+		if (customModelUrl) {
+			setModelUrl(customModelUrl);
+		} else {
+			const model = models[0];
+			setModelUrl(model.path + model.name);
+		}
+	}, [searchParams]);
+
+	/**
+	 * 初始化引擎
+	 */
+	useEffect(() => {
+		const canvas = canvasRef.current;
+
+		const engine = new Engine(canvas, true);
+		engine.setHardwareScalingLevel(0.5);
+		setEngine(engine);
+
+		window.addEventListener('resize', () => {
+			engine.resize();
+		});
+	}, []);
+
+	/**
+	 * 加载模型
+	 */
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		const video = videoRef.current;
 		const videoCanvas = videoCanvasRef.current;
-		if (!canvas) {
-			throw new Error('canvas is not found');
+		if (!engine) {
+			console.error(`engine is ${engine}`);
+			return;
 		}
 		if (!video) {
-			throw new Error('video is not found');
+			console.error(`video is ${video}`);
+			return;
 		}
 		if (!videoCanvas) {
-			throw new Error('videoCanvas is not found');
+			console.error(`videoCanvas is ${videoCanvas}`);
+			return;
 		}
-
-		const engine = new Engine(canvas, true);
-		engine.setHardwareScalingLevel(0.5);
+		console.log('start load model');
 		const scene = new Scene(engine);
 
-		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 300, Vector3.Zero(), scene, true);
-		camera.setTarget(new Vector3(0, 1.4, 0));
-		camera.setPosition(new Vector3(0, 1.4, -5));
-		camera.attachControl(canvas, true);
-		camera.lowerRadiusLimit = 1.5;
-		camera.wheelPrecision = 30;
-		camera.fov = Tools.ToRadians(15);
-
-		const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
-		light.intensity = 1;
-
-		(async function () {
+		const loadModel = async () => {
 			showLoading(Loading.Model);
+			scene.debugLayer.show({
+				embedMode: true,
+			}).then(() => {});
+
+			const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 300, Vector3.Zero(), scene, true);
+			camera.setTarget(new Vector3(0, 1.4, 0));
+			camera.setPosition(new Vector3(0, 1.4, -5));
+			camera.attachControl(canvas, true);
+			camera.lowerRadiusLimit = 1.5;
+			camera.wheelPrecision = 30;
+			camera.fov = Tools.ToRadians(15);
+
+			const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
+			light.intensity = 1;
+
+			engine.runRenderLoop(() => {
+				scene.render();
+			});
 			await SceneLoader.ImportMeshAsync(
 				'',
-				modelUrl ?? assetsUrl + '/models/vrm/Ashtra.vrm',
+				modelUrl,
 				'',
 				scene,
 			);
 			console.log('scene', scene, scene.metadata);
 			hideLoading(Loading.Model);
+		};
 
+		const loadVrmTool = () => {
 			const client = VRMTool.launch({
 				scene,
 				enableDraw: true,
@@ -95,7 +149,7 @@ export const VtuberVRMPage = () => {
 				videoCanvas,
 				holisticConfig: {
 					locateFile: (file) => {
-						return `${mediaPipeAssetsUrl}/${file}`;
+						return `${mediaPipeUrl}/${file}`;
 					}
 				}
 			}, {
@@ -104,21 +158,21 @@ export const VtuberVRMPage = () => {
 				}
 			});
 			setVRMTool(client);
+		};
 
-			await scene.debugLayer.show({
-				embedMode: true,
-			});
-		}());
-
-		engine.runRenderLoop(() => {
-			scene.render();
+		loadModel().then(() => {
+			loadVrmTool();
 		});
 
-		window.addEventListener('resize', () => {
-			engine.resize();
-		});
-	}, [modelUrl]);
+		return () => {
+			console.log('dispose scene');
+			scene.dispose();
+		};
+	}, [engine, modelUrl]);
 
+	/**
+	 * 切换动画类型
+	 */
 	useEffect(() => {
 		if (vrmTool) {
 			vrmTool.setAnimateType(animateType);
@@ -151,6 +205,10 @@ export const VtuberVRMPage = () => {
 		</div>
 
 		<div className={`${prefixCls}-toolbar`}>
+			<Button type="primary" size="small" onClick={() => setModelDrawerOpen(!modelDrawerOpen)}>
+				{modelDrawerOpen ? '关闭' : '打开'}模型库
+			</Button>
+
 			<Button type="primary" size="small" loading={cameraLoading} onClick={toggleCamera}>
 				{isCameraEnabled ? '关闭' : '开启'}摄像头
 			</Button>
@@ -166,5 +224,14 @@ export const VtuberVRMPage = () => {
 				}}
 			/>
 		</div>
+
+		<ModelDrawer
+			open={modelDrawerOpen}
+			value={modelUrl}
+			onChange={(value) => {
+				setModelUrl(value);
+			}}
+			onClose={() => setModelDrawerOpen(!modelDrawerOpen)}
+		/>
 	</div>;
 };
