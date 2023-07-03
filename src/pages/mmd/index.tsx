@@ -6,17 +6,16 @@ import {
 	Nullable,
 	Scene,
 	SceneLoader,
-	Tools,
 	Vector3
 } from '@babylonjs/core';
 import { Button, message, Switch } from 'antd';
 import { MMDTool, MMDToolConfig } from '@/utils';
-import { mediaPipeUrl } from '@/config';
+import { assetsUrl, mediaPipeUrl } from '@/config';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ModelDrawer } from '@/components';
 import { models } from './data';
 
-import { PmxLoader } from '@/libs/babylon-mmd';
+import { MmdRuntime, PmxLoader, VmdLoader } from '@/libs/babylon-mmd';
 
 import './index.scss';
 
@@ -92,13 +91,12 @@ export const VtuberMMDPage = () => {
 		}).then(() => {});
 		setScene(scene);
 
-		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 300, Vector3.Zero(), scene, true);
-		camera.setTarget(new Vector3(0, 1.4, 0));
-		camera.setPosition(new Vector3(0, 1.4, -5));
+		const camera = new ArcRotateCamera('camera', -Math.PI / 2.0, Math.PI / 2.0, 30, Vector3.Zero(), scene, true);
+		camera.setPosition(new Vector3(0, 10, -40));
+		camera.setTarget(new Vector3(0, 10, 0));
 		camera.attachControl(canvas, true);
 		camera.lowerRadiusLimit = 1.5;
 		camera.wheelPrecision = 30;
-		camera.fov = Tools.ToRadians(15);
 
 		const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
 		light.intensity = 1;
@@ -141,6 +139,18 @@ export const VtuberMMDPage = () => {
 				'',
 				scene,
 			);
+			const model = result.meshes[0] as Mesh;
+
+			const vmdLoader = new VmdLoader(scene);
+			const modelMotion = await vmdLoader.loadAsync('model_motion_1', assetsUrl + '/models/vmd/wavefile_v2.vmd');
+
+			const mmdRuntime = new MmdRuntime();
+			const mmdModel = mmdRuntime.createMmdModel(model);
+			mmdModel.addAnimation(modelMotion);
+			mmdModel.setAnimation('model_motion_1');
+			mmdRuntime.playAnimation();
+			mmdRuntime.register(scene);
+
 			meshes = result.meshes;
 			hideLoading(Loading.Model);
 		};

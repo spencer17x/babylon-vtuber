@@ -4,6 +4,7 @@ specifiers:
   '@babylonjs/core': ^6.10.0
   '@babylonjs/gui': ^6.10.0
   '@babylonjs/gui-editor': ^6.10.0
+  '@babylonjs/havok': ^1.0.1
   '@babylonjs/inspector': ^6.10.0
   '@babylonjs/loaders': ^6.10.0
   '@babylonjs/materials': ^6.10.0
@@ -43,6 +44,7 @@ dependencies:
   '@babylonjs/core': 6.10.0
   '@babylonjs/gui': 6.10.0_@babylonjs+core@6.10.0
   '@babylonjs/gui-editor': 6.10.0_j4zrcb2se5h2anh55chyse3jfu
+  '@babylonjs/havok': 1.0.1
   '@babylonjs/inspector': 6.10.0_kt3cvoee6hht2uagxdx5hmbr3u
   '@babylonjs/loaders': 6.10.0_z5xykaaldifsqef6yl4mcawfoq
   '@babylonjs/materials': 6.10.0_@babylonjs+core@6.10.0
@@ -397,6 +399,12 @@ packages:
       '@babylonjs/core': ^6.0.0
     dependencies:
       '@babylonjs/core': 6.10.0
+    dev: false
+
+  /@babylonjs/havok/1.0.1:
+    resolution: {integrity: sha512-J41CIAbL9WOQkPRdMADEVKDKZsU4iOlesBg0C/LP1GPxUncGVylLPkyyGPcQPLd6ifV9cZcnkEJrkiE8xVahTw==}
+    dependencies:
+      '@types/emscripten': 1.39.6
     dev: false
 
   /@babylonjs/inspector/6.10.0_kt3cvoee6hht2uagxdx5hmbr3u:
@@ -930,6 +938,10 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
     dev: true
+
+  /@types/emscripten/1.39.6:
+    resolution: {integrity: sha512-H90aoynNhhkQP6DRweEjJp5vfUVdIj7tdPLsu7pq89vODD/lcugKfZOsfgwpvM6XUewEp2N5dCg1Uf3Qe55Dcg==}
+    dev: false
 
   /@types/estree/1.0.1:
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
