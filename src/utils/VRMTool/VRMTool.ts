@@ -30,14 +30,15 @@ export interface LaunchCallback {
 export class VRMTool extends MediapipeTool {
 	private readonly manager?: Nullable<VRMManager>;
 	private animateType: VRMToolConfig['animateType'];
+	private enableDraw?: boolean;
 
 	static launch(config: VRMToolConfig, mediapipeToolConfig: MediapipeToolConfig, callback?: LaunchCallback) {
 		const client = new VRMTool(config, mediapipeToolConfig);
 		client.getHolistic().onResults((results) => {
-			if (config.enableDraw) {
+			if (client.enableDraw) {
 				client.draw(results);
 			}
-			if (config.animateType) {
+			if (client.animateType) {
 				client.animate(results);
 			}
 			callback?.onResults?.(results);
@@ -50,6 +51,7 @@ export class VRMTool extends MediapipeTool {
 
 		this.manager = config.scene?.metadata?.vrmManagers[0];
 		this.animateType = config.animateType;
+		this.enableDraw = config.enableDraw;
 	}
 
 	private _setRotation(
@@ -62,7 +64,7 @@ export class VRMTool extends MediapipeTool {
 		dampener?: number,
 		lerpAmount?: number,
 	) {
-		rotation = rotation || {x: 0, y: 0, z: 0};
+		rotation = rotation || { x: 0, y: 0, z: 0 };
 		dampener = dampener || 1;
 		lerpAmount = lerpAmount || 0.3;
 		console.log('_setRotation name, rotation, dampener, lerpAmount', name, rotation, dampener, lerpAmount);
@@ -101,7 +103,7 @@ export class VRMTool extends MediapipeTool {
 		dampener = 1,
 		lerpAmount = 0.3
 	) {
-		position = position || {x: 0, y: 0, z: 0};
+		position = position || { x: 0, y: 0, z: 0 };
 		dampener = dampener || 1;
 		lerpAmount = lerpAmount || 0.3;
 		console.log('_setPosition name, position, dampener, lerpAmount', name, position, dampener, lerpAmount);
