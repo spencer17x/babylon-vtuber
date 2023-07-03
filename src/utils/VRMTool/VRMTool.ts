@@ -49,7 +49,9 @@ export class VRMTool extends MediapipeTool {
 	constructor(config: VRMToolConfig, mediapipeToolConfig: MediapipeToolConfig) {
 		super(mediapipeToolConfig);
 
-		this.manager = config.scene?.metadata?.vrmManagers[0];
+		const vrmManagers: VRMManager[] = config.scene?.metadata?.vrmManagers || [];
+		this.manager = vrmManagers[0] || null;
+		console.log('this.manager', this.manager);
 		this.animateType = config.animateType;
 		this.enableDraw = config.enableDraw;
 	}
