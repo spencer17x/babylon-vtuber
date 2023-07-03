@@ -57,7 +57,7 @@ export const VtuberVRMPage = () => {
 	const [animateType, setAnimateType] = useState<VRMToolConfig['animateType']>('holistic');
 	const [modelDrawerOpen, setModelDrawerOpen] = useState(false);
 	const [modelUrl, setModelUrl] = useState<string>('');
-	const [engine, setEngine] = useState<Nullable<Engine>>(null);
+	const sceneRef = useRef<Nullable<Scene>>(null);
 
 	/**
 	 * 初始化默认模型
@@ -73,14 +73,34 @@ export const VtuberVRMPage = () => {
 	}, [searchParams]);
 
 	/**
-	 * 初始化引擎
+	 * 初始化场景
 	 */
 	useEffect(() => {
 		const canvas = canvasRef.current;
 
 		const engine = new Engine(canvas, true);
 		engine.setHardwareScalingLevel(0.5);
-		setEngine(engine);
+
+		const scene = new Scene(engine);
+		scene.debugLayer.show({
+			embedMode: true,
+		}).then(() => {});
+		sceneRef.current = scene;
+
+		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 300, Vector3.Zero(), scene, true);
+		camera.setTarget(new Vector3(0, 1.4, 0));
+		camera.setPosition(new Vector3(0, 1.4, -5));
+		camera.attachControl(canvas, true);
+		camera.lowerRadiusLimit = 1.5;
+		camera.wheelPrecision = 30;
+		camera.fov = Tools.ToRadians(15);
+
+		const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
+		light.intensity = 1;
+
+		engine.runRenderLoop(() => {
+			scene.render();
+		});
 
 		window.addEventListener('resize', () => {
 			engine.resize();
@@ -91,55 +111,37 @@ export const VtuberVRMPage = () => {
 	 * 加载模型
 	 */
 	useEffect(() => {
-		const canvas = canvasRef.current;
-		const video = videoRef.current;
-		const videoCanvas = videoCanvasRef.current;
-		if (!engine) {
-			console.error(`engine is ${engine}`);
+		const scene = sceneRef.current;
+		if (!scene) {
 			return;
 		}
-		if (!video) {
-			console.error(`video is ${video}`);
+		if (!modelUrl) {
 			return;
 		}
-		if (!videoCanvas) {
-			console.error(`videoCanvas is ${videoCanvas}`);
-			return;
-		}
+		scene.metadata = null;
 		console.log('start load model');
-		const scene = new Scene(engine);
+		let meshes = scene.meshes;
 
 		const loadModel = async () => {
 			showLoading(Loading.Model);
-			scene.debugLayer.show({
-				embedMode: true,
-			}).then(() => {});
-
-			const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 300, Vector3.Zero(), scene, true);
-			camera.setTarget(new Vector3(0, 1.4, 0));
-			camera.setPosition(new Vector3(0, 1.4, -5));
-			camera.attachControl(canvas, true);
-			camera.lowerRadiusLimit = 1.5;
-			camera.wheelPrecision = 30;
-			camera.fov = Tools.ToRadians(15);
-
-			const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
-			light.intensity = 1;
-
-			engine.runRenderLoop(() => {
-				scene.render();
-			});
-			await SceneLoader.ImportMeshAsync(
+			const result = await SceneLoader.ImportMeshAsync(
 				'',
 				modelUrl,
 				'',
 				scene,
 			);
-			console.log('scene', scene, scene.metadata);
+			meshes = result.meshes;
 			hideLoading(Loading.Model);
 		};
 
 		const loadVrmTool = () => {
+			const video = videoRef.current;
+			const videoCanvas = videoCanvasRef.current;
+			if (!video || !videoCanvas) {
+				return;
+			}
+
+			console.log('scene', scene, scene.metadata);
 			const client = VRMTool.launch({
 				scene,
 				enableDraw: true,
@@ -163,12 +165,10 @@ export const VtuberVRMPage = () => {
 		loadModel().then(() => {
 			loadVrmTool();
 		});
-
 		return () => {
-			console.log('dispose scene');
-			scene.dispose();
+			meshes.forEach(mesh => mesh.dispose());
 		};
-	}, [engine, modelUrl]);
+	}, [modelUrl]);
 
 	/**
 	 * 切换动画类型
