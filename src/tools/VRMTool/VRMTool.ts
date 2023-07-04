@@ -31,6 +31,7 @@ export class VRMTool extends MediapipeTool {
 	private readonly manager?: Nullable<VRMManager>;
 	private animateType: VRMToolConfig['animateType'];
 	private enableDraw?: boolean;
+	private scene: Scene;
 
 	static launch(config: VRMToolConfig, mediapipeToolConfig: MediapipeToolConfig, callback?: LaunchCallback) {
 		const client = new VRMTool(config, mediapipeToolConfig);
@@ -49,16 +50,19 @@ export class VRMTool extends MediapipeTool {
 	constructor(config: VRMToolConfig, mediapipeToolConfig: MediapipeToolConfig) {
 		super(mediapipeToolConfig);
 
-		const scene = config.scene;
-		const vrmManagers: VRMManager[] = scene.metadata?.vrmManagers || [];
+		this.scene = config.scene;
+		const vrmManagers: VRMManager[] = this.scene.metadata?.vrmManagers || [];
 		this.manager = vrmManagers[0] || null;
-		console.log('this.manager', this.manager);
 		this.animateType = config.animateType;
 		this.enableDraw = config.enableDraw;
 
-		scene.onBeforeRenderObservable.add(() => {
-			this.manager?.update(scene.getEngine().getDeltaTime());
-		});
+		this.handleUpdateDeltaTime = this.handleUpdateDeltaTime.bind(this);
+
+		this.scene.onBeforeRenderObservable.add(this.handleUpdateDeltaTime);
+	}
+
+	handleUpdateDeltaTime() {
+		this.manager?.update(this.scene.getEngine().getDeltaTime());
 	}
 
 	private _setRotation(
@@ -278,7 +282,7 @@ export class VRMTool extends MediapipeTool {
 		const pose = this._getPose(results);
 
 		const leftHandLandmarks = results.leftHandLandmarks;
-		console.log('animateFace leftHandLandmarks', leftHandLandmarks);
+		console.log('animateLeftHand leftHandLandmarks', leftHandLandmarks);
 		if (!leftHandLandmarks) return;
 
 		const leftHand = Hand.solve(leftHandLandmarks, 'Left');
@@ -312,7 +316,7 @@ export class VRMTool extends MediapipeTool {
 		const pose = this._getPose(results);
 
 		const rightHandLandmarks = results.rightHandLandmarks;
-		console.log('animateFace rightHandLandmarks', rightHandLandmarks);
+		console.log('animateRightHand rightHandLandmarks', rightHandLandmarks);
 		if (!rightHandLandmarks) return;
 
 		const rightHand = Hand.solve(rightHandLandmarks, 'Right');
@@ -362,5 +366,10 @@ export class VRMTool extends MediapipeTool {
 
 	setAnimateType(type: VRMToolConfig['animateType']) {
 		this.animateType = type;
+	}
+
+	dispose() {
+		super.dispose();
+		this.scene.onBeforeRenderObservable.removeCallback(this.handleUpdateDeltaTime);
 	}
 }
