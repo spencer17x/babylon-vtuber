@@ -1,46 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, message, Switch } from 'antd';
-import { VRMTool, VRMToolConfig } from '@/utils';
+import { Button, Switch } from 'antd';
+import { VRMTool, VRMToolConfig } from '@/tools';
 import {
 	ArcRotateCamera,
 	Engine,
-	HemisphericLight,
+	HemisphericLight, Mesh,
 	Nullable,
 	Scene,
 	SceneLoader,
-	Tools,
-	Vector3
+	Vector3,
 } from '@babylonjs/core';
 import { mediaPipeUrl } from '@/config';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ModelDrawer } from '@/components';
+import { centeredModel, hideLoading, showLoading } from '@/utils';
 import { models } from './data';
 
 import '@babylonjs/inspector';
 
 import './index.scss';
 
-enum Loading {
-	MediaPipe = 'mediapipe',
-	Model = 'model'
-}
-
-const loadingMap: Record<Loading, string> = {
-	[Loading.MediaPipe]: 'mediapipe数据加载中...',
-	[Loading.Model]: '模型数据加载中...',
-};
-
-const showLoading = (type: Loading) => {
-	return message.loading({
-		content: loadingMap[type],
-		duration: 0,
-		key: type
-	});
-};
-
-const hideLoading = (type: Loading) => {
-	return message.destroy(type);
-};
 
 const prefixCls = 'vtuber-vrm-page';
 
@@ -61,7 +40,7 @@ export const VtuberVRMPage = () => {
 	const [modelUrl, setModelUrl] = useState('');
 
 	/**
-	 * 初始化模型
+	 * init model
 	 */
 	useEffect(() => {
 		const modelUrl = searchParams.get('modelUrl');
@@ -71,14 +50,14 @@ export const VtuberVRMPage = () => {
 	}, [navigate, searchParams]);
 
 	/**
-	 * 更新模型
+	 * update model
 	 */
 	useEffect(() => {
 		setModelUrl(searchParams.get('modelUrl') || '');
 	}, [searchParams]);
 
 	/**
-	 * 初始化场景
+	 * init scene
 	 */
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -92,13 +71,10 @@ export const VtuberVRMPage = () => {
 		}).then(() => {});
 		setScene(scene);
 
-		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 300, Vector3.Zero(), scene, true);
-		camera.setTarget(new Vector3(0, 1.4, 0));
-		camera.setPosition(new Vector3(0, 1.4, -5));
+		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 30, Vector3.Zero(), scene, true);
 		camera.attachControl(canvas, true);
 		camera.lowerRadiusLimit = 1.5;
 		camera.wheelPrecision = 30;
-		camera.fov = Tools.ToRadians(15);
 
 		const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
 		light.intensity = 1;
@@ -119,7 +95,7 @@ export const VtuberVRMPage = () => {
 	}, []);
 
 	/**
-	 * 加载模型
+	 * load model
 	 */
 	useEffect(() => {
 		if (!scene) {
@@ -132,7 +108,7 @@ export const VtuberVRMPage = () => {
 		let meshes = scene.meshes;
 
 		const loadModel = async () => {
-			showLoading(Loading.Model);
+			showLoading('model');
 			const result = await SceneLoader.ImportMeshAsync(
 				'',
 				modelUrl,
@@ -140,7 +116,10 @@ export const VtuberVRMPage = () => {
 				scene,
 			);
 			meshes = result.meshes;
-			hideLoading(Loading.Model);
+
+			centeredModel(meshes[0] as Mesh, scene);
+
+			hideLoading('model');
 		};
 
 		const loadVRMTool = () => {
@@ -164,7 +143,7 @@ export const VtuberVRMPage = () => {
 				}
 			}, {
 				onResults() {
-					hideLoading(Loading.MediaPipe);
+					hideLoading('mediapipe');
 				}
 			});
 			setVRMTool(client);
@@ -196,7 +175,7 @@ export const VtuberVRMPage = () => {
 			return;
 		}
 		try {
-			showLoading(Loading.MediaPipe);
+			showLoading('mediapipe');
 			setCameraLoading(true);
 			await vrmTool.toggleCamera();
 			setIsCameraEnabled(vrmTool.isCameraEnabled ?? false);

@@ -2,7 +2,7 @@ import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { HumanoidBone, VRMManager } from '@/libs/babylon-vrm-loader';
 import { Face, Hand, Pose } from 'kalidokit';
 import { Nullable, Quaternion, Scene, Vector3 } from '@babylonjs/core';
-import { MediapipeTool, MediapipeToolConfig } from '@/utils';
+import { MediapipeTool, MediapipeToolConfig } from '@/tools';
 
 type GetProperties<T> = Exclude<{
 	[K in keyof T]: T[K] extends (...args: any[]) => any ? never : K

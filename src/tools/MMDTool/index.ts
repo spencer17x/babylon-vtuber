@@ -1,4 +1,4 @@
-import { LaunchCallback, MediapipeTool, MediapipeToolConfig, VRMToolConfig } from '@/utils';
+import { LaunchCallback, MediapipeTool, MediapipeToolConfig, VRMToolConfig } from '@/tools';
 import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { Face, Hand, Pose } from 'kalidokit';
 import { Mesh, Vector3 } from '@babylonjs/core';

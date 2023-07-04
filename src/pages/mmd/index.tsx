@@ -1,3 +1,5 @@
+import './index.scss';
+
 import { useEffect, useRef, useState } from 'react';
 import {
 	ArcRotateCamera,
@@ -8,38 +10,15 @@ import {
 	SceneLoader,
 	Vector3
 } from '@babylonjs/core';
-import { Button, message, Switch } from 'antd';
-import { MMDTool, MMDToolConfig } from '@/utils';
+import { Button, Switch } from 'antd';
+import { MMDTool, MMDToolConfig } from '@/tools';
 import { assetsUrl, mediaPipeUrl } from '@/config';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ModelDrawer } from '@/components';
 import { models } from './data';
+import { hideLoading, showLoading } from '@/utils';
 
 import { MmdRuntime, PmxLoader, VmdLoader } from '@/libs/babylon-mmd';
-
-import './index.scss';
-
-enum Loading {
-	MediaPipe = 'mediapipe',
-	Model = 'model'
-}
-
-const showLoading = (type: Loading) => {
-	return message.loading({
-		content: loadingMap[type],
-		duration: 0,
-		key: type
-	});
-};
-
-const loadingMap: Record<Loading, string> = {
-	[Loading.MediaPipe]: 'mediapipe数据加载中...',
-	[Loading.Model]: '模型数据加载中...',
-};
-
-const hideLoading = (type: Loading) => {
-	return message.destroy(type);
-};
 
 const prefixCls = 'vtuber-mmd-page';
 
@@ -130,7 +109,7 @@ export const VtuberMMDPage = () => {
 		let meshes = scene.meshes;
 
 		const loadModel = async () => {
-			showLoading(Loading.Model);
+			showLoading('model');
 			const pmxLoader = new PmxLoader();
 			SceneLoader.RegisterPlugin(pmxLoader);
 			const result = await SceneLoader.ImportMeshAsync(
@@ -152,7 +131,7 @@ export const VtuberMMDPage = () => {
 			mmdRuntime.register(scene);
 
 			meshes = result.meshes;
-			hideLoading(Loading.Model);
+			hideLoading('model');
 		};
 
 		const loadMMDTool = () => {
@@ -176,7 +155,7 @@ export const VtuberMMDPage = () => {
 				}
 			}, {
 				onResults() {
-					hideLoading(Loading.MediaPipe);
+					hideLoading('mediapipe');
 				}
 			});
 			setMMDTool(client);
