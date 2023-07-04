@@ -49,11 +49,16 @@ export class VRMTool extends MediapipeTool {
 	constructor(config: VRMToolConfig, mediapipeToolConfig: MediapipeToolConfig) {
 		super(mediapipeToolConfig);
 
-		const vrmManagers: VRMManager[] = config.scene?.metadata?.vrmManagers || [];
+		const scene = config.scene;
+		const vrmManagers: VRMManager[] = scene.metadata?.vrmManagers || [];
 		this.manager = vrmManagers[0] || null;
 		console.log('this.manager', this.manager);
 		this.animateType = config.animateType;
 		this.enableDraw = config.enableDraw;
+
+		scene.onBeforeRenderObservable.add(() => {
+			this.manager?.update(scene.getEngine().getDeltaTime());
+		});
 	}
 
 	private _setRotation(
