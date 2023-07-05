@@ -8,7 +8,7 @@ import {
 	Mesh,
 	Nullable,
 	Scene,
-	SceneLoader,
+	SceneLoader, Tools,
 	Vector3,
 } from '@babylonjs/core';
 import { mediaPipeUrl } from '@/config';
@@ -79,6 +79,7 @@ export const VtuberVRMPage = () => {
 		camera.attachControl(canvas, true);
 		camera.lowerRadiusLimit = 1.5;
 		camera.wheelPrecision = 30;
+		camera.fov = Tools.ToRadians(80);
 
 		const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
 		light.intensity = 1;
