@@ -13,9 +13,9 @@ type HumanBoneName = GetProperties<HumanoidBone>;
 export interface VRMToolConfig {
 	scene: Scene;
 	/**
-	 * face: face only, holistic: face + hand + pose
+	 * face: face only, holistic: face + hand + pose, none: no animate
 	 */
-	animateType?: 'face' | 'holistic';
+	animateType?: 'face' | 'holistic' | 'none';
 	enableDraw?: boolean;
 }
 
@@ -23,37 +23,36 @@ export interface LaunchCallback {
 	onResults?: (results: Results) => void;
 }
 
+interface Coordinate {
+	x: number;
+	y: number;
+	z: number;
+}
+
 /**
  * VRM
  * inspired by https://github.com/yeemachine/kalidokit
  */
 export class VRMTool extends MediapipeTool {
-	private readonly manager?: Nullable<VRMManager>;
-	private animateType: VRMToolConfig['animateType'];
-	private enableDraw?: boolean;
-	private scene: Scene;
+	private animateType?: Nullable<VRMToolConfig['animateType']> = null;
+	private enableDraw?: boolean = false;
+	private scene?: Nullable<Scene> = null;
 
-	static launch(config: VRMToolConfig, mediapipeToolConfig: MediapipeToolConfig, callback?: LaunchCallback) {
+	static launch(config: VRMToolConfig, mediapipeToolConfig?: MediapipeToolConfig, callback?: LaunchCallback) {
 		const client = new VRMTool(config, mediapipeToolConfig);
 		client.getHolistic().onResults((results) => {
-			if (client.enableDraw) {
-				client.draw(results);
-			}
-			if (client.animateType) {
-				client.animate(results);
-			}
+			client.draw(results);
+			client.animate(results);
 			callback?.onResults?.(results);
 		});
 		return client;
 	}
 
-	constructor(config: VRMToolConfig, mediapipeToolConfig: MediapipeToolConfig) {
+	constructor(config: VRMToolConfig, mediapipeToolConfig?: MediapipeToolConfig) {
 		super(mediapipeToolConfig);
 
 		this.scene = config.scene;
-		const vrmManagers: VRMManager[] = this.scene.metadata?.vrmManagers || [];
-		this.manager = vrmManagers[0] || null;
-		this.animateType = config.animateType || 'holistic';
+		this.animateType = config.animateType;
 		this.enableDraw = config.enableDraw;
 
 		this.handleUpdateDeltaTime = this.handleUpdateDeltaTime.bind(this);
@@ -62,16 +61,14 @@ export class VRMTool extends MediapipeTool {
 	}
 
 	handleUpdateDeltaTime() {
-		this.manager?.update(this.scene.getEngine().getDeltaTime());
+		if (!this._manager) return;
+		if (!this.scene) return;
+		return this._manager.update(this.scene.getEngine().getDeltaTime());
 	}
 
 	private _setRotation(
 		name: HumanBoneName,
-		rotation?: {
-			x: number,
-			y: number,
-			z: number
-		},
+		rotation?: Coordinate,
 		dampener?: number,
 		lerpAmount?: number,
 	) {
@@ -106,11 +103,7 @@ export class VRMTool extends MediapipeTool {
 
 	private _setPosition(
 		name: HumanBoneName,
-		position?: {
-			x: number,
-			y: number,
-			z: number
-		},
+		position?: Coordinate,
 		dampener = 1,
 		lerpAmount = 0.3
 	) {
@@ -160,11 +153,14 @@ export class VRMTool extends MediapipeTool {
 		return this.getManager().humanoidBone[name];
 	}
 
+	get _manager() {
+		const vrmManagers: VRMManager[] = this.scene?.metadata?.vrmManagers || [];
+		return vrmManagers[vrmManagers.length - 1];
+	}
+
 	getManager() {
-		if (!this.manager) {
-			throw new Error('VRM manager not found');
-		}
-		return this.manager;
+		if (!this._manager) throw new Error('VRMManager not found');
+		return this._manager;
 	}
 
 	animateFace(results: Results) {
@@ -352,6 +348,9 @@ export class VRMTool extends MediapipeTool {
 	}
 
 	animate(results: Results) {
+		if (!this.animateType) return;
+		if (this.animateType === 'none') return;
+
 		// Animate Face
 		this.animateFace(results);
 
@@ -368,8 +367,18 @@ export class VRMTool extends MediapipeTool {
 		this.animateType = type;
 	}
 
+	draw(results: Results) {
+		if (!this.enableDraw) return;
+		super.draw(results);
+	}
+
 	dispose() {
-		super.dispose();
-		this.scene.onBeforeRenderObservable.removeCallback(this.handleUpdateDeltaTime);
+		this.scene = null;
+		this.animateType = null;
+		this.enableDraw = false;
+
+		return super.dispose().then(() => {
+			console.log('VRMTool dispose');
+		});
 	}
 }

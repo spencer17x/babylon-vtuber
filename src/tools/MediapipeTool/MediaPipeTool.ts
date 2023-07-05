@@ -19,33 +19,41 @@ export interface MediapipeToolConfig {
 }
 
 export class MediapipeTool {
-	private readonly config: MediapipeToolConfig;
+	private config?: MediapipeToolConfig | null = null;
 
 	private holistic?: Holistic | null = null;
 	private camera?: Camera | null = null;
 
 	public isCameraEnabled = false;
 
-	constructor(config: MediapipeToolConfig) {
+	constructor(config?: MediapipeToolConfig) {
 		this.config = config;
-		this.isCameraEnabled = config.isCameraEnabled ?? false;
+		this.isCameraEnabled = config?.isCameraEnabled ?? false;
 
 		this.initHolistic();
 		this.initCamera();
 	}
 
+	get video() {
+		return this.config?.video;
+	}
+
 	getVideo() {
-		if (!this.config.video) {
+		if (!this.video) {
 			throw new Error('Video is not created');
 		}
-		return this.config.video;
+		return this.video;
+	}
+
+	get videoCanvas() {
+		return this.config?.videoCanvas;
 	}
 
 	getVideoCanvas() {
-		if (!this.config.videoCanvas) {
+		if (!this.videoCanvas) {
 			throw new Error('Video canvas is not created');
 		}
-		return this.config.videoCanvas;
+		return this.videoCanvas;
 	}
 
 	getHolistic() {
@@ -67,7 +75,7 @@ export class MediapipeTool {
 			locateFile: (file) => {
 				return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`;
 			},
-			...this.config.holisticConfig
+			...this.config?.holisticConfig
 		});
 		this.holistic.setOptions({
 			modelComplexity: 1,
@@ -81,9 +89,9 @@ export class MediapipeTool {
 	initCamera() {
 		this.camera = new Camera(this.getVideo(), {
 			onFrame: async () => {
-				await this.getHolistic().send({ image: this.getVideo() });
+				await this.holistic?.send({ image: this.getVideo() });
 			},
-			...this.config.cameraOptions
+			...this.config?.cameraOptions
 		});
 	}
 
@@ -146,7 +154,15 @@ export class MediapipeTool {
 	}
 
 	dispose() {
-		this.holistic?.close();
-		this.camera?.stop();
+		return Promise.all([
+			this.camera?.stop(),
+			this.holistic?.close(),
+		]).then(() => {
+			this.isCameraEnabled = false;
+			this.holistic = null;
+			this.camera = null;
+			this.config = null;
+			console.log('MediapipeTool disposed');
+		});
 	}
 }

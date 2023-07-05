@@ -43,6 +43,13 @@ export const VtuberVRMPage = () => {
 	const [modelUrl, setModelUrl] = useState('');
 
 	/**
+	 * update model
+	 */
+	useEffect(() => {
+		setModelUrl(searchParams.get('modelUrl') || '');
+	}, [searchParams]);
+
+	/**
 	 * init model
 	 */
 	useEffect(() => {
@@ -51,13 +58,6 @@ export const VtuberVRMPage = () => {
 			navigate(`/vrm?modelUrl=${models[0]}`);
 		}
 	}, [navigate, searchParams]);
-
-	/**
-	 * update model
-	 */
-	useEffect(() => {
-		setModelUrl(searchParams.get('modelUrl') || '');
-	}, [searchParams]);
 
 	/**
 	 * init scene
@@ -98,21 +98,63 @@ export const VtuberVRMPage = () => {
 		};
 	}, []);
 
+	const initVRMTool = () => {
+		const video = videoRef.current;
+		const videoCanvas = videoCanvasRef.current;
+		if (!video || !videoCanvas) {
+			return;
+		}
+
+		const scene = sceneRef.current;
+		if (!scene) return;
+		vrmToolRef.current = VRMTool.launch({
+			enableDraw: true,
+			scene,
+		}, {
+			video,
+			videoCanvas,
+			holisticConfig: {
+				locateFile: (file) => {
+					return `${mediaPipeUrl}/${file}`;
+				}
+			}
+		}, {
+			onResults() {
+				hideLoading('mediapipe');
+			}
+		});
+	};
+
+	/**
+	 * init vrmTool
+	 */
+	useEffect(() => {
+		initVRMTool();
+		return () => {
+			vrmToolRef.current?.dispose().then(() => {});
+		};
+	}, []);
+
+	/**
+	 * update vrmTool animateType
+	 */
+	useEffect(() => {
+		vrmToolRef.current?.setAnimateType(animateType);
+	}, [animateType]);
+
 	/**
 	 * load model
 	 */
 	useEffect(() => {
 		const scene = sceneRef.current;
-		if (!scene) {
-			return;
-		}
-		if (!modelUrl) {
-			return;
-		}
+		if (!scene) return;
+		if (!modelUrl) return;
+
 		console.log('start load model');
 		let meshes = scene.meshes;
 
-		const loadModel = async () => {
+		const load = async () => {
+			// 加载模型
 			showLoading('model');
 			const result = await SceneLoader.ImportMeshAsync(
 				'',
@@ -120,47 +162,17 @@ export const VtuberVRMPage = () => {
 				'',
 				scene,
 			);
+
 			meshes = result.meshes;
-
 			centeredModel(meshes[0] as Mesh, scene);
-
 			hideLoading('model');
 		};
+		load().then(() => {});
 
-		const loadVRMTool = () => {
-			const video = videoRef.current;
-			const videoCanvas = videoCanvasRef.current;
-			if (!video || !videoCanvas) {
-				return;
-			}
-
-			console.log('scene', scene, scene.metadata);
-			vrmToolRef.current = VRMTool.launch({
-				scene,
-				enableDraw: true,
-			}, {
-				video,
-				videoCanvas,
-				holisticConfig: {
-					locateFile: (file) => {
-						return `${mediaPipeUrl}/${file}`;
-					}
-				}
-			}, {
-				onResults() {
-					hideLoading('mediapipe');
-				}
-			});
-		};
-
-		loadModel().then(() => {
-			loadVRMTool();
-		});
 		return () => {
 			meshes.forEach(mesh => {
 				mesh.dispose();
 			});
-			scene.metadata = null;
 		};
 	}, [modelUrl]);
 

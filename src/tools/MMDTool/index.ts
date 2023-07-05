@@ -1,4 +1,4 @@
-import { LaunchCallback, MediapipeTool, MediapipeToolConfig, VRMToolConfig } from '@/tools';
+import { LaunchCallback, MediapipeTool, MediapipeToolConfig } from '@/tools';
 import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { Face, Hand, Pose } from 'kalidokit';
 import { Mesh, Vector3 } from '@babylonjs/core';
@@ -211,7 +211,7 @@ export class MMDTool extends MediapipeTool {
 		}
 	}
 
-	setAnimateType(type: VRMToolConfig['animateType']) {
+	setAnimateType(type: MMDToolConfig['animateType']) {
 		this.animateType = type;
 	}
 }
