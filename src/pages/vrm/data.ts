@@ -9,6 +9,6 @@ export const models: string[] = [
 	assetsUrl + '/models/vrm/' + 'M002.vrm',
 	assetsUrl + '/models/vrm/' + 'naiyi_1.20.vrm',
 	assetsUrl + '/models/vrm/' + 'RacingMiku005bld30blend.vrm',
-	assetsUrl + '/models/vrm/' + 'Seed-san.vrm',
+	// assetsUrl + '/models/vrm/' + 'Seed-san.vrm',
 	assetsUrl + '/models/vrm/' + '暗夜卡卡终版.vrm',
 ];
