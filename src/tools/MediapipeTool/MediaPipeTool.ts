@@ -34,26 +34,26 @@ export class MediapipeTool {
 		this.initCamera();
 	}
 
-	get video() {
+	get _video() {
 		return this.config?.video;
 	}
 
 	getVideo() {
-		if (!this.video) {
+		if (!this._video) {
 			throw new Error('Video is not created');
 		}
-		return this.video;
+		return this._video;
 	}
 
-	get videoCanvas() {
+	get _videoCanvas() {
 		return this.config?.videoCanvas;
 	}
 
 	getVideoCanvas() {
-		if (!this.videoCanvas) {
+		if (!this._videoCanvas) {
 			throw new Error('Video canvas is not created');
 		}
-		return this.videoCanvas;
+		return this._videoCanvas;
 	}
 
 	getHolistic() {
