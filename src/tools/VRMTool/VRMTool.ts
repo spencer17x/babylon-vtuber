@@ -1,5 +1,5 @@
 import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
-import { HumanoidBone, VRMManager } from '@/libs/babylon-vrm-loader';
+import { HumanoidBone, VRMManager } from 'babylonjs-vrm-loader';
 import { Face, Hand, Pose } from 'kalidokit';
 import { Nullable, Quaternion, Scene, Vector3 } from '@babylonjs/core';
 import { MediapipeTool, MediapipeToolConfig } from '@/tools';
