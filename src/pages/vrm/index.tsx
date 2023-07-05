@@ -4,14 +4,15 @@ import { VRMTool, VRMToolConfig } from '@/tools';
 import {
 	ArcRotateCamera,
 	Engine,
-	HemisphericLight, Mesh,
+	HemisphericLight,
+	Mesh,
 	Nullable,
 	Scene,
 	SceneLoader,
 	Vector3,
 } from '@babylonjs/core';
 import { mediaPipeUrl } from '@/config';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ModelDrawer } from '@/components';
 import { centeredModel, hideLoading, showLoading } from '@/utils';
 import { models } from './data';
@@ -31,12 +32,14 @@ export const VtuberVRMPage = () => {
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
 	const videoRef = useRef<HTMLVideoElement>(null);
 
+	const engineRef = useRef<Nullable<Engine>>(null);
+	const sceneRef = useRef<Nullable<Scene>>(null);
+	const vrmToolRef = useRef<Nullable<VRMTool>>(null);
+
 	const [cameraLoading, setCameraLoading] = useState(false);
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
-	const [vrmTool, setVRMTool] = useState<VRMTool>();
 	const [animateType, setAnimateType] = useState<VRMToolConfig['animateType']>('holistic');
 	const [modelDrawerOpen, setModelDrawerOpen] = useState(false);
-	const [scene, setScene] = useState<Nullable<Scene>>(null);
 	const [modelUrl, setModelUrl] = useState('');
 
 	/**
@@ -64,12 +67,13 @@ export const VtuberVRMPage = () => {
 
 		const engine = new Engine(canvas, true);
 		engine.setHardwareScalingLevel(0.5);
+		engineRef.current = engine;
 
 		const scene = new Scene(engine);
 		scene.debugLayer.show({
 			embedMode: true,
 		}).then(() => {});
-		setScene(scene);
+		sceneRef.current = scene;
 
 		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 30, Vector3.Zero(), scene, true);
 		camera.attachControl(canvas, true);
@@ -98,6 +102,7 @@ export const VtuberVRMPage = () => {
 	 * load model
 	 */
 	useEffect(() => {
+		const scene = sceneRef.current;
 		if (!scene) {
 			return;
 		}
@@ -130,7 +135,7 @@ export const VtuberVRMPage = () => {
 			}
 
 			console.log('scene', scene, scene.metadata);
-			const client = VRMTool.launch({
+			vrmToolRef.current = VRMTool.launch({
 				scene,
 				enableDraw: true,
 			}, {
@@ -146,7 +151,6 @@ export const VtuberVRMPage = () => {
 					hideLoading('mediapipe');
 				}
 			});
-			setVRMTool(client);
 		};
 
 		loadModel().then(() => {
@@ -158,18 +162,10 @@ export const VtuberVRMPage = () => {
 			});
 			scene.metadata = null;
 		};
-	}, [modelUrl, scene]);
-
-	/**
-	 * 切换动画类型
-	 */
-	useEffect(() => {
-		if (vrmTool) {
-			vrmTool.setAnimateType(animateType);
-		}
-	}, [animateType, vrmTool]);
+	}, [modelUrl]);
 
 	const toggleCamera = async () => {
+		const vrmTool = vrmToolRef.current;
 		if (!vrmTool) {
 			console.error('vrmTool is not found');
 			return;
@@ -210,6 +206,12 @@ export const VtuberVRMPage = () => {
 				onChange={(checked) => {
 					console.log('checked', checked);
 					const type = checked ? 'holistic' : 'face';
+					const vrmTool = vrmToolRef.current;
+					if (!vrmTool) {
+						console.error('vrmTool is not found');
+						return;
+					}
+					vrmTool.setAnimateType(type);
 					setAnimateType(type);
 				}}
 			/>

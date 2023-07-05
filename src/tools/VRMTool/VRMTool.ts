@@ -53,7 +53,7 @@ export class VRMTool extends MediapipeTool {
 		this.scene = config.scene;
 		const vrmManagers: VRMManager[] = this.scene.metadata?.vrmManagers || [];
 		this.manager = vrmManagers[0] || null;
-		this.animateType = config.animateType;
+		this.animateType = config.animateType || 'holistic';
 		this.enableDraw = config.enableDraw;
 
 		this.handleUpdateDeltaTime = this.handleUpdateDeltaTime.bind(this);
