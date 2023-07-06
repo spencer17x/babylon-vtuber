@@ -10,7 +10,7 @@ import {
 	Vector3
 } from '@babylonjs/core';
 import { Button, Switch } from 'antd';
-import { MmdPhysics, MmdRuntime, PmxLoader, VmdLoader } from 'babylon-mmd';
+import { MmdRuntime, PmxLoader, VmdLoader } from 'babylon-mmd';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
