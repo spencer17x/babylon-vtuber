@@ -1,3 +1,5 @@
+import { Camera, CameraOptions } from '@mediapipe/camera_utils';
+import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import {
 	FACEMESH_TESSELATION,
 	HAND_CONNECTIONS,
@@ -6,8 +8,6 @@ import {
 	POSE_CONNECTIONS,
 	Results
 } from '@mediapipe/holistic';
-import { Camera, CameraOptions } from '@mediapipe/camera_utils';
-import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
 export interface MediapipeToolConfig {
 	video?: HTMLVideoElement;

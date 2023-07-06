@@ -1,6 +1,5 @@
 import './index.scss';
 
-import { useEffect, useRef, useState } from 'react';
 import {
 	ArcRotateCamera,
 	Engine,
@@ -11,14 +10,16 @@ import {
 	Vector3
 } from '@babylonjs/core';
 import { Button, Switch } from 'antd';
-import { MMDTool, MMDToolConfig } from '@/tools';
-import { assetsUrl, mediaPipeUrl } from '@/config';
+import { MmdPhysics, MmdRuntime, PmxLoader, VmdLoader } from 'babylon-mmd';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+
 import { ModelDrawer } from '@/components';
-import { models } from './data';
+import { assetsUrl, mediaPipeUrl } from '@/config';
+import { MMDTool, MMDToolConfig } from '@/tools';
 import { centeredModel, hideLoading, showLoading } from '@/utils';
 
-import { MmdRuntime, PmxLoader, VmdLoader } from '@/libs/babylon-mmd';
+import { models } from './data';
 
 const prefixCls = 'vtuber-mmd-page';
 

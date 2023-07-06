@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import { Button, Switch } from 'antd';
-import { VRMTool, VRMToolConfig } from '@/tools';
+import '@babylonjs/inspector';
+import './index.scss';
+
 import {
 	ArcRotateCamera,
 	Engine,
@@ -11,15 +11,16 @@ import {
 	SceneLoader, Tools,
 	Vector3,
 } from '@babylonjs/core';
-import { mediaPipeUrl } from '@/config';
+import { Button, Switch } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+
 import { ModelDrawer } from '@/components';
+import { mediaPipeUrl } from '@/config';
+import { VRMTool, VRMToolConfig } from '@/tools';
 import { centeredModel, hideLoading, showLoading } from '@/utils';
+
 import { models } from './data';
-
-import '@babylonjs/inspector';
-
-import './index.scss';
 
 
 const prefixCls = 'vtuber-vrm-page';

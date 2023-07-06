@@ -1,6 +1,7 @@
 import { createHashRouter, Navigate } from 'react-router-dom';
-import { VtuberVRMPage } from '@/pages/vrm';
+
 import { VtuberMMDPage } from '@/pages/mmd';
+import { VtuberVRMPage } from '@/pages/vrm';
 
 export const router = createHashRouter([
 	{

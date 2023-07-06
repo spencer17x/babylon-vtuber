@@ -1,7 +1,8 @@
-import { LaunchCallback, MediapipeTool, MediapipeToolConfig } from '@/tools';
+import { Mesh, Vector3 } from '@babylonjs/core';
 import { NormalizedLandmarkList, Results } from '@mediapipe/holistic';
 import { Face, Hand, Pose } from 'kalidokit';
-import { Mesh, Vector3 } from '@babylonjs/core';
+
+import { LaunchCallback, MediapipeTool, MediapipeToolConfig } from '@/tools';
 
 export interface MMDToolConfig {
 	mesh: Mesh;

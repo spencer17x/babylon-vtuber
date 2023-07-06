@@ -34,7 +34,8 @@
     ],
 
     "importHelpers": true,
-    "declaration": true,
+    "declaration": false,
+    "declarationMap": false,
     "sourceMap": true,
     "experimentalDecorators": true,
     "noImplicitAny": true,
