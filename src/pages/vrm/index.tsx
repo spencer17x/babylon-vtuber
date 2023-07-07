@@ -22,7 +22,6 @@ import { centeredModel, hideLoading, showLoading } from '@/utils';
 
 import { models } from './data';
 
-
 const prefixCls = 'vtuber-vrm-page';
 
 export const VtuberVRMPage = () => {
