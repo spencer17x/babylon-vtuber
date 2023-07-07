@@ -71,9 +71,12 @@ export const VtuberVRMPage = () => {
 		engineRef.current = engine;
 
 		const scene = new Scene(engine);
-		scene.debugLayer.show({
-			embedMode: true,
-		}).then(() => {});
+
+		if (searchParams.get('inspector')) {
+			scene.debugLayer.show({
+				embedMode: true,
+			}).then(() => {});
+		}
 		sceneRef.current = scene;
 
 		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 30, Vector3.Zero(), scene, true);
@@ -98,7 +101,7 @@ export const VtuberVRMPage = () => {
 			scene.dispose();
 			engine.dispose();
 		};
-	}, []);
+	}, [searchParams]);
 
 	const initVRMTool = () => {
 		const video = videoRef.current;
