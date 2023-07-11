@@ -8,7 +8,7 @@ import {
 	Mesh,
 	Nullable,
 	Scene,
-	SceneLoader, Tools,
+	SceneLoader,
 	Vector3,
 } from '@babylonjs/core';
 import { Button, Switch } from 'antd';
@@ -74,9 +74,6 @@ export const VtuberVRMPage = () => {
 
 		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 30, Vector3.Zero(), scene, true);
 		camera.attachControl(canvas, true);
-		camera.lowerRadiusLimit = 1.5;
-		camera.wheelPrecision = 30;
-		camera.fov = Tools.ToRadians(80);
 
 		const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
 		light.intensity = 1;

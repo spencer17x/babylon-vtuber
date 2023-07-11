@@ -73,8 +73,6 @@ export const VtuberMMDPage = () => {
 
 		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 30, Vector3.Zero(), scene, true);
 		camera.attachControl(canvas, true);
-		camera.lowerRadiusLimit = 1.5;
-		camera.wheelPrecision = 30;
 
 		const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
 		light.intensity = 1;
