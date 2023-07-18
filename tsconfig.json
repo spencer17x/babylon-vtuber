@@ -29,7 +29,6 @@
     },
 
     "types": [
-      "vite-plugin-glsl/ext",
       "node"
     ],
 

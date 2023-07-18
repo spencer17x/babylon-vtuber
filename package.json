@@ -50,7 +50,6 @@
     "typescript": "^5.0.2",
     "vite": "^4.3.9",
     "vite-plugin-friendly-type-imports": "^0.0.2",
-    "vite-plugin-glsl": "^1.1.2",
     "vite-plugin-mediapipe": "^0.0.7"
   }
 }
