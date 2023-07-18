@@ -37,7 +37,6 @@ specifiers:
   tslib: ^2.5.3
   typescript: ^5.0.2
   vite: ^4.3.9
-  vite-plugin-friendly-type-imports: ^0.0.2
   vite-plugin-mediapipe: ^0.0.7
 
 dependencies:
@@ -79,7 +78,6 @@ devDependencies:
   tslib: 2.5.3
   typescript: 5.1.3
   vite: 4.3.9_5wbk5ugan4mo64fxl5hpbqa3oa
-  vite-plugin-friendly-type-imports: 0.0.2
   vite-plugin-mediapipe: 0.0.7
 
 packages:
@@ -2871,10 +2869,6 @@ packages:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
     dependencies:
       punycode: 2.3.0
-    dev: true
-
-  /vite-plugin-friendly-type-imports/0.0.2:
-    resolution: {integrity: sha512-qHdZtH5GMzJgsSm0CP4XCOmjHwEU4A3ZlWn4sg/LZ4k4Gsp4M0BSA6BUvHjQL4474RTOT0iebUUKNugBNyNYEA==}
     dev: true
 
   /vite-plugin-mediapipe/0.0.7:
