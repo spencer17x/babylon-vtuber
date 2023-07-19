@@ -28,17 +28,22 @@ https://spencer17x.github.io/babylon-vtuber/#/vrm
 
 **custom model**
 
-[upload_custom_model.mov](./documents%2Fassets%2Fvideos%2Fupload_custom_model.mov)
+<video width="320" height="240" controls>
+  <source src="./documents%2Fassets%2Fvideos%2Fupload_custom_model.mov" type="video/mp4">
+</video>
 
 **face drive**
 
 ![mediapipe_model_face.png](./documents%2Fassets%2Fimages%2Fmediapipe_model_face.png)
 
-[mediapipe_model_face.mov](./documents%2Fassets%2Fvideos%2Fmediapipe_model_face.mov)
+<video width="320" height="240" controls>
+  <source src="./documents%2Fassets%2Fvideos%2Fmediapipe_model_face.mov" type="video/mp4">
+</video>
 
 **holistic drive**
 
 ![mediapipe_model_holistic.png](./documents%2Fassets%2Fimages%2Fmediapipe_model_holistic.png)
 
-[mediapipe_model_holistic.mov](./documents%2Fassets%2Fvideos%2Fmediapipe_model_holistic.mov)
-
+<video width="320" height="240" controls>
+  <source src="./documents%2Fassets%2Fvideos%2Fmediapipe_model_holistic.mov" type="video/mp4">
+</video>
