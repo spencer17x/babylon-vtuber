@@ -83,6 +83,9 @@ export const VtuberVRMPage = () => {
 		};
 	}, []);
 
+	/**
+	 * inspector
+	 */
 	useEffect(() => {
 		if (searchParams.get('inspector')) {
 			sceneRef.current?.debugLayer.show({

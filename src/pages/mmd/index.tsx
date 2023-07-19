@@ -1,5 +1,6 @@
 import './index.scss';
 
+import { UploadOutlined } from "@ant-design/icons";
 import {
 	ArcRotateCamera,
 	Engine,
@@ -9,7 +10,7 @@ import {
 	SceneLoader,
 	Vector3
 } from '@babylonjs/core';
-import { Button, Switch } from 'antd';
+import { Button, Switch, Upload } from 'antd';
 import { MmdRuntime, PmxLoader, VmdLoader } from 'babylon-mmd';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -31,45 +32,35 @@ export const VtuberMMDPage = () => {
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
 	const videoRef = useRef<HTMLVideoElement>(null);
 
+	const engineRef = useRef<Nullable<Engine>>(null);
+	const sceneRef = useRef<Nullable<Scene>>(null);
+
 	const [cameraLoading, setCameraLoading] = useState(false);
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
 	const [mmdTool, setMMDTool] = useState<MMDTool>();
 	const [animateType, setAnimateType] = useState<MMDToolConfig['animateType']>('holistic');
 	const [modelDrawerOpen, setModelDrawerOpen] = useState(false);
-	const [scene, setScene] = useState<Nullable<Scene>>(null);
-	const [modelUrl, setModelUrl] = useState('');
+	const [model, setModel] = useState<string | File>('');
 
 	/**
-	 * 初始化模型
+	 * init model
 	 */
 	useEffect(() => {
-		const modelUrl = searchParams.get('modelUrl');
-		if (!modelUrl) {
-			navigate(`/mmd?modelUrl=${models[0]}`);
-		}
-	}, [navigate, searchParams]);
+		setModel(models[0])
+	}, []);
 
 	/**
-	 * 更新模型
-	 */
-	useEffect(() => {
-		setModelUrl(searchParams.get('modelUrl') || '');
-	}, [searchParams]);
-
-	/**
-	 * 初始化场景
+	 * init scene
 	 */
 	useEffect(() => {
 		const canvas = canvasRef.current;
 
 		const engine = new Engine(canvas, true);
 		engine.setHardwareScalingLevel(0.5);
+		engineRef.current = engine;
 
 		const scene = new Scene(engine);
-		scene.debugLayer.show({
-			embedMode: true,
-		}).then(() => {});
-		setScene(scene);
+		sceneRef.current = scene;
 
 		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 30, Vector3.Zero(), scene, true);
 		camera.attachControl(canvas, true);
@@ -93,13 +84,24 @@ export const VtuberMMDPage = () => {
 	}, []);
 
 	/**
-	 * 加载模型
+	 * inspector
 	 */
 	useEffect(() => {
-		if (!scene) {
-			return;
+		if (searchParams.get('inspector')) {
+			sceneRef.current?.debugLayer.show({
+				embedMode: true,
+			}).then(() => {
+			});
 		}
-		if (!modelUrl) {
+	}, [searchParams]);
+
+	/**
+	 * load model
+	 */
+	useEffect(() => {
+		const scene = sceneRef.current;
+		if (!scene) return;
+		if (!model) {
 			return;
 		}
 		console.log('start load model');
@@ -109,21 +111,27 @@ export const VtuberMMDPage = () => {
 			showLoading('model');
 			const pmxLoader = new PmxLoader();
 			SceneLoader.RegisterPlugin(pmxLoader);
-			const result = await SceneLoader.ImportMeshAsync(
-				'',
-				modelUrl,
-				'',
-				scene,
-			);
-			const model = result.meshes[0] as Mesh;
+			const result = typeof model === 'string' ?
+				await SceneLoader.ImportMeshAsync(
+					'',
+					model,
+					'',
+					scene,
+				) : await SceneLoader.ImportMeshAsync(
+					'',
+					'',
+					model,
+					scene,
+				)
+			const mesh = result.meshes[0] as Mesh;
 
-			centeredModel(model, scene);
+			centeredModel(mesh, scene);
 
 			const vmdLoader = new VmdLoader(scene);
 			const modelMotion = await vmdLoader.loadAsync('model_motion_1', assetsUrl + '/models/vmd/wavefile_v2.vmd');
 
 			const mmdRuntime = new MmdRuntime();
-			const mmdModel = mmdRuntime.createMmdModel(model);
+			const mmdModel = mmdRuntime.createMmdModel(mesh);
 			mmdModel.addAnimation(modelMotion);
 			mmdModel.setAnimation('model_motion_1');
 			mmdRuntime.playAnimation();
@@ -167,9 +175,8 @@ export const VtuberMMDPage = () => {
 			meshes.forEach(mesh => {
 				mesh.dispose();
 			});
-			scene.metadata = null;
 		};
-	}, [modelUrl, scene]);
+	}, [model]);
 
 	/**
 	 * 切换动画类型
@@ -201,6 +208,19 @@ export const VtuberMMDPage = () => {
 		</div>
 
 		<div className={`${prefixCls}-toolbar`}>
+			<Upload
+				name='file'
+				beforeUpload={() => false}
+				itemRender={() => null}
+				onChange={({file}) => {
+					setModel(file instanceof File ? file : '');
+				}}
+			>
+				<Button type='primary' icon={<UploadOutlined/>}>
+					上传自定义模型
+				</Button>
+			</Upload>
+
 			<Button type="primary" onClick={() => setModelDrawerOpen(!modelDrawerOpen)}>
 				{modelDrawerOpen ? '关闭' : '打开'}模型库
 			</Button>
@@ -224,7 +244,7 @@ export const VtuberMMDPage = () => {
 		<ModelDrawer
 			models={models}
 			open={modelDrawerOpen}
-			value={modelUrl}
+			value={typeof model === 'string' ? model : ''}
 			onChange={(value) => {
 				navigate(`/mmd?modelUrl=${value}`);
 			}}
