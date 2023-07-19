@@ -58,7 +58,7 @@ const List: FC<{
 			const view = engine.registerView(canvas, camera);
 
 			const model = models[index];
-			const { meshes } = await SceneLoader.ImportMeshAsync('', model);
+			const {meshes} = await SceneLoader.ImportMeshAsync('', model);
 			centeredModel(meshes[0] as Mesh, viewScene);
 
 			viewScene.executeWhenReady(() => {
@@ -139,16 +139,25 @@ const List: FC<{
 		<div className={classNames(`${prefixCls}-list`, className)} style={style}>
 			{
 				models.map((model) => {
-					return <canvas
-						className={classNames(`${prefixCls}-list-item`, {
-							[`${prefixCls}-list-item-active`]: value === model
-						})}
+					return <div
+						className={
+							classNames(`${prefixCls}-list-item`, {
+								[`${prefixCls}-list-item-active`]: value === model
+							})
+						}
 						key={model}
-						ref={element => element && viewCanvasesRef.current.push(element)}
-						onPointerDown={handleCanvasEnter}
-						onPointerLeave={handleCanvasLeave}
-						onClick={() => onChange(model)}
-					/>;
+					>
+						<canvas
+							className={`${prefixCls}-list-item-canvas`}
+							ref={element => element && viewCanvasesRef.current.push(element)}
+							onPointerDown={handleCanvasEnter}
+							onPointerLeave={handleCanvasLeave}
+							onClick={() => onChange(model)}
+						/>
+						<div className={`${prefixCls}-list-item-title`}>
+							{model.split('/').pop()}
+						</div>
+					</div>;
 				})
 			}
 		</div>
