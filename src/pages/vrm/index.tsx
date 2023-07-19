@@ -1,6 +1,7 @@
 import '@babylonjs/inspector';
 import './index.scss';
 
+import { UploadOutlined } from "@ant-design/icons";
 import {
 	ArcRotateCamera,
 	Engine,
@@ -11,9 +12,9 @@ import {
 	SceneLoader,
 	Vector3,
 } from '@babylonjs/core';
-import { Button, Switch } from 'antd';
+import { Button, Switch, Upload } from 'antd';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { ModelDrawer } from '@/components';
 import { mediaPipeUrl } from '@/config';
@@ -26,7 +27,6 @@ const prefixCls = 'vtuber-vrm-page';
 
 export const VtuberVRMPage = () => {
 	const [searchParams] = useSearchParams();
-	const navigate = useNavigate();
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -40,24 +40,14 @@ export const VtuberVRMPage = () => {
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
 	const [animateType, setAnimateType] = useState<VRMToolConfig['animateType']>('holistic');
 	const [modelDrawerOpen, setModelDrawerOpen] = useState(false);
-	const [modelUrl, setModelUrl] = useState('');
-
-	/**
-	 * update model
-	 */
-	useEffect(() => {
-		setModelUrl(searchParams.get('modelUrl') || '');
-	}, [searchParams]);
+	const [model, setModel] = useState<string | File>('');
 
 	/**
 	 * init model
 	 */
 	useEffect(() => {
-		const modelUrl = searchParams.get('modelUrl');
-		if (!modelUrl) {
-			navigate(`/vrm?modelUrl=${models[0]}`);
-		}
-	}, [navigate, searchParams]);
+		setModel(models[0]);
+	}, []);
 
 	/**
 	 * init scene
@@ -97,7 +87,8 @@ export const VtuberVRMPage = () => {
 		if (searchParams.get('inspector')) {
 			sceneRef.current?.debugLayer.show({
 				embedMode: true,
-			}).then(() => {});
+			}).then(() => {
+			});
 		}
 	}, [searchParams]);
 
@@ -134,7 +125,8 @@ export const VtuberVRMPage = () => {
 	useEffect(() => {
 		initVRMTool();
 		return () => {
-			vrmToolRef.current?.dispose().then(() => {});
+			vrmToolRef.current?.dispose().then(() => {
+			});
 		};
 	}, []);
 
@@ -151,7 +143,7 @@ export const VtuberVRMPage = () => {
 	useEffect(() => {
 		const scene = sceneRef.current;
 		if (!scene) return;
-		if (!modelUrl) return;
+		if (!model) return;
 
 		console.log('start load model');
 		let meshes = scene.meshes;
@@ -159,25 +151,32 @@ export const VtuberVRMPage = () => {
 		const load = async () => {
 			// 加载模型
 			showLoading('model');
-			const result = await SceneLoader.ImportMeshAsync(
-				'',
-				modelUrl,
-				'',
-				scene,
-			);
+			const result = typeof model === 'string' ?
+				await SceneLoader.ImportMeshAsync(
+					'',
+					model,
+					'',
+					scene,
+				) : await SceneLoader.ImportMeshAsync(
+					'',
+					'',
+					model,
+					scene,
+				)
 
 			meshes = result.meshes;
 			centeredModel(meshes[0] as Mesh, scene);
 			hideLoading('model');
 		};
-		load().then(() => {});
+		load().then(() => {
+		});
 
 		return () => {
 			meshes.forEach(mesh => {
 				mesh.dispose();
 			});
 		};
-	}, [modelUrl]);
+	}, [model]);
 
 	const toggleCamera = async () => {
 		const vrmTool = vrmToolRef.current;
@@ -206,6 +205,19 @@ export const VtuberVRMPage = () => {
 		</div>
 
 		<div className={`${prefixCls}-toolbar`}>
+			<Upload
+				name='file'
+				beforeUpload={() => false}
+				itemRender={() => null}
+				onChange={({file}) => {
+					setModel(file instanceof File ? file : '');
+				}}
+			>
+				<Button type='primary' icon={<UploadOutlined/>}>
+					上传自定义模型
+				</Button>
+			</Upload>
+
 			<Button type="primary" onClick={() => setModelDrawerOpen(!modelDrawerOpen)}>
 				{modelDrawerOpen ? '关闭' : '打开'}模型库
 			</Button>
@@ -235,9 +247,9 @@ export const VtuberVRMPage = () => {
 		<ModelDrawer
 			models={models}
 			open={modelDrawerOpen}
-			value={modelUrl}
+			value={typeof model === 'string' ? model : ''}
 			onChange={(value) => {
-				navigate(`/vrm?modelUrl=${value}`);
+				setModel(value);
 			}}
 			onClose={() => setModelDrawerOpen(!modelDrawerOpen)}
 		/>
