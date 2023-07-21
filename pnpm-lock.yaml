@@ -23,7 +23,7 @@ specifiers:
   antd: ^5.6.1
   babylon-mmd: ^0.6.0
   babylonjs-gltf2interface: ^6.12.3
-  babylonjs-vrm-loader: ^0.0.6
+  babylonjs-vrm-loader: ^0.0.8
   classnames: ^2.3.2
   eslint: ^8.38.0
   eslint-plugin-react-hooks: ^4.6.0
@@ -55,7 +55,7 @@ dependencies:
   '@wenxin123/babylonjs-mmd-loader': 0.1.4
   antd: 5.6.2_biqbaboplfbrettd7655fr4n2y
   babylon-mmd: 0.6.0_@babylonjs+core@6.12.3
-  babylonjs-vrm-loader: 0.0.6_cyl62eloohjqdnj7qebawcleuy
+  babylonjs-vrm-loader: 0.0.8_cyl62eloohjqdnj7qebawcleuy
   classnames: 2.3.2
   kalidokit: 1.1.5
   react: 18.2.0
@@ -1248,11 +1248,11 @@ packages:
   /babylonjs-gltf2interface/6.12.3:
     resolution: {integrity: sha512-FCWhnI9NFk7TxJC6KiWgruVL578POedCZrTNbMeLqKvgr9GG3toeSmbrn336+wJ1yLZmFumAsvvIZI4kn3PZhg==}
 
-  /babylonjs-vrm-loader/0.0.6_cyl62eloohjqdnj7qebawcleuy:
-    resolution: {integrity: sha512-NlP7P8Fv0gtViHXjBXrz7Gdc8aDhZ6uIOV/00rQYscCWijVSqFKjF/S1MGx6qlpF+LwRgCP2UatDzizSsx3/hw==}
+  /babylonjs-vrm-loader/0.0.8_cyl62eloohjqdnj7qebawcleuy:
+    resolution: {integrity: sha512-jebeKF3KBY61+sREuN8Ncu37+ksoPMsL8k9ELFO0GuOPUrv3lOAzI3MmJaEgNX+C/5Bqfkw+Q/2Eh/Ghy+YCEQ==}
     peerDependencies:
-      '@babylonjs/core': ^6.8.0
-      '@babylonjs/loaders': ^6.8.0
+      '@babylonjs/core': 6.8.0
+      '@babylonjs/loaders': 6.8.0
     dependencies:
       '@babylonjs/core': 6.12.3
       '@babylonjs/loaders': 6.12.3_e4mspbectugrij2x4taqd6e72a

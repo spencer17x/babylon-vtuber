@@ -1,5 +1,5 @@
 import 'antd/dist/reset.css';
-import './loaders/babylonjs-vrm-loader';
+import 'babylonjs-vrm-loader';
 import './main.scss';
 
 import ReactDOM from 'react-dom/client';
