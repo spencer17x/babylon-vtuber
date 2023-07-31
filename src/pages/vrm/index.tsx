@@ -3,6 +3,7 @@ import './index.scss';
 
 import { UploadOutlined } from "@ant-design/icons";
 import {
+	AnimationGroup,
 	ArcRotateCamera,
 	Engine,
 	HemisphericLight,
@@ -13,11 +14,14 @@ import {
 	Vector3,
 } from '@babylonjs/core';
 import { Button, Switch, Upload } from 'antd';
+import { VRMManager } from "babylonjs-vrm-loader";
+import { HumanoidBone } from "babylonjs-vrm-loader/dist/humanoid-bone";
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { ModelDrawer } from '@/components';
 import { mediaPipeUrl } from '@/config';
+import { animationMap, mixamoToVrm } from "@/pages/vrm/map.ts";
 import { VRMTool, VRMToolConfig } from '@/tools';
 import { centeredModel, hideLoading, showLoading } from '@/utils';
 
@@ -90,6 +94,7 @@ export const VtuberVRMPage = () => {
 		if (searchParams.get('inspector')) {
 			sceneRef.current?.debugLayer.show({
 				embedMode: true,
+				globalRoot: document.querySelector<HTMLDivElement>('.inspector')!,
 			}).then(() => {
 			});
 		}
@@ -167,8 +172,11 @@ export const VtuberVRMPage = () => {
 					scene,
 				)
 
+			console.log('vrmManagers', scene.metadata.vrmManagers);
+
 			meshes = result.meshes;
-			centeredModel(meshes[0] as Mesh, scene);
+			const mesh = meshes[0] as Mesh;
+			centeredModel(mesh, scene);
 			hideLoading('model');
 		};
 		load().then(() => {
@@ -200,6 +208,8 @@ export const VtuberVRMPage = () => {
 	};
 
 	return <div className={prefixCls}>
+		<div className='inspector'/>
+
 		<canvas className={`${prefixCls}-canvas`} ref={canvasRef}/>
 
 		<div className={`${prefixCls}-video-container`}>
@@ -218,6 +228,36 @@ export const VtuberVRMPage = () => {
 			>
 				<Button type='primary' icon={<UploadOutlined/>}>
 					上传自定义模型
+				</Button>
+			</Upload>
+
+			<Upload
+				name='file'
+				beforeUpload={() => false}
+				itemRender={() => null}
+				onChange={async ({file}) => {
+					console.log('file', file);
+					if (file instanceof File) {
+						const {animationGroups} = await SceneLoader.ImportAnimationsAsync(
+							'',
+							file as File,
+							sceneRef.current,
+						);
+						const vrmManager: VRMManager = sceneRef.current?.metadata.vrmManagers.slice(-1)[0];
+						const animationGroup = animationGroups[0];
+
+						animationGroup.targetedAnimations.forEach(targetedAnimation => {
+							if (['position', 'scaling'].includes(targetedAnimation.animation.targetProperty)) {
+								console.log('x')
+							}
+						});
+
+						console.log('animationGroup', animationGroup);
+					}
+				}}
+			>
+				<Button type='primary' icon={<UploadOutlined/>}>
+					上传动画
 				</Button>
 			</Upload>
 
