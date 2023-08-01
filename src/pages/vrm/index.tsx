@@ -3,7 +3,6 @@ import './index.scss';
 
 import { UploadOutlined } from "@ant-design/icons";
 import {
-	AnimationGroup,
 	ArcRotateCamera,
 	Engine,
 	HemisphericLight,
@@ -14,14 +13,11 @@ import {
 	Vector3,
 } from '@babylonjs/core';
 import { Button, Switch, Upload } from 'antd';
-import { VRMManager } from "babylonjs-vrm-loader";
-import { HumanoidBone } from "babylonjs-vrm-loader/dist/humanoid-bone";
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { ModelDrawer } from '@/components';
 import { mediaPipeUrl } from '@/config';
-import { animationMap, mixamoToVrm } from "@/pages/vrm/map.ts";
 import { VRMTool, VRMToolConfig } from '@/tools';
 import { centeredModel, hideLoading, showLoading } from '@/utils';
 
@@ -174,6 +170,11 @@ export const VtuberVRMPage = () => {
 
 			console.log('vrmManagers', scene.metadata.vrmManagers);
 
+			// scene.transformNodes.forEach(e => {
+			// 	scene.stopAnimation(e)
+			// 	e.animations = []
+			// })
+
 			meshes = result.meshes;
 			const mesh = meshes[0] as Mesh;
 			centeredModel(mesh, scene);
@@ -243,16 +244,7 @@ export const VtuberVRMPage = () => {
 							file as File,
 							sceneRef.current,
 						);
-						const vrmManager: VRMManager = sceneRef.current?.metadata.vrmManagers.slice(-1)[0];
-						const animationGroup = animationGroups[0];
-
-						animationGroup.targetedAnimations.forEach(targetedAnimation => {
-							if (['position', 'scaling'].includes(targetedAnimation.animation.targetProperty)) {
-								console.log('x')
-							}
-						});
-
-						console.log('animationGroup', animationGroup);
+						console.log('animationGroups', animationGroups);
 					}
 				}}
 			>
