@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { BinaryReader } from "@picode/binary-reader";
 
 /**
@@ -7,7 +9,7 @@ BinaryReader.prototype.readUint64 = function () {
 	const low = this.readUint32();
 	const high = this.readUint32();
 
-	return BigInt(high * 0x100000000 + low);
+	return high * 0x100000000 + low;
 };
 
 /**
@@ -28,11 +30,11 @@ BinaryReader.prototype.readInt64 = function () {
 
 		low = (low + 1) & 0xFFFFFFFF;
 
-		return BigInt(-(high * 0x100000000 + low))
+		return -(high * 0x100000000 + low);
 
 	}
 
-	return BigInt(high * 0x100000000 + low);
+	return high * 0x100000000 + low;
 };
 
 /**
