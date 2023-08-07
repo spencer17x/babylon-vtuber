@@ -1,6 +1,6 @@
 import 'antd/dist/reset.css';
-import 'babylonjs-vrm-loader';
 import './main.scss';
+import './loaders'
 
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';

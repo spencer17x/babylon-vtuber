@@ -11,7 +11,7 @@ import {
 	Vector3
 } from '@babylonjs/core';
 import { Button, Switch, Upload } from 'antd';
-import { MmdRuntime, PmxLoader, VmdLoader } from 'babylon-mmd';
+import { MmdRuntime, VmdLoader } from 'babylon-mmd';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -109,8 +109,6 @@ export const VtuberMMDPage = () => {
 
 		const loadModel = async () => {
 			showLoading('model');
-			const pmxLoader = new PmxLoader();
-			SceneLoader.RegisterPlugin(pmxLoader);
 			const result = typeof model === 'string' ?
 				await SceneLoader.ImportMeshAsync(
 					'',
