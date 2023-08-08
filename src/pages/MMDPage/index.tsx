@@ -14,10 +14,10 @@ import HavokPhysics from "@babylonjs/havok";
 import { Button, Switch, Upload } from 'antd';
 import { MmdPhysics, MmdRuntime, VmdLoader } from "babylon-mmd";
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { ModelDrawer } from '@/components';
-import { assetsUrl, mediaPipeUrl } from '@/config';
+import { mediaPipeUrl } from '@/config';
 import { MMDTool, MMDToolConfig } from '@/tools';
 import { centeredModel, hideLoading, showLoading } from '@/utils';
 
@@ -27,7 +27,6 @@ const prefixCls = 'mmd-page';
 
 export const MMDPage = () => {
 	const [searchParams] = useSearchParams();
-	const navigate = useNavigate();
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -275,7 +274,7 @@ export const MMDPage = () => {
 			open={modelDrawerOpen}
 			value={typeof model === 'string' ? model : ''}
 			onChange={(value) => {
-				navigate(`/mmd?modelUrl=${value}`);
+				setModel(value);
 			}}
 			onClose={() => setModelDrawerOpen(!modelDrawerOpen)}
 		/>
