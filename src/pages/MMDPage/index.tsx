@@ -118,15 +118,12 @@ export const MMDPage = () => {
 		let meshes = scene.meshes;
 
 		const loadModel = async () => {
-			showLoading('model');
 			const result = typeof model === 'string' ?
-				await SceneLoader.ImportMeshAsync(
-					'',
+				await SceneLoader.AppendAsync(
 					model,
 					'',
 					scene,
-				) : await SceneLoader.ImportMeshAsync(
-					'',
+				) : await SceneLoader.AppendAsync(
 					'',
 					model,
 					scene,
@@ -141,14 +138,13 @@ export const MMDPage = () => {
 			mmdModel.addAnimation(modelMotion);
 			mmdModel.setAnimation("model_motion_1");
 
-			await mmdRuntime.playAnimation();
+			// await mmdRuntime.playAnimation();
 
 			mmdRuntime.register(scene);
 
 			centeredModel(mesh, scene);
 
 			meshes = result.meshes;
-			hideLoading('model');
 		};
 
 		const loadMMDTool = () => {
@@ -202,6 +198,7 @@ export const MMDPage = () => {
 		}
 
 		try {
+			showLoading('mediapipe');
 			setCameraLoading(true);
 			await mmdTool?.toggleCamera();
 			setIsCameraEnabled(mmdTool?.isCameraEnabled ?? false);

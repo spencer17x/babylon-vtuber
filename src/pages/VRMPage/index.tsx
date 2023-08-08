@@ -154,15 +154,12 @@ export const VRMPage = () => {
 
 		const load = async () => {
 			// 加载模型
-			showLoading('model');
 			const result = typeof model === 'string' ?
-				await SceneLoader.ImportMeshAsync(
+				await SceneLoader.AppendAsync(
 					'',
 					model,
-					'',
 					scene,
-				) : await SceneLoader.ImportMeshAsync(
-					'',
+				) : await SceneLoader.AppendAsync(
 					'',
 					model,
 					scene,
@@ -178,7 +175,6 @@ export const VRMPage = () => {
 			meshes = result.meshes;
 			const mesh = meshes[0] as Mesh;
 			centeredModel(mesh, scene);
-			hideLoading('model');
 		};
 		load().then(() => {
 		});
