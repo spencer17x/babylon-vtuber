@@ -131,17 +131,6 @@ export const MMDPage = () => {
 
 			const mesh = result.meshes[0] as Mesh;
 
-			const mmdRuntime = new MmdRuntime(new MmdPhysics(scene));
-			const vmdLoader = new VmdLoader(scene);
-			const modelMotion = await vmdLoader.loadAsync("model_motion_1", `${assetsUrl}/models/vmd/wavefile_v2.vmd`);
-			const mmdModel = mmdRuntime.createMmdModel(mesh);
-			mmdModel.addAnimation(modelMotion);
-			mmdModel.setAnimation("model_motion_1");
-
-			// await mmdRuntime.playAnimation();
-
-			mmdRuntime.register(scene);
-
 			centeredModel(mesh, scene);
 
 			meshes = result.meshes;
@@ -239,13 +228,20 @@ export const MMDPage = () => {
 				itemRender={() => null}
 				onChange={async ({file}) => {
 					console.log('file', file);
+					const scene = sceneRef.current;
+					if (!scene) return;
+					const mesh = scene.meshes[0] as Mesh;
+					if (!mesh) return;
+
 					if (file instanceof File) {
-						const {animationGroups} = await SceneLoader.AppendAsync(
-							'',
-							file as File,
-							sceneRef.current,
-						);
-						console.log('animationGroups', animationGroups);
+						const mmdRuntime = new MmdRuntime(new MmdPhysics(scene));
+						const vmdLoader = new VmdLoader(scene);
+						const modelMotion = await vmdLoader.loadAsync("model_motion_1", file);
+						const mmdModel = mmdRuntime.createMmdModel(mesh);
+						mmdModel.addAnimation(modelMotion);
+						mmdModel.setAnimation("model_motion_1");
+						await mmdRuntime.playAnimation();
+						mmdRuntime.register(scene);
 					}
 				}}
 			>
