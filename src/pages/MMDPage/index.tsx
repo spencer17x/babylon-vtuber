@@ -21,9 +21,9 @@ import { centeredModel, hideLoading, showLoading } from '@/utils';
 
 import { models } from './data';
 
-const prefixCls = 'vtuber-mmd-page';
+const prefixCls = 'mmd-page';
 
-export const VtuberMMDPage = () => {
+export const MMDPage = () => {
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 

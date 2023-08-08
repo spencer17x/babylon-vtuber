@@ -23,9 +23,9 @@ import { centeredModel, hideLoading, showLoading } from '@/utils';
 
 import { models } from './data';
 
-const prefixCls = 'vtuber-vrm-page';
+const prefixCls = 'vrm-page';
 
-export const VtuberVRMPage = () => {
+export const VRMPage = () => {
 	const [searchParams] = useSearchParams();
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);

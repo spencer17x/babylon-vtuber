@@ -1,16 +1,16 @@
 import { createHashRouter, Navigate } from 'react-router-dom';
 
-import { VtuberMMDPage } from '@/pages/mmd';
-import { VtuberVRMPage } from '@/pages/vrm';
+import { MMDPage } from '@/pages/MMDPage';
+import { VRMPage } from '@/pages/VRMPage';
 
 export const router = createHashRouter([
 	{
 		path: '/vrm',
-		element: <VtuberVRMPage/>
+		element: <VRMPage/>
 	},
 	{
 		path: '/mmd',
-		element: <VtuberMMDPage/>
+		element: <MMDPage/>
 	},
 	{
 		path: '*',
