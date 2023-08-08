@@ -233,6 +233,27 @@ export const MMDPage = () => {
 				</Button>
 			</Upload>
 
+			<Upload
+				name='file'
+				beforeUpload={() => false}
+				itemRender={() => null}
+				onChange={async ({file}) => {
+					console.log('file', file);
+					if (file instanceof File) {
+						const {animationGroups} = await SceneLoader.AppendAsync(
+							'',
+							file as File,
+							sceneRef.current,
+						);
+						console.log('animationGroups', animationGroups);
+					}
+				}}
+			>
+				<Button type='primary' icon={<UploadOutlined/>}>
+					上传动画
+				</Button>
+			</Upload>
+
 			<Button type="primary" onClick={() => setModelDrawerOpen(!modelDrawerOpen)}>
 				{modelDrawerOpen ? '关闭' : '打开'}模型库
 			</Button>

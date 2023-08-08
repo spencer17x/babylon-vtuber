@@ -236,7 +236,7 @@ export const VRMPage = () => {
 				onChange={async ({file}) => {
 					console.log('file', file);
 					if (file instanceof File) {
-						const {animationGroups} = await SceneLoader.ImportAnimationsAsync(
+						const {animationGroups} = await SceneLoader.AppendAsync(
 							'',
 							file as File,
 							sceneRef.current,
