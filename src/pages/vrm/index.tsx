@@ -196,6 +196,7 @@ export const VtuberVRMPage = () => {
 			console.error('vrmTool is not found');
 			return;
 		}
+
 		try {
 			showLoading('mediapipe');
 			setCameraLoading(true);

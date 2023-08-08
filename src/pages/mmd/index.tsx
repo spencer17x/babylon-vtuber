@@ -11,12 +11,11 @@ import {
 	Vector3
 } from '@babylonjs/core';
 import { Button, Switch, Upload } from 'antd';
-import { MmdRuntime, VmdLoader } from 'babylon-mmd';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { ModelDrawer } from '@/components';
-import { assetsUrl, mediaPipeUrl } from '@/config';
+import { mediaPipeUrl } from '@/config';
 import { MMDTool, MMDToolConfig } from '@/tools';
 import { centeredModel, hideLoading, showLoading } from '@/utils';
 
@@ -34,10 +33,10 @@ export const VtuberMMDPage = () => {
 
 	const engineRef = useRef<Nullable<Engine>>(null);
 	const sceneRef = useRef<Nullable<Scene>>(null);
+	const mmdToolRef = useRef<Nullable<MMDTool>>(null);
 
 	const [cameraLoading, setCameraLoading] = useState(false);
 	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
-	const [mmdTool, setMMDTool] = useState<MMDTool>();
 	const [animateType, setAnimateType] = useState<MMDToolConfig['animateType']>('holistic');
 	const [modelDrawerOpen, setModelDrawerOpen] = useState(false);
 	const [model, setModel] = useState<string | File>('');
@@ -90,6 +89,7 @@ export const VtuberMMDPage = () => {
 		if (searchParams.get('inspector')) {
 			sceneRef.current?.debugLayer.show({
 				embedMode: true,
+				globalRoot: document.querySelector<HTMLDivElement>('.inspector')!,
 			}).then(() => {
 			});
 		}
@@ -125,16 +125,6 @@ export const VtuberMMDPage = () => {
 
 			centeredModel(mesh, scene);
 
-			const vmdLoader = new VmdLoader(scene);
-			const modelMotion = await vmdLoader.loadAsync('model_motion_1', assetsUrl + '/models/vmd/wavefile_v2.vmd');
-
-			const mmdRuntime = new MmdRuntime();
-			const mmdModel = mmdRuntime.createMmdModel(mesh);
-			mmdModel.addAnimation(modelMotion);
-			mmdModel.setAnimation('model_motion_1');
-			mmdRuntime.playAnimation();
-			mmdRuntime.register(scene);
-
 			meshes = result.meshes;
 			hideLoading('model');
 		};
@@ -147,7 +137,7 @@ export const VtuberMMDPage = () => {
 			}
 
 			console.log('scene', scene, scene.metadata);
-			const client = MMDTool.launch({
+			mmdToolRef.current = MMDTool.launch({
 				mesh: meshes[0] as Mesh,
 				enableDraw: true,
 			}, {
@@ -163,7 +153,6 @@ export const VtuberMMDPage = () => {
 					hideLoading('mediapipe');
 				}
 			});
-			setMMDTool(client);
 		};
 
 		loadModel().then(() => {
@@ -177,15 +166,19 @@ export const VtuberMMDPage = () => {
 	}, [model]);
 
 	/**
-	 * 切换动画类型
+	 * update vrmTool animateType
 	 */
 	useEffect(() => {
-		if (mmdTool) {
-			mmdTool.setAnimateType(animateType);
-		}
-	}, [animateType, mmdTool]);
+		mmdToolRef.current?.setAnimateType(animateType);
+	}, [animateType]);
 
 	const toggleCamera = async () => {
+		const mmdTool = mmdToolRef.current;
+		if (!mmdTool) {
+			console.error('vrmTool is not found');
+			return;
+		}
+
 		try {
 			setCameraLoading(true);
 			await mmdTool?.toggleCamera();
@@ -198,6 +191,8 @@ export const VtuberMMDPage = () => {
 	};
 
 	return <div className={prefixCls}>
+		<div className='inspector'/>
+
 		<canvas className={`${prefixCls}-canvas`} ref={canvasRef}/>
 
 		<div className={`${prefixCls}-video-container`}>

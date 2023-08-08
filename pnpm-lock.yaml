@@ -24,7 +24,7 @@ specifiers:
   '@vitejs/plugin-react': ^4.0.0
   '@wenxin123/babylonjs-mmd-loader': ^0.1.4
   antd: ^5.6.1
-  babylon-mmd: ^0.6.0
+  babylon-mmd: ^0.22.0
   babylonjs-gltf2interface: ^6.12.3
   babylonjs-vrm-loader: ^0.0.8
   classnames: ^2.3.2
@@ -61,7 +61,7 @@ dependencies:
   '@picode/binary-reader': 1.0.0
   '@wenxin123/babylonjs-mmd-loader': 0.1.4
   antd: 5.6.2_biqbaboplfbrettd7655fr4n2y
-  babylon-mmd: 0.6.0_@babylonjs+core@6.12.3
+  babylon-mmd: 0.22.0_@babylonjs+core@6.12.3
   babylonjs-vrm-loader: 0.0.8_cyl62eloohjqdnj7qebawcleuy
   classnames: 2.3.2
   fbx-parser: 2.1.3
@@ -1267,10 +1267,10 @@ packages:
     resolution: {integrity: sha512-7HhHjtERjqlNbZtqNqy2rckN/SpOOlmDliet+lP7k+eKZEjPk3DgyeU9lIXLdeLz0uBbbVp+9Qdow9wJWgwwfg==}
     dev: false
 
-  /babylon-mmd/0.6.0_@babylonjs+core@6.12.3:
-    resolution: {integrity: sha512-J8SImX3c4nL0Ubu1+yaugVtGIttdikfAIq516u3Gr9fPJVSQ4QGzBZ0jYAfg0oMT9Q2tKQES5twtx+pLqXXgXQ==}
+  /babylon-mmd/0.22.0_@babylonjs+core@6.12.3:
+    resolution: {integrity: sha512-uBpnEEwAVjsuUmQdOtokZyN/2hczoJqeQ2hqLNk/lBn7jA1y50PAKyd/jadjHxIJd+U2Xh9DJYARk5sWnIYqRg==}
     peerDependencies:
-      '@babylonjs/core': ^6.10.0
+      '@babylonjs/core': ^6.14.0
     dependencies:
       '@babylonjs/core': 6.12.3
     dev: false
