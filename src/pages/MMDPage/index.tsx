@@ -3,19 +3,21 @@ import './index.scss';
 import { UploadOutlined } from "@ant-design/icons";
 import {
 	ArcRotateCamera,
-	Engine,
+	Engine, HavokPlugin,
 	HemisphericLight, Mesh,
 	Nullable,
 	Scene,
 	SceneLoader,
 	Vector3
 } from '@babylonjs/core';
+import HavokPhysics from "@babylonjs/havok";
 import { Button, Switch, Upload } from 'antd';
+import { MmdPhysics, MmdRuntime, VmdLoader } from "babylon-mmd";
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { ModelDrawer } from '@/components';
-import { mediaPipeUrl } from '@/config';
+import { assetsUrl, mediaPipeUrl } from '@/config';
 import { MMDTool, MMDToolConfig } from '@/tools';
 import { centeredModel, hideLoading, showLoading } from '@/utils';
 
@@ -60,6 +62,14 @@ export const MMDPage = () => {
 
 		const scene = new Scene(engine);
 		sceneRef.current = scene;
+
+		(async function () {
+			// initialize plugin
+			const havokInstance = await HavokPhysics();
+			// pass the engine to the plugin
+			const hk = new HavokPlugin(true, havokInstance);
+			scene.enablePhysics(new Vector3(0, -9.8, 0), hk);
+		}());
 
 		const camera = new ArcRotateCamera('camera', Math.PI / 2.0, Math.PI / 2.0, 30, Vector3.Zero(), scene, true);
 		camera.attachControl(canvas, true);
@@ -121,7 +131,19 @@ export const MMDPage = () => {
 					model,
 					scene,
 				)
+
 			const mesh = result.meshes[0] as Mesh;
+
+			const mmdRuntime = new MmdRuntime(new MmdPhysics(scene));
+			const vmdLoader = new VmdLoader(scene);
+			const modelMotion = await vmdLoader.loadAsync("model_motion_1", `${assetsUrl}/models/vmd/wavefile_v2.vmd`);
+			const mmdModel = mmdRuntime.createMmdModel(mesh);
+			mmdModel.addAnimation(modelMotion);
+			mmdModel.setAnimation("model_motion_1");
+
+			await mmdRuntime.playAnimation();
+
+			mmdRuntime.register(scene);
 
 			centeredModel(mesh, scene);
 
