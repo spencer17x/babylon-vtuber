@@ -42,6 +42,25 @@ export const MMDPage = () => {
 	const [modelDrawerOpen, setModelDrawerOpen] = useState(false);
 	const [model, setModel] = useState<string | File>('');
 
+	const toggleCamera = async () => {
+		const mmdTool = mmdToolRef.current;
+		if (!mmdTool) {
+			console.error('mmdTool is not found');
+			return;
+		}
+
+		try {
+			showLoading('mediapipe');
+			setCameraLoading(true);
+			await mmdTool?.toggleCamera();
+			setIsCameraEnabled(mmdTool?.isCameraEnabled ?? false);
+		} catch (e) {
+			console.error(e);
+		} finally {
+			setCameraLoading(false);
+		}
+	};
+
 	/**
 	 * init model
 	 */
@@ -172,30 +191,11 @@ export const MMDPage = () => {
 	}, [model]);
 
 	/**
-	 * update vrmTool animateType
+	 * update mmdTool animateType
 	 */
 	useEffect(() => {
 		mmdToolRef.current?.setAnimateType(animateType);
 	}, [animateType]);
-
-	const toggleCamera = async () => {
-		const mmdTool = mmdToolRef.current;
-		if (!mmdTool) {
-			console.error('vrmTool is not found');
-			return;
-		}
-
-		try {
-			showLoading('mediapipe');
-			setCameraLoading(true);
-			await mmdTool?.toggleCamera();
-			setIsCameraEnabled(mmdTool?.isCameraEnabled ?? false);
-		} catch (e) {
-			console.error(e);
-		} finally {
-			setCameraLoading(false);
-		}
-	};
 
 	return <div className={prefixCls}>
 		<div className='inspector'/>

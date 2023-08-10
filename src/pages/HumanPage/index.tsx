@@ -29,6 +29,45 @@ export const HumanPage = () => {
 	const [captureMode, setCaptureMode] = useState<CaptureMode | null>();
 
 	/**
+	 * toggle camera
+	 */
+	const toggleCamera = () => {
+		setIsCameraOpen(!isCameraOpen);
+		setCameraLoading(!cameraLoading);
+	}
+
+	/**
+	 * load model
+	 * @param model
+	 */
+	const loadModel = async (model: string | File) => {
+		meshesRef.current.forEach(mesh => mesh.dispose());
+
+		const result = await BABYLON.SceneLoader.ImportMeshAsync(
+			'',
+			'',
+			model,
+			sceneRef.current
+		);
+		meshesRef.current = result.meshes;
+		console.log('loadModel result', result);
+		centeredHumanModel(result.meshes)
+	}
+
+	/**
+	 * load animation
+	 * @param file
+	 */
+	const loadAnimation = async (file: File) => {
+		console.log('file', file);
+		const scene = sceneRef.current;
+		if (!scene) {
+			console.error(`scene is ${scene}`);
+			return;
+		}
+	}
+
+	/**
 	 * init engine and scene
 	 */
 	useEffect(() => {
@@ -76,45 +115,6 @@ export const HumanPage = () => {
 			});
 		}
 	}, [searchParams])
-
-	/**
-	 * toggle camera
-	 */
-	const toggleCamera = () => {
-		setIsCameraOpen(!isCameraOpen);
-		setCameraLoading(!cameraLoading);
-	}
-
-	/**
-	 * load model
-	 * @param model
-	 */
-	const loadModel = async (model: string | File) => {
-		meshesRef.current.forEach(mesh => mesh.dispose());
-
-		const result = await BABYLON.SceneLoader.ImportMeshAsync(
-			'',
-			'',
-			model,
-			sceneRef.current
-		);
-		meshesRef.current = result.meshes;
-		console.log('loadModel result', result);
-		centeredHumanModel(result.meshes)
-	}
-
-	/**
-	 * load animation
-	 * @param file
-	 */
-	const loadAnimation = async (file: File) => {
-		console.log('file', file);
-		const scene = sceneRef.current;
-		if (!scene) {
-			console.error(`scene is ${scene}`);
-			return;
-		}
-	}
 
 	return (
 		<div className={prefixCls}>

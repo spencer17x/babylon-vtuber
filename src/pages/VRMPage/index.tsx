@@ -43,6 +43,28 @@ export const VRMPage = () => {
 	const [model, setModel] = useState<string | File>('');
 
 	/**
+	 * toggle camera
+	 */
+	const toggleCamera = async () => {
+		const vrmTool = vrmToolRef.current;
+		if (!vrmTool) {
+			console.error('vrmTool is not found');
+			return;
+		}
+
+		try {
+			showLoading('mediapipe');
+			setCameraLoading(true);
+			await vrmTool.toggleCamera();
+			setIsCameraEnabled(vrmTool.isCameraEnabled ?? false);
+		} catch (e) {
+			console.error(e);
+		} finally {
+			setCameraLoading(false);
+		}
+	};
+
+	/**
 	 * init model
 	 */
 	useEffect(() => {
@@ -185,25 +207,6 @@ export const VRMPage = () => {
 			});
 		};
 	}, [model]);
-
-	const toggleCamera = async () => {
-		const vrmTool = vrmToolRef.current;
-		if (!vrmTool) {
-			console.error('vrmTool is not found');
-			return;
-		}
-
-		try {
-			showLoading('mediapipe');
-			setCameraLoading(true);
-			await vrmTool.toggleCamera();
-			setIsCameraEnabled(vrmTool.isCameraEnabled ?? false);
-		} catch (e) {
-			console.error(e);
-		} finally {
-			setCameraLoading(false);
-		}
-	};
 
 	return <div className={prefixCls}>
 		<div className='inspector'/>
