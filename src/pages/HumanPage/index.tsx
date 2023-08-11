@@ -14,6 +14,10 @@ type CaptureMode = 'holistic' | 'face';
 
 const prefixCls = 'human-page';
 
+const apis = {
+	upload: 'http://localhost:3000/upload'
+};
+
 export const HumanPage = () => {
 	const [searchParams] = useSearchParams();
 
@@ -37,16 +41,44 @@ export const HumanPage = () => {
 	}
 
 	/**
-	 * load model
-	 * @param model
+	 * upload zip
+	 * @param file
 	 */
-	const loadModel = async (model: string | File) => {
+	const uploadZip = async (file: File): Promise<{
+		code: number;
+		data: {
+			url: string;
+		}
+	}> => {
+		const formData = new FormData();
+		formData.append('file', file, file.name);
+
+		const response = await fetch(apis.upload, {
+			method: 'POST',
+			body: formData,
+		});
+		return response.json();
+	}
+
+	/**
+	 * load model
+	 * @param data
+	 */
+	const loadModel = async (data: string | File) => {
+		console.log('loadModel data', data);
+		let modelUrl = '';
+
 		meshesRef.current.forEach(mesh => mesh.dispose());
+		if (data instanceof File && data.name.endsWith('.zip')) {
+			const uploadedZipResult = await uploadZip(data);
+			console.log('loadModel uploadedZipResult', uploadedZipResult);
+			modelUrl = uploadedZipResult.data.url;
+		}
 
 		const result = await BABYLON.SceneLoader.ImportMeshAsync(
 			'',
-			'',
-			model,
+			modelUrl,
+			"",
 			sceneRef.current
 		);
 		meshesRef.current = result.meshes;
@@ -56,10 +88,10 @@ export const HumanPage = () => {
 
 	/**
 	 * load animation
-	 * @param file
+	 * @param data
 	 */
-	const loadAnimation = async (file: File) => {
-		console.log('file', file);
+	const loadAnimation = async (data: string | File) => {
+		console.log('loadModel data', data);
 		const scene = sceneRef.current;
 		if (!scene) {
 			console.error(`scene is ${scene}`);

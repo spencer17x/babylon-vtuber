@@ -1,5 +1,7 @@
 import compressing from 'compressing';
+import cors from 'cors';
 import express from 'express';
+import * as fs from "fs";
 import multer from 'multer';
 import path from "path";
 import { fileURLToPath } from 'url';
@@ -21,11 +23,15 @@ const storage = multer.diskStorage({
 	},
 	filename: (_req, file, cb) => {
 		console.log('file', file);
-		cb(null, file.originalname);
+		cb(null, Buffer.from(file.originalname, 'binary').toString());
 	},
 });
 
 const upload = multer({storage: storage});
+
+app.use(cors());
+
+app.use('/uploads', express.static(uploadDir));
 
 app.post('/upload', upload.single('file'), async (req, res) => {
 	try {
@@ -33,9 +39,20 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 		const {filename = ''} = req.file || {};
 		await compressing.zip.uncompress(
 			`${uploadDir}/${filename}`,
+			`${uploadDir}/${filename.replace('.zip', '')}`,
+			{zipFileNameEncoding: 'GBK'}
+		);
+		const files = fs.readdirSync(
 			`${uploadDir}/${filename.replace('.zip', '')}`
 		);
-		res.send(req.file);
+		const pmxFile = files.find((file) => file.endsWith('.pmx'));
+		console.log('pmxFile', pmxFile)
+		res.json({
+			code: 0,
+			data: {
+				url: `http://localhost:3000/uploads/${filename.replace('.zip', '')}/${pmxFile}`,
+			}
+		});
 	} catch (err) {
 		console.log('err', err);
 		res.send(400);
