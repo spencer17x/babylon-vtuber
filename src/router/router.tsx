@@ -6,6 +6,10 @@ import { VRMPage } from '@/pages/VRMPage';
 
 export const router = createHashRouter([
 	{
+		path: '/human',
+		element: <HumanPage/>
+	},
+	{
 		path: '/vrm',
 		element: <VRMPage/>
 	},
@@ -14,11 +18,7 @@ export const router = createHashRouter([
 		element: <MMDPage/>
 	},
 	{
-		path: '/human',
-		element: <HumanPage/>
+		path: '/',
+		element: <Navigate to='/human'/>
 	},
-	{
-		path: '*',
-		element: <Navigate to="/vrm"/>
-	}
 ]);
