@@ -73,7 +73,7 @@ export class VRMTool extends MediapipeTool {
 		dampener?: number,
 		lerpAmount?: number,
 	) {
-		rotation = rotation || { x: 0, y: 0, z: 0 };
+		rotation = rotation || {x: 0, y: 0, z: 0};
 		dampener = dampener || 1;
 		lerpAmount = lerpAmount || 0.3;
 		console.log('_setRotation name, rotation, dampener, lerpAmount', name, rotation, dampener, lerpAmount);
@@ -108,7 +108,7 @@ export class VRMTool extends MediapipeTool {
 		dampener = 1,
 		lerpAmount = 0.3
 	) {
-		position = position || { x: 0, y: 0, z: 0 };
+		position = position || {x: 0, y: 0, z: 0};
 		dampener = dampener || 1;
 		lerpAmount = lerpAmount || 0.3;
 		console.log('_setPosition name, position, dampener, lerpAmount', name, position, dampener, lerpAmount);
@@ -164,16 +164,16 @@ export class VRMTool extends MediapipeTool {
 		return this._manager;
 	}
 
-	animateFace(results: Results) {
+	_animateFace(results: Results) {
 		const faceLandmarks = results.faceLandmarks;
-		console.log('animateFace faceLandmarks', faceLandmarks);
+		console.log('_animateFace faceLandmarks', faceLandmarks);
 		if (!faceLandmarks) return;
 
 		const face = Face.solve(faceLandmarks, {
 			runtime: 'mediapipe',
 			video: this.getVideo(),
 		});
-		console.log('animateFace face', face);
+		console.log('_animateFace face', face);
 		if (!face) return;
 
 		// neck
@@ -193,7 +193,7 @@ export class VRMTool extends MediapipeTool {
 		this.getManager().morphing('U', mouth.U);
 	}
 
-	animatePose(results: Results) {
+	_animatePose(results: Results) {
 		const pose = this._getPose(results);
 		if (!pose) return;
 
@@ -275,11 +275,11 @@ export class VRMTool extends MediapipeTool {
 		);
 	}
 
-	animateLeftHand(results: Results) {
+	_animateLeftHand(results: Results) {
 		const pose = this._getPose(results);
 
 		const leftHandLandmarks = results.leftHandLandmarks;
-		console.log('animateLeftHand leftHandLandmarks', leftHandLandmarks);
+		console.log('_animateLeftHand leftHandLandmarks', leftHandLandmarks);
 		if (!leftHandLandmarks) return;
 
 		const leftHand = Hand.solve(leftHandLandmarks, 'Left');
@@ -309,11 +309,11 @@ export class VRMTool extends MediapipeTool {
 		this._setRotation('leftLittleDistal', leftHand.LeftLittleDistal);
 	}
 
-	animateRightHand(results: Results) {
+	_animateRightHand(results: Results) {
 		const pose = this._getPose(results);
 
 		const rightHandLandmarks = results.rightHandLandmarks;
-		console.log('animateRightHand rightHandLandmarks', rightHandLandmarks);
+		console.log('_animateRightHand rightHandLandmarks', rightHandLandmarks);
 		if (!rightHandLandmarks) return;
 
 		const rightHand = Hand.solve(rightHandLandmarks, 'Right');
@@ -343,24 +343,23 @@ export class VRMTool extends MediapipeTool {
 		this._setRotation('rightLittleDistal', rightHand.RightLittleDistal);
 	}
 
-	animateHand(results: Results) {
-		this.animateLeftHand(results);
-		this.animateRightHand(results);
+	_animateHand(results: Results) {
+		this._animateLeftHand(results);
+		this._animateRightHand(results);
 	}
 
 	animate(results: Results) {
 		if (!this.animateType) return;
-		if (this.animateType === 'none') return;
 
 		// Animate Face
-		this.animateFace(results);
+		this._animateFace(results);
 
 		if (this.animateType === 'holistic') {
 			// Animate Pose
-			this.animatePose(results);
+			this._animatePose(results);
 
 			// Animate Hand
-			this.animateHand(results);
+			this._animateHand(results);
 		}
 	}
 
@@ -378,8 +377,6 @@ export class VRMTool extends MediapipeTool {
 		this.animateType = null;
 		this.enableDraw = false;
 
-		return super.dispose().then(() => {
-			console.log('VRMTool dispose');
-		});
+		return super.dispose();
 	}
 }

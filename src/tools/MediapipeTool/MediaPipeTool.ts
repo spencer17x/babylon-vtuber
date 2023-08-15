@@ -89,7 +89,7 @@ export class MediapipeTool {
 	initCamera() {
 		this.camera = new Camera(this.getVideo(), {
 			onFrame: async () => {
-				await this.holistic?.send({ image: this.getVideo() });
+				await this.holistic?.send({image: this.getVideo()});
 			},
 			...this.config?.cameraOptions
 		});
@@ -153,16 +153,14 @@ export class MediapipeTool {
 		});
 	}
 
-	dispose() {
-		return Promise.all([
+	async dispose() {
+		await Promise.all([
 			this.camera?.stop(),
 			this.holistic?.close(),
-		]).then(() => {
-			this.isCameraEnabled = false;
-			this.holistic = null;
-			this.camera = null;
-			this.config = null;
-			console.log('MediapipeTool disposed');
-		});
+		]);
+		this.isCameraEnabled = false;
+		this.holistic = null;
+		this.camera = null;
+		this.config = null;
 	}
 }

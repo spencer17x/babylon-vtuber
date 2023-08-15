@@ -11,15 +11,13 @@ import {
 	Vector3
 } from '@babylonjs/core';
 import HavokPhysics from "@babylonjs/havok";
-import { Button, Switch, Upload } from 'antd';
+import { Button, Upload } from 'antd';
 import { MmdPhysics, MmdRuntime, VmdLoader } from "babylon-mmd";
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { ModelDrawer } from '@/components';
-import { mediaPipeUrl } from '@/config';
-import { MMDTool, MMDToolConfig } from '@/tools';
-import { centeredModel, hideLoading, showLoading } from '@/utils';
+import { centeredModel } from '@/utils';
 
 import { models } from './data';
 
@@ -34,32 +32,9 @@ export const MMDPage = () => {
 
 	const engineRef = useRef<Nullable<Engine>>(null);
 	const sceneRef = useRef<Nullable<Scene>>(null);
-	const mmdToolRef = useRef<Nullable<MMDTool>>(null);
 
-	const [cameraLoading, setCameraLoading] = useState(false);
-	const [isCameraEnabled, setIsCameraEnabled] = useState(false);
-	const [animateType, setAnimateType] = useState<MMDToolConfig['animateType']>('holistic');
 	const [modelDrawerOpen, setModelDrawerOpen] = useState(false);
 	const [model, setModel] = useState<string | File>('');
-
-	const toggleCamera = async () => {
-		const mmdTool = mmdToolRef.current;
-		if (!mmdTool) {
-			console.error('mmdTool is not found');
-			return;
-		}
-
-		try {
-			showLoading('mediapipe');
-			setCameraLoading(true);
-			await mmdTool?.toggleCamera();
-			setIsCameraEnabled(mmdTool?.isCameraEnabled ?? false);
-		} catch (e) {
-			console.error(e);
-		} finally {
-			setCameraLoading(false);
-		}
-	};
 
 	/**
 	 * init model
@@ -104,7 +79,6 @@ export const MMDPage = () => {
 		});
 
 		return () => {
-			console.log('dispose');
 			scene.dispose();
 			engine.dispose();
 		};
@@ -129,10 +103,7 @@ export const MMDPage = () => {
 	useEffect(() => {
 		const scene = sceneRef.current;
 		if (!scene) return;
-		if (!model) {
-			return;
-		}
-		console.log('start load model');
+		if (!model) return;
 		let meshes = scene.meshes;
 
 		const loadModel = async () => {
@@ -154,48 +125,13 @@ export const MMDPage = () => {
 			meshes = result.meshes;
 		};
 
-		const loadMMDTool = () => {
-			const video = videoRef.current;
-			const videoCanvas = videoCanvasRef.current;
-			if (!video || !videoCanvas) {
-				return;
-			}
-
-			console.log('scene', scene, scene.metadata);
-			mmdToolRef.current = MMDTool.launch({
-				mesh: meshes[0] as Mesh,
-				enableDraw: true,
-			}, {
-				video,
-				videoCanvas,
-				holisticConfig: {
-					locateFile: (file) => {
-						return `${mediaPipeUrl}/${file}`;
-					}
-				}
-			}, {
-				onResults() {
-					hideLoading('mediapipe');
-				}
-			});
-		};
-
-		loadModel().then(() => {
-			loadMMDTool();
-		});
+		void loadModel();
 		return () => {
 			meshes.forEach(mesh => {
 				mesh.dispose();
 			});
 		};
 	}, [model]);
-
-	/**
-	 * update mmdTool animateType
-	 */
-	useEffect(() => {
-		mmdToolRef.current?.setAnimateType(animateType);
-	}, [animateType]);
 
 	return <div className={prefixCls}>
 		<div className='inspector'/>
@@ -226,7 +162,6 @@ export const MMDPage = () => {
 				beforeUpload={() => false}
 				itemRender={() => null}
 				onChange={async ({file}) => {
-					console.log('file', file);
 					const scene = sceneRef.current;
 					if (!scene) return;
 					const mesh = scene.meshes[0] as Mesh;
@@ -252,21 +187,6 @@ export const MMDPage = () => {
 			<Button type="primary" onClick={() => setModelDrawerOpen(!modelDrawerOpen)}>
 				{modelDrawerOpen ? '关闭' : '打开'}模型库
 			</Button>
-
-			<Button type="primary" loading={cameraLoading} onClick={toggleCamera}>
-				{isCameraEnabled ? '关闭' : '开启'}摄像头
-			</Button>
-
-			<Switch
-				checkedChildren="采集全身开"
-				unCheckedChildren="采集全身关"
-				checked={animateType === 'holistic'}
-				onChange={(checked) => {
-					console.log('checked', checked);
-					const type = checked ? 'holistic' : 'face';
-					setAnimateType(type);
-				}}
-			/>
 		</div>
 
 		<ModelDrawer
