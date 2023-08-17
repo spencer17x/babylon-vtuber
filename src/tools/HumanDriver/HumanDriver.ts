@@ -1,13 +1,14 @@
-import { Quaternion, Vector3 } from "@babylonjs/core";
+import { Quaternion, Scene, Vector3 } from "@babylonjs/core";
 import { NormalizedLandmarkList, Results } from "@mediapipe/holistic";
 import { Face, Hand, Pose, XYZ } from "kalidokit";
 
-import { HumanBoneName, Manager } from "./_utils";
+import { HumanBoneName, HumanManager, HumanManagerType } from "./HumanManager";
 import { MediapipeDriver, MediapipeDriverConfig } from "./MediapipeDriver";
 
 export type AnimateType = 'face' | 'holistic';
 
 export type HumanDriverConfig = MediapipeDriverConfig & {
+	scene: Scene;
 	/**
 	 * face: face only, holistic: face + hand + pose
 	 */
@@ -22,7 +23,7 @@ export type HumanDriverConfig = MediapipeDriverConfig & {
 export class HumanDriver extends MediapipeDriver {
 	config: HumanDriverConfig;
 
-	manager: Manager;
+	manager: HumanManager;
 	animateType?: AnimateType;
 
 	static create(config: HumanDriverConfig) {
@@ -41,7 +42,8 @@ export class HumanDriver extends MediapipeDriver {
 		dampener = dampener || 1;
 		lerpAmount = lerpAmount || 0.3;
 
-		const node = this.manager.humanoidBone[name];
+		const node = this.manager.getTransformNode(name);
+		console.log('_setRotation node', node);
 		if (!node) return;
 
 		const nodeQuaternion = node.rotationQuaternion;
@@ -70,7 +72,8 @@ export class HumanDriver extends MediapipeDriver {
 		dampener = dampener || 1;
 		lerpAmount = lerpAmount || 0.3;
 
-		const node = this.manager.humanoidBone[name];
+		const node = this.manager.getTransformNode(name);
+		console.log('_setPosition node', node);
 		if (!node) return;
 
 		const vector = new Vector3(
@@ -241,28 +244,29 @@ export class HumanDriver extends MediapipeDriver {
 		this._animatePose(results);
 	}
 
-	setManager(manager: Manager) {
-		this.manager = manager;
-	}
-
 	setAnimateType(type: AnimateType) {
 		this.animateType = type;
 	}
 
 	animate(results: Results) {
 		const animateType = this.animateType;
-		console.log('animateType', animateType, 'results', results);
+		console.log('animate animateType', animateType, results);
 		if (!animateType) return;
 
 		if (animateType === 'face') {
-			console.log('animate face');
 			return this._animateFace(results);
 		}
 		if (animateType === 'holistic') {
-			console.log('animate holistic');
 			return this._animateHolistic(results);
 		}
 
 		throw new Error(`animateType is not supported: ${animateType}`);
+	}
+
+	registerManager(type: HumanManagerType) {
+		this.manager = HumanManager.create({
+			type,
+			scene: this.config.scene
+		});
 	}
 }

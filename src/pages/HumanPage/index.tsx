@@ -9,7 +9,7 @@ import { useSearchParams } from "react-router-dom";
 
 import { mediaPipeUrl } from "@/config";
 import { AnimateType, HumanDriver } from "@/tools/HumanDriver";
-import { centeredHumanModel, hideLoading, showLoading } from "@/utils";
+import { centeredModel, hideLoading, showLoading } from "@/utils";
 
 const prefixCls = 'human-page';
 
@@ -53,7 +53,7 @@ export const HumanPage = () => {
 
 	const [cameraLoading, setCameraLoading] = useState(false);
 	const [isCameraOpen, setIsCameraOpen] = useState(false);
-	const [captureMode, setCaptureMode] = useState<AnimateType>('face');
+	const [captureMode, setCaptureMode] = useState<AnimateType>('holistic');
 
 	/**
 	 * toggle camera
@@ -120,12 +120,17 @@ export const HumanPage = () => {
 			)
 		}
 
-		meshesRef.current = result.meshes;
-		// centeredHumanModel(result.meshes);
+		console.log('scene', sceneRef.current);
 
-		const manager = sceneRef.current?.metadata.vrmManagers.slice().pop();
+		meshesRef.current = result.meshes;
+		centeredModel(result.meshes[0], sceneRef.current!);
+		// stop animation
+		sceneRef.current?.transformNodes.forEach(e => {
+			sceneRef.current?.stopAnimation(e)
+			e.animations = []
+		})
+
 		humanDriverRef.current?.setAnimateType(captureMode);
-		humanDriverRef.current?.setManager(manager);
 	}
 
 	/**
@@ -195,6 +200,7 @@ export const HumanPage = () => {
 	 */
 	useEffect(() => {
 		humanDriverRef.current = HumanDriver.create({
+			scene: sceneRef.current!,
 			enableDraw: true,
 			video: videoRef.current!,
 			videoCanvas: videoCanvasRef.current!,
@@ -207,6 +213,7 @@ export const HumanPage = () => {
 				hideLoading('mediapipe');
 			}
 		});
+		humanDriverRef.current?.registerManager('vrm');
 	}, []);
 
 	return (
