@@ -177,11 +177,13 @@ export const VRMPage = () => {
 		const load = async () => {
 			// 加载模型
 			const result = typeof model === 'string' ?
-				await SceneLoader.AppendAsync(
+				await SceneLoader.ImportMeshAsync(
 					'',
 					model,
+					'',
 					scene,
-				) : await SceneLoader.AppendAsync(
+				) : await SceneLoader.ImportMeshAsync(
+					'',
 					'',
 					model,
 					scene,
@@ -239,7 +241,7 @@ export const VRMPage = () => {
 				onChange={async ({file}) => {
 					console.log('file', file);
 					if (file instanceof File) {
-						const {animationGroups} = await SceneLoader.AppendAsync(
+						const {animationGroups} = await SceneLoader.ImportAnimationsAsync(
 							'',
 							file as File,
 							sceneRef.current,

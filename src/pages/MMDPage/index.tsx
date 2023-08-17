@@ -108,11 +108,13 @@ export const MMDPage = () => {
 
 		const loadModel = async () => {
 			const result = typeof model === 'string' ?
-				await SceneLoader.AppendAsync(
+				await SceneLoader.ImportMeshAsync(
+					'',
 					model,
 					'',
 					scene,
-				) : await SceneLoader.AppendAsync(
+				) : await SceneLoader.ImportMeshAsync(
+					'',
 					'',
 					model,
 					scene,
