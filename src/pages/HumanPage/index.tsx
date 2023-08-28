@@ -3,9 +3,9 @@ import './index.scss';
 
 import { UploadOutlined } from "@ant-design/icons";
 import * as BABYLON from '@babylonjs/core';
+import { Inspector } from "@babylonjs/inspector";
 import { Button, Switch, Upload } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 
 import { mediaPipeUrl } from "@/config";
 import { AnimateType, HumanDriver } from "@/tools/HumanDriver";
@@ -38,8 +38,6 @@ const uploadZip = async (file: File): Promise<{
 }
 
 export const HumanPage = () => {
-	const [searchParams] = useSearchParams();
-
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoCanvasRef = useRef<HTMLCanvasElement>(null);
 	const videoRef = useRef<HTMLVideoElement>(null);
@@ -52,17 +50,22 @@ export const HumanPage = () => {
 	const humanDriverRef = useRef<BABYLON.Nullable<HumanDriver>>(null);
 
 	const [cameraLoading, setCameraLoading] = useState(false);
+	const [debugLayerLoading, setDebugLayerLoading] = useState(false);
 	const [isCameraOpen, setIsCameraOpen] = useState(false);
+	const [isDugLayerOpen, setIsDugLayerOpen] = useState(false);
 	const [captureMode, setCaptureMode] = useState<AnimateType>('holistic');
 
 	/**
 	 * toggle camera
 	 */
 	const toggleCamera = async () => {
+		const humanDriver = humanDriverRef.current;
+		if (!humanDriver) return;
+
 		try {
 			showLoading('mediapipe');
 			setCameraLoading(true);
-			await humanDriverRef.current?.toggleCamera();
+			await humanDriver.toggleCamera();
 			setIsCameraOpen(!isCameraOpen);
 		} catch (e) {
 			console.error(e);
@@ -147,6 +150,28 @@ export const HumanPage = () => {
 	}
 
 	/**
+	 * toggle debug layer
+	 */
+	const toggleDebugLayer = async () => {
+		const inspectorEle = inspectorRef.current;
+		const scene = sceneRef.current;
+		if (!inspectorEle) return;
+		if (!scene) return;
+
+		setDebugLayerLoading(true);
+		if (isDugLayerOpen) {
+			Inspector.Hide();
+		} else {
+			Inspector.Show(scene, {
+				globalRoot: inspectorEle,
+				embedMode: true
+			});
+		}
+		setDebugLayerLoading(false);
+		setIsDugLayerOpen(!isDugLayerOpen);
+	}
+
+	/**
 	 * init engine and scene
 	 */
 	useEffect(() => {
@@ -183,19 +208,6 @@ export const HumanPage = () => {
 	}, []);
 
 	/**
-	 * inspector
-	 */
-	useEffect(() => {
-		const inspectorEle = inspectorRef.current;
-		if (searchParams.get('inspector') && inspectorEle) {
-			sceneRef.current?.debugLayer.show({
-				embedMode: true,
-				globalRoot: inspectorEle
-			});
-		}
-	}, [searchParams]);
-
-	/**
 	 * init human driver
 	 */
 	useEffect(() => {
@@ -213,7 +225,7 @@ export const HumanPage = () => {
 				hideLoading('mediapipe');
 			}
 		});
-		humanDriverRef.current?.registerManager('vrm');
+		humanDriverRef.current.registerManager('vrm');
 	}, []);
 
 	return (
@@ -241,7 +253,7 @@ export const HumanPage = () => {
 					}}
 				>
 					<Button type='primary' icon={<UploadOutlined/>}>
-						上传模型
+						upload model file
 					</Button>
 				</Upload>
 
@@ -257,17 +269,21 @@ export const HumanPage = () => {
 					}}
 				>
 					<Button type='primary' icon={<UploadOutlined/>}>
-						上传动画
+						upload animation file
 					</Button>
 				</Upload>
 
 				<Button type="primary" loading={cameraLoading} onClick={toggleCamera}>
-					{isCameraOpen ? '关闭' : '开启'}摄像头
+					{isCameraOpen ? 'close' : 'open'} camera
+				</Button>
+
+				<Button type="primary" loading={debugLayerLoading} onClick={toggleDebugLayer}>
+					{isDugLayerOpen ? 'close' : 'open'} debugLayer
 				</Button>
 
 				<Switch
-					checkedChildren="采集全身开"
-					unCheckedChildren="采集全身关"
+					checkedChildren="holistic"
+					unCheckedChildren="face"
 					checked={captureMode === 'holistic'}
 					onChange={(checked) => {
 						const mode = checked ? 'holistic' : 'face';
