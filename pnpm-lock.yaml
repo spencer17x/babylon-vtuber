@@ -27,7 +27,7 @@ specifiers:
   '@vitejs/plugin-react': ^4.0.0
   '@wenxin123/babylonjs-mmd-loader': ^0.1.4
   antd: ^5.6.1
-  babylon-mmd: ^0.24.0
+  babylon-mmd: ^0.27.1
   babylonjs-gltf2interface: ^6.15.0
   babylonjs-vrm-loader: ^0.0.8
   classnames: ^2.3.2
@@ -69,7 +69,7 @@ dependencies:
   '@picode/binary-reader': 1.0.0
   '@wenxin123/babylonjs-mmd-loader': 0.1.4
   antd: 5.6.2_biqbaboplfbrettd7655fr4n2y
-  babylon-mmd: 0.24.0_@babylonjs+core@6.15.0
+  babylon-mmd: 0.27.1_@babylonjs+core@6.15.0
   babylonjs-vrm-loader: 0.0.8_k4efloxzffqnmvo3443mr7vkeq
   classnames: 2.3.2
   fbx-parser: 2.1.3
@@ -1423,10 +1423,10 @@ packages:
     resolution: {integrity: sha512-7HhHjtERjqlNbZtqNqy2rckN/SpOOlmDliet+lP7k+eKZEjPk3DgyeU9lIXLdeLz0uBbbVp+9Qdow9wJWgwwfg==}
     dev: false
 
-  /babylon-mmd/0.24.0_@babylonjs+core@6.15.0:
-    resolution: {integrity: sha512-rrZ/z+pIOsRf4bqT24XHNB3MrbLrnlidAdVZgjaxiX0CW/MX5RTgH4rN5WzkU4WJYpbYbn7uiaOL8XkvWrFscg==}
+  /babylon-mmd/0.27.1_@babylonjs+core@6.15.0:
+    resolution: {integrity: sha512-JpO5uVKzVocMt+9qMUU3ucNn8QVLUrcotX1mlDdR0wJ426PR6Klzftr3Fh3AFYQ7P8tvCYyud07LrdVyMGg4jg==}
     peerDependencies:
-      '@babylonjs/core': ^6.16.0
+      '@babylonjs/core': ^6.21.0
     dependencies:
       '@babylonjs/core': 6.15.0
     dev: false
@@ -1585,7 +1585,7 @@ packages:
       normalize-path: 3.0.0
       readdirp: 3.6.0
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /classnames/2.3.2:
@@ -2135,8 +2135,8 @@ packages:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
 
-  /fsevents/2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+  /fsevents/2.3.3:
+    resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
@@ -3355,7 +3355,7 @@ packages:
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /run-parallel/1.2.0:
@@ -3739,7 +3739,7 @@ packages:
       rollup: 3.25.2
       sass: 1.63.6
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /which/2.0.2:
